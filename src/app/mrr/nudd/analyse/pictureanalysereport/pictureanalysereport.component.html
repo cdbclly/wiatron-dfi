@@ -1,0 +1,259 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>NUDD {{ 'mrr.nudd-risk-evaluate' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>2D/3D {{ 'mrr.nudd-evaluate-report' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  2D/3D {{ 'mrr.nudd-evaluate-report' | translate }}
+</div>
+<app-queryform [report]="true" [plantFlag]="true" [typeShow]="false" [queryShow]="queryShow" (menu)=menu($event)
+  (pCode)=pCode($event)>
+</app-queryform>
+<nz-spin nzSimple [nzSize]="'large'" [nzSpinning]="loading"></nz-spin>
+<div *ngIf="showTable">
+  <div>NUDD Sum Project Name:
+    <div style="float:right;">
+      <span>Status:</span>&nbsp;
+      <div class="red-circle" style="display: inline-block;"></div>High Risk&nbsp;
+      <div class="orange-circle" style="display: inline-block;"></div>Medium Risk&nbsp;
+      <div class="green-circle" style="display: inline-block;"></div>No Risk
+    </div>
+  </div>
+  <br>
+  <div>
+    <div class="mrr-btn-download">
+      <button nz-button [nzType]="'primary'" *ngIf="reportShow" [disabled]="modelResultStatus!=='0' || afterSubmit"
+        title="Submit" nzShape="circle" (click)="submit()">
+        <i class="anticon anticon-check"></i>
+      </button>
+      <button nz-button [nzType]="'primary'" *ngIf="reportShow" title="Save" nzShape="circle" (click)="save()">
+        <i class="anticon anticon-save"></i>
+      </button>
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+  </div>
+  <div class="result" id="allReport">
+    <div class="overall" style="display: inline-block;">
+      <table id="report">
+        <thead>
+          <tr>
+            <th width="600" height="40" colspan="4" style="text-align:center">
+              Overall ({{'mrr.nudd-totalItem' | translate}}:{{green.length+yellow.length+red.length}})
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="toolalert" width="200" height="40" style="text-align:center">
+              <span class="green-circle" style="display: inline-block;"></span>
+              <span hidden="true">green</span>
+              {{green.length}}
+              <span class="tooltiptext">
+                <table style="width:100%">
+                  <tr class="title">
+                    <th colspan="2">{{'mrr.nudd-light-judgment-standard' | translate}}</th>
+                  </tr>
+                  <tr class="title">
+                    <th>{{'mrr.nudd-scoreInterval' | translate}}</th>
+                    <th>{{'mrr.nudd-lightDisplay' | translate}}</th>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">16 ~ 20</td>
+                    <td style="background-color: rgba(212, 48, 48, 1);  color: black;">
+                      {{'mrr.nudd-highRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">12 ~ 15</td>
+                    <td style="background-color: rgb(248, 252, 55);  color: black;">
+                      {{'mrr.nudd-mediumRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">4 ~ 11</td>
+                    <td style="background-color: rgb(6, 238, 26);  color: black;">{{'mrr.nudd-lowRisk' | translate}}
+                    </td>
+                  </tr>
+                </table>
+              </span>
+            </td>
+            <td class="toolalert" width="200" height="40" style="text-align:center">
+              <span class="orange-circle" style="display: inline-block;"></span>
+              <span hidden="true">yellow</span>
+              {{yellow.length}}
+              <span class="tooltiptext">
+                <table style="width:100%">
+                  <tr class="title">
+                    <th colspan="2">{{'mrr.nudd-light-judgment-standard' | translate}}</th>
+                  </tr>
+                  <tr class="title">
+                    <th>{{'mrr.nudd-scoreInterval' | translate}}</th>
+                    <th>{{'mrr.nudd-lightDisplay' | translate}}</th>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">16 ~ 20</td>
+                    <td style="background-color: rgba(212, 48, 48, 1);  color: black;">
+                      {{'mrr.nudd-highRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">12 ~ 15</td>
+                    <td style="background-color: rgb(248, 252, 55);  color: black;">
+                      {{'mrr.nudd-mediumRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">4 ~ 11</td>
+                    <td style="background-color: rgb(6, 238, 26);  color: black;">{{'mrr.nudd-lowRisk' | translate}}
+                    </td>
+                  </tr>
+                </table>
+              </span>
+            </td>
+            <td class="toolalert" width="200" height="40" style="text-align:center">
+              <span class="red-circle" style="display: inline-block;"></span>
+              <span hidden="true">red</span>
+              {{red.length}}
+              <span class="tooltiptext">
+                <table style="width:100%">
+                  <tr class="title">
+                    <th colspan="2">{{'mrr.nudd-light-judgment-standard' | translate}}</th>
+                  </tr>
+                  <tr class="title">
+                    <th>{{'mrr.nudd-scoreInterval' | translate}}</th>
+                    <th>{{'mrr.nudd-lightDisplay' | translate}}</th>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">16 ~ 20</td>
+                    <td style="background-color: rgba(212, 48, 48, 1);  color: black;">
+                      {{'mrr.nudd-highRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">12 ~ 15</td>
+                    <td style="background-color: rgb(248, 252, 55);  color: black;">
+                      {{'mrr.nudd-mediumRisk' | translate}}</td>
+                  </tr>
+                  <tr>
+                    <td style="color: black;background-color: #ccc">4 ~ 11</td>
+                    <td style="background-color: rgb(6, 238, 26);  color: black;">{{'mrr.nudd-lowRisk' | translate}}
+                    </td>
+                  </tr>
+                </table>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <nz-table #nzTable id="report" [nzData]="dataSet" [nzScroll]="{x:'160%'}" nzShowPagination="false"
+      [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th nzLeft="0%" style="width:3.5%;" rowspan="2">{{'mrr.mrr-part' | translate}}</th>
+          <th style="width:5%;" rowspan="2">{{'mrr.mrr-category' | translate}}</th>
+          <th rowspan="2" style="width:12%;">{{'mrr.nudd-risk-assessment-project' | translate}}</th>
+          <th rowspan="2" style="width:4%;">{{'mrr.nudd-picture' | translate}}</th>
+          <th style="width:6%;" rowspan="2">{{'mrr.nudd-nudd-type' | translate}}</th>
+          <th style="width:20%;" colspan="4">{{'mrr.nudd-score-mechanism' | translate}}</th>
+          <th style="width:5%;" rowspan="2">{{'mrr.nudd-summary' | translate}}</th>
+          <th style="width:5%;" rowspan="2">{{'mrr.nudd-riskLevel' | translate}}</th>
+          <th style="width:6%;" rowspan="2">{{'mrr.nudd-past-experience-document' | translate}}</th>
+          <th style="width:5%;" rowspan="2">{{'mrr.mrr-status' | translate}}</th>
+          <th rowspan="2">{{'mrr.nudd-countermeasure' | translate}}</th>
+          <th nzRight="0%" style="width:5%;" rowspan="2">{{'mrr.nudd-principal' | translate}}</th>
+        </tr>
+        <tr>
+          <th style="width:5%;">{{'mrr.nudd-technology-risk' | translate}}</th>
+          <th style="width:5%;">{{'mrr.nudd-specification-isComplete' | translate}}</th>
+          <th style="width:5%;">{{'mrr.nudd-processRisk' | translate}}</th>
+          <th style="width:5%;">{{'mrr.nudd-supplyChain' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzTable.data, let i=index">
+          <td nzLeft="0%">{{data.partName}}</td>
+          <td>{{data.dimensionName}}</td>
+          <td (click)="showDetails(data.designItemName,data.partName,data.dimensionName)">{{data.designItemName}}</td>
+          <td *ngIf="data.dimensionName==='2D'"></td>
+          <td *ngIf="data.dimensionName==='3D'"><img *ngIf="data.designItemPath" height="30px"
+              (click)="clickEventHandler(data.designItemPath)" id="image" [src]="data.designItemPath"></td>
+          <td *ngIf="data.category">{{data.category}}</td>
+          <td *ngIf="!data.category">
+            <nz-select style="width:100px" nzShowSearch nzAllowClear [nzDisabled]="afterSave"
+              [(ngModel)]="category[data.id]">
+              <nz-option *ngFor="let category of categorys" [nzLabel]="category" [nzValue]="category"></nz-option>
+            </nz-select>
+          </td>
+          <td *ngIf="data.designItemName">{{data.processType==='Other'? '5' : data.first}}</td>
+          <td *ngIf="data.designItemName">{{data.processType==='Other'? '5' : data.second}}</td>
+          <td *ngIf="data.designItemName">{{data.processType==='Other'? '5' : data.third}}</td>
+          <td *ngIf="data.designItemName">{{data.processType==='Other'? '5' : data.fourth}}</td>
+          <td *ngIf="!data.designItemName"></td>
+          <td *ngIf="!data.designItemName"></td>
+          <td *ngIf="!data.designItemName"></td>
+          <td *ngIf="!data.designItemName"></td>
+          <td class="toolalert2">{{data.riskLevel}}
+          </td>
+          <td [ngStyle]="{ 'background-color' :
+          ((data.riskLevel  >= 4 && data.riskLevel <= 11)
+          ? 'rgb(6, 238, 26)':
+          ( (data.riskLevel  >=  12 && data.riskLevel <= 15)
+          ? 'rgb(248, 252, 55)' :
+          ( (data.riskLevel  >= 16 && data.riskLevel <= 20)
+          ? 'rgba(212, 48, 48, 1)' : '')))}">
+            {{data.riskLevel | riskLevel}}</td>
+          <td
+            *ngIf="data.designItemName&&data.riskLevel>=16&&data.processType !== 'Other'&&data.lessonLearned.length !== 0">
+            <a *ngFor="let item of data.lessonLearned" (click)="downloadLL(item.fileName)">{{item.fileName}}<br></a>
+          </td>
+          <td *ngIf="data.designItemName&&data.processType === 'Other'">{{'mrr.nudd-not-upload' | translate}}</td>
+          <td
+            *ngIf="data.designItemName&&data.riskLevel>=16&&data.processType !== 'Other'&&data.lessonLearned.length === 0">
+            {{'mrr.nudd-not-upload' | translate}}</td>
+          <td *ngIf="data.designItemName&&data.riskLevel<16"></td>
+          <td *ngIf="!data.designItemName"></td>
+          <td>{{data.modelResult | signStatus}} </td>
+          <td *ngIf="!data.workflow"></td>
+          <td *ngIf="data.workflow" (click)="signData(data.workflow['workflowSigns'])"><span
+              *ngFor="let item of data.workflow['workflowSigns']"><span
+                style="font-weight:bold;">{{item.role}}</span>:{{item.comment}}<br></span></td>
+          <td nzRight="0%">RD</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<app-itemdetails [isVisibleDetails]="isVisibleDetails" [itemDetailsData]="itemDetailsData"
+  (isVisible)="isVisible($event)"></app-itemdetails>
+
+<app-signdetails [isVisibleSignItems]="isVisibleSignItems" [signItems]="signItems" (isSign)="isSign($event)">
+</app-signdetails>
+
+<nz-modal *ngIf="isVisiblePic" [nzWidth]="1220" [(nzVisible)]="isVisiblePic" [nzClosable]="false"
+  (nzOnCancel)="handleCancel()" [nzFooter]="null" nzTitle="">
+  <img width="100%" [src]="imageUrl">
+</nz-modal>
+
+<!-- 保存后提示 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="282" [nzStyle]="{ height: '202px' }"
+  [(nzVisible)]="isSaveVisible" [nzClosable]="false" [nzCancelText]="null" [nzOkText]="null" [nzFooter]="null"
+  nzTitle="">
+  <div class="dfc-delAfter-icon">
+    <i class="anticon anticon-check"></i>
+  </div>
+  <div class="dfc-delAfter-text">
+    <span>{{'mrr.mrr-saved-successfully' | translate}}</span>
+  </div>
+</nz-modal>
+
+<!-- 提交后提示 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="282" [nzStyle]="{ height: '202px' }"
+  [(nzVisible)]="isSubmitVisible" [nzClosable]="false" [nzCancelText]="null" [nzOkText]="null" [nzFooter]="null"
+  nzTitle="">
+  <div class="dfc-delAfter-icon">
+    <i class="anticon anticon-check"></i>
+  </div>
+  <div class="dfc-delAfter-text">
+    <span>{{'mrr.mrr-submit-successfully' | translate}}</span>
+  </div>
+</nz-modal>

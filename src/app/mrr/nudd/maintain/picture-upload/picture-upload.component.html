@@ -1,0 +1,99 @@
+<div>
+  <div class="title">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-maintain' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-3d-upload' | translate }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div class="content">
+    {{ 'mrr.nudd-3d-upload' | translate }}
+  </div>
+  <app-picture-upload-query (processType)="onInitForm($event)" (queryFlag)="OnFlag($event)"></app-picture-upload-query>
+  <div class="body" *ngIf="queryFlag">
+    <div class="project-table">
+      <nz-table #nzTable [nzData]="table" nzShowPagination="false" [nzPageSize]="500">
+        <thead>
+          <tr>
+            <th>List</th>
+            <th>{{ 'mrr.nudd-item' | translate }}</th>
+            <th>{{ 'mrr.nudd-itemName' | translate }}</th>
+            <th>{{ 'mrr.nudd-pictureName' | translate }}</th>
+            <th *ngIf="enableUse">{{ 'mrr.mrr-action' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of table; let i = index">
+            <td *ngIf="enableUse" (click)="showModal(data, i)">{{ i + 1 }}</td>
+            <td *ngIf="enableUse" (click)="showModal(data, i)">
+              {{ data.id }}
+            </td>
+            <td *ngIf="enableUse" (click)="showModal(data, i)">
+              {{ data.name }}
+            </td>
+            <td *ngIf="enableUse" (click)="showModal(data, i)">
+              {{ getFileName(data.picturePath) }}
+            </td>
+            <td *ngIf="!enableUse">{{ i + 1 }}</td>
+            <td *ngIf="!enableUse">{{ data.id }}</td>
+            <td *ngIf="!enableUse">{{ data.name }}</td>
+            <td *ngIf="!enableUse">{{ getFileName(data.picturePath) }}</td>
+            <td>
+              <a *ngIf="SQMLeaderUse">
+                <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(data)"></i></a>&nbsp;&nbsp;
+              <a *ngIf="enableUse"><i nz-icon type="eye" theme="outline" (click)="showPicture(data.id)"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div>
+    <nz-modal nzWidth="500px" [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+      <ng-template #modalTitle>
+        {{ 'mrr.nudd-update-riskItem' | translate }}
+      </ng-template>
+      <ng-template #modalContent>
+        <div class="input">
+          <span>{{ 'mrr.nudd-itemCode' | translate }}</span>
+          <input nz-input="" placeholder="" [disabled]="true" [(ngModel)]="addDesign.id"
+            class="ng-pristine ng-valid ant-input ng-touched int" />
+        </div>
+        <div class="input">
+          <span>{{ 'mrr.nudd-itemName' | translate }}</span>
+          <input nz-input="" placeholder="" [disabled]="true" [(ngModel)]="addDesign.name"
+            class="ng-pristine ng-valid ant-input ng-touched int" />
+        </div>
+        <div class="input">
+          <span>{{ 'mrr.nudd-picture-upload' | translate }}</span>
+          <nz-upload [(nzFileList)]="file" [nzBeforeUpload]="beforeUpload" (nzChange)="afterDelete()">
+            <button nz-button style="width: 150px">
+              <i nz-icon type="upload"></i><span>Select File</span>
+            </button>
+          </nz-upload>
+        </div>
+      </ng-template>
+      <ng-template #modalFooter>
+        <button nz-button [nzType]="'primary'" [disabled]="file.length == 0 || addFileFlag" [nzLoading]="uploading"
+          (click)="handleUpload()" style="margin-top: 16px">
+          {{ uploading ? ('mrr.nudd-fileUploading' | translate) : ('mrr.nudd-uploadFile' | translate) }}
+        </button>
+      </ng-template>
+    </nz-modal>
+  </div>
+</div>
+<!-- 存放圖片 -->
+<div>
+  <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent1" [nzFooter]="null"
+    (nzOnCancel)="previewVisible = false">
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent1" [nzFooter]="null"
+      (nzOnCancel)="previewVisible = false">
+      <ng-template #modalContent1>
+        <img *ngIf="picture" [src]="picture" [ngStyle]="{ width: '100%' }" />
+      </ng-template>
+    </nz-modal>
+  </nz-modal>
+</div>

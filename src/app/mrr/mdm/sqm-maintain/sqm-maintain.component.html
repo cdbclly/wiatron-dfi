@@ -1,0 +1,142 @@
+<div class="file-maintain">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-sqm-vendor-maintain' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+</div>
+
+<!-- 表單 -->
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 120px;" nzShowSearch nzAllowClear formControlName="sitePlant"
+        (ngModelChange)="plantChange($event)">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant" [nzLabel]="plant"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Project Name</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 180px" nzShowSearch nzAllowClear nzMode="multiple" formControlName="projectName"
+        (ngModelChange)="projectNameChange($event)" [nzFilterOption]="filterOption"  (nzOnSearch)="search($event)">
+        <ng-container *ngFor="let data of projectNames">
+          <nz-option [nzValue]="data" [nzLabel]="data"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Project Code</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear nzMode="multiple" formControlName="projectCode">
+        <ng-container *ngFor="let data of projectCodes">
+          <nz-option [nzValue]="data" [nzLabel]="data"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isSearchLoading"
+        [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+  <span style="font-size: 16px; font-weight: bold;">{{ 'mrr.vendor-sop' | translate }}
+    <a><i class="anticon anticon-download" (click)="downSqmSop()" style="font-size: 16px;"></i></a></span>
+</form>
+
+<!-- table1 -->
+<nz-table class="table" #nzTable [nzData]="showData" nzBordered [nzPageSize]=8 [nzHideOnSinglePage]=true>
+  <thead>
+    <tr>
+      <th nzShowExpand style="width: 100px;">{{ 'mrr.vendor-extension' | translate }}</th>
+      <th>{{ 'mrr.mrr-plant' | translate }}</th>
+      <th rowspan="3">ProjectCode</th>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="nzTable.data">
+      <tr>
+        <td nzShowExpand [(nzExpand)]="data.expand"></td>
+        <td>{{ data.plant}}</td>
+        <td>{{ data.projectId}}</td>
+      </tr>
+      <tr [nzExpand]="data.expand">
+        <td></td>
+        <td colspan="2">
+          <nz-table class="table" #editRowTable nzBordered [nzData]="data.listData" [nzPageSize]=5
+            [nzHideOnSinglePage]=true>
+            <thead>
+              <tr>
+                <th nzShowExpand width="8%">{{ 'mrr.vendor-extension' | translate }}</th>
+                <th>{{ 'mrr.mrr-partNumber' | translate }}</th>
+              </tr>
+            </thead>
+  <tbody>
+    <ng-template ngFor let-data1 [ngForOf]="editRowTable.data">
+      <tr>
+        <td nzShowExpand [(nzExpand)]="data1.expand"></td>
+        <td>{{data1.partNumberId}}</td>
+      </tr>
+      <!-- 第三層-->
+      <tr [nzExpand]="data1.expand">
+        <td></td>
+        <td colspan="2">
+          <nz-table class="table" #editRowTable2 nzBordered [nzData]="data1.listData" [nzPageSize]=5
+            [nzHideOnSinglePage]=true>
+            <thead>
+              <tr>
+                <th rowspan="3">{{ 'mrr.mrr-vendor' | translate }}</th>
+                <th colspan="2">C3</th>
+                <th colspan="2">C4</th>
+                <th colspan="2">C5</th>
+              </tr>
+              <tr>
+                <th colspan="2">D.D: {{data['c3DueDay']}}</th>
+                <th colspan="2">D.D: {{data['c4DueDay']}}</th>
+                <th colspan="2">D.D: {{data['c5DueDay']}}</th>
+              </tr>
+              <tr>
+                <th>{{ 'mrr.vendor-upload-rate' | translate }}</th>
+                <th>{{ 'mrr.vendor-pass-rate' | translate }}</th>
+                <th>{{ 'mrr.vendor-upload-rate' | translate }}</th>
+                <th>{{ 'mrr.vendor-pass-rate' | translate }}</th>
+                <th>{{ 'mrr.vendor-upload-rate' | translate }}</th>
+                <th>{{ 'mrr.vendor-pass-rate' | translate }}</th>
+              </tr>
+            </thead>
+  <tbody>
+    <ng-template ngFor let-data2 [ngForOf]="editRowTable2.data">
+      <tr>
+        <td>{{data2.manufacturerId}}</td>
+        <td>{{data2.c3UploadCompleteRate}} <br />{{data2.c3Statistics}}</td>
+        <td (click)="goC3FileMaintain(data, data1, data2)">
+          <u><a>{{data2.c3PassRate}}</a></u>
+        </td>
+        <td>{{data2.c4UploadCompleteRate}} <br />{{data2.c4Statistics}}</td>
+        <td (click)="goC4FileMaintain(data, data1, data2)">
+          <u><a>{{data2.c4PassRate}}</a></u>
+        </td>
+        <td>{{data2.c5UploadCompleteRate}} <br />{{data2.c5Statistics}}</td>
+        <td (click)="goC5FileMaintain(data, data1, data2)">
+          <u><a>{{data2.c5PassRate}}</a></u>
+        </td>
+      </tr>
+    </ng-template>
+  </tbody>
+  <th>
+  </th>
+</nz-table>
+</td>
+</tr>
+</ng-template>
+</tbody>
+</nz-table>
+</tr>
+</ng-template>
+</tbody>
+</nz-table>

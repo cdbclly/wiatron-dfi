@@ -1,0 +1,81 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Base Data</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'base-data.form-maintenance'|translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content" style="font-size:20px">
+  {{'base-data.form-maintenance'|translate}}
+</div>
+<div class="query">
+  <span>Name</span>
+  <input nz-input nzSize="default" [(ngModel)]="name" />
+  <button nz-button nzType="primary" (click)="onSearch(name)">Query</button>
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+</div>
+
+<div class="btn" *ngIf="role.toUpperCase()==='IT'">
+  <button nz-button nzType="primary" nzShape="circle" (click)="showModal()">
+    <i nz-icon type="plus" theme="outline"></i>
+  </button>
+</div>
+
+<div class="table">
+  <nz-table [nzData]="[1]" nzShowPagination="false" nzBordered>
+    <thead>
+      <tr>
+        <th nzWidth="100px">Name</th>
+        <th nzWidth="400px">URL</th>
+        <th nzWidth="400px">Description</th>
+        <th *ngIf="role.toUpperCase()==='IT'" nzWidth="100px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let form of workFlowForms">
+        <td>{{ form.name }}</td>
+        <td>{{ form.routingPath }}</td>
+        <td>{{ form.description }}</td>
+        <td *ngIf="role.toUpperCase()==='IT'">
+          <a class="delete">
+            <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(form.id)"></i>
+          </a>
+          <a>
+            <i nz-icon type="edit" theme="outline" (click)="showModal1(form)"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="add information" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+  [nzOkLoading]="isOkLoading">
+  <div class="input">
+    <label>
+      <span>Name:</span>
+      <input nz-input [(ngModel)]="addName" />
+    </label>
+    <label>
+      <span>URL:</span>
+      <input nz-input [(ngModel)]="addRoutingPath" />
+    </label>
+    <label>
+      <span>Description:</span>
+      <input nz-input [(ngModel)]="addDescription" />
+    </label>
+  </div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible1" nzTitle="Modify information" (nzOnCancel)="handleCancel1()" (nzOnOk)="handleOk1()"
+  [nzOkLoading]="isOkLoading1">
+  <div class="input">
+    <label>
+      <span>Name:</span>
+      <input nz-input [(ngModel)]="updateName" />
+    </label>
+    <label>
+      <span>URL:</span><input nz-input [(ngModel)]="updateRoutingPath" />
+    </label>
+    <label>
+      <span>Description:</span><input nz-input [(ngModel)]="updateDescription" />
+    </label>
+  </div>
+</nz-modal>

@@ -1,0 +1,16 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-tracking' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select [subject]="subject" [onlyShowRequired]="require" (queryOps)="query($event)"></app-imqm-select>
+
+<div style="width:100%; height: 14vw;" *ngIf="materialNGBarData">
+  <app-material-ng [options]="materialNGBarData" (subDetail)="showSubDetailNG($event)"></app-material-ng>
+</div>
+
+<!--彈出框-->
+<app-pop-ng [data]="dataNg" (dateItem)="showFormDetail($event)"></app-pop-ng>
+
+<!--二階彈出框-->
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>

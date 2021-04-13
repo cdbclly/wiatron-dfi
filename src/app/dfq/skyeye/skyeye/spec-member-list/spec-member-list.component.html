@@ -1,0 +1,296 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye品質監控管理系統</nz-breadcrumb-item>
+  <nz-breadcrumb-item>品質監控資料維護</nz-breadcrumb-item>
+  <nz-breadcrumb-item>推送人員名單維護(Spec偏移管理)</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  推送人員名單維護(Spec偏移管理)
+</div>
+<div class="query-row">
+  <!-- 厂别 -->
+    <div class="field1">
+      <span style="width: 29%;">
+        <span style="color: red;">*</span>
+        <span>Site</span>
+      </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+          <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" ></nz-option>
+        </nz-select>
+    </div>
+
+   <!-- 厂区 -->
+   <div class="field" (click)="getOptList('plant')">
+     <span style="width: 28%;">
+      <span style="color: red">*</span>
+      <span>Plant</span>
+     </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+        <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+      </nz-select>
+   </div>
+
+  <!-- <div class="field" (click)="getOptList('project')">
+      <span style="margin-left: 12%;">類別</span>
+      <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="project" (ngModelChange)="getOptions('stage')">
+        <nz-option *ngFor="let project_item of objectKeys(projectGroup)" [nzLabel]="project_item" [nzValue]="project_item"></nz-option>
+      </nz-select>
+  </div>
+  <div class="field" (click)="getOptList('stage')">
+      <span>Stage</span>
+      <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_stage" (ngModelChange)="getOptions('model')">
+        <nz-option *ngFor="let stage of objectKeys(stageGroup)" [nzLabel]="stage" [nzValue]="stage"></nz-option>
+      </nz-select>
+  </div> -->
+
+  <!-- 机种 -->
+  <!--<div class="field" (click)="getOptList('model')">
+      <span>Model</span>
+      <nz-select style="width: 75%;" nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_model" (ngModelChange)="getOptions('query')">
+        <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model" ></nz-option>
+      </nz-select>
+  </div>-->
+
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<div *ngIf="role['insert'] === true" style="float: left;margin-right: 10px;">
+  <button nz-button [nzType]="'primary'" title="新增" nzShape="circle" (click)="showModal()" style="margin-bottom: 15px;">
+      <i class="anticon anticon-plus"></i>
+  </button>
+</div>
+<button nz-button [nzType]="'primary'" title="上传模板下载" nzShape="circle" (click)="downloadTemp()" style="margin-bottom: 15px; margin-right: 10px;">
+  <i nz-icon type="file-excel" theme="outline"></i>
+</button>
+<button nz-button [nzType]="'primary'" *ngIf="ckpiInfos && ckpiInfos.length > 0" title="下载" nzShape="circle" (click)="downloadData()" style="margin-bottom: 15px;">
+  <i nz-icon type="download" theme="outline"></i>
+</button>
+<div class="btn-upload" *ngIf="role['insert'] === true">
+  <label class="upload">
+    <input id="upload" type="file" (change)="handleFileInput($event.target)">
+    <div class="fakeInput">
+      <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+      <span *ngIf="!uploadFileName">選擇Excel檔案</span>
+    </div>
+  </label>
+  
+  <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+    title="上傳" (click)="uploadPre()">
+    <i class="anticon anticon-upload"></i>
+  </label>
+</div>
+<div class="upload-progress" [hidden]="showProgress">
+  <nz-progress [nzPercent]="progressBar" nzSize="small" [nzStatus]="proStatus"></nz-progress>
+</div>
+
+<!-- 可编辑的table -->
+<div>
+  <nz-table
+    #nzData
+    nzBordered
+    nzShowQuickJumper
+    [nzData]="ckpiInfos"
+    [nzPageSize]="10"
+    [(nzPageIndex)]="curPage"
+    [nzScroll]="{ x:'1000px'}">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th nzWidth="50px">廠別</th>
+        <th nzWidth="50px">廠区</th>
+        <th nzWidth="30px">製程</th>
+        <th nzWidth="75px">機種(P/R)</th>
+        <th nzWidth="40px">站别</th>
+        <th nzWidth="160px">接收人员</th>
+        <th nzWidth="80px">P/R开始时间</th>
+        <th nzWidth="80px">P/R结束时间</th>
+        <th nzWidth="50px">Phase</th>
+        <th nzWidth="70px">Action</th>
+        <th nzWidth="20px">Log</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzData.data;  let i = index;" style="font-size: 12px;">
+        <!-- 编号 -->
+      <td>
+        {{data.plantName}}
+      </td>
+        <!-- 厂别 -->
+      <td>
+        {{data.plantId}}
+      </td>
+      <td>
+        {{data.process}}
+      </td>
+      <!-- 机种 -->
+      <td>
+        {{data.model}}
+      </td>
+      <!-- 站别 -->
+      <td>
+        {{data.stageId}}
+      </td>
+
+      <!-- 接收人员 -->
+      <td>
+          <ng-container *ngIf="editMap.get(data['id'])">
+              <input type="text" nz-input [(ngModel)]="editItem['recipientName']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['id'])">
+              {{data.recipientName}}
+          </ng-container>
+      </td>
+
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['beginTime']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+          {{data.beginTime | date:'yyyy/MM/dd'}}
+        </ng-container>
+      </td>
+
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['endTime']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+          {{data.endTime | date:'yyyy/MM/dd'}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['phase']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+          {{data.phase}}
+        </ng-container>
+      </td>
+      <!-- Action列 对应的 编辑、删除功能 -->
+      <td *ngIf="role['update'] === true && !editMap.get(data['id'])&&!disableedit">
+        <span style="float: left;
+        padding-right: 8px;" (click)="editRow(data)"><i class="anticon anticon-edit"></i></span><nz-divider class="table-divider" nzType="vertical"></nz-divider>
+        <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="delRow(data.id)">
+            <a nz-popconfirm><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+          </nz-popconfirm>
+      </td>
+      <td *ngIf="role['update'] !== true">
+        暫無權限
+      </td>
+
+        <td *ngIf="role['update'] === true && editMap.get(data['id'])">
+          <span style="float: left;
+          padding-right: 8px;" (click)="saveRow(editItem, data)"><i class="anticon anticon-save"></i></span>
+          <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+          <span style="padding-left: 8px;cursor: pointer;" ><i class="anticon anticon-rollback" (click)="cancelEdit(data)" style="margin-left: 10px;"></i></span></td>
+          <td *ngIf="role['update'] !== true && !editMap.get(data['id'])&&disableedit">
+              <span style="float: left;
+              padding-right: 8px;cursor: no-drop" ><i class="anticon anticon-edit"></i></span><nz-divider class="table-divider" nzType="vertical"></nz-divider>
+              <span style="padding-left: 8px;cursor: no-drop"><i class="anticon anticon-delete" style="margin-left: 10px;"></i></span></td>
+              <td>
+                <span>
+                    <i nz-icon type="search" theme="outline" (click)="showLog(data.id)"></i>
+                </span>
+              </td>
+
+    </tr>
+    </tbody>
+  </nz-table>
+
+ <!-- log弹出框 -->
+ <nz-modal [(nzVisible)]="isVisible_log" nzTitle="log詳細" nzClosable="false" [nzFooter]="footer" nzWidth="85%" (nzOnCancel)="handleCancel_log()" (nzOnOk)="handleOk_log()">
+  <nz-table
+  #nzDatalog
+  nzBordered
+  nzShowQuickJumper
+  [nzData]="logInfos"
+  [nzPageSize]="10"
+  [(nzPageIndex)]="curPagelog"
+  [nzScroll]="{ x:'1000px'}">
+  <thead>
+    <tr style="font-size: 12px;">
+      <th nzWidth="60px">廠別</th>
+      <th nzWidth="60px">廠区</th>
+      <th nzWidth="80px">製程</th>
+      <th nzWidth="80px">機種(P/R)</th>
+      <th nzWidth="50px">站别</th>
+      <th nzWidth="180px">接收人员</th>
+      <th nzWidth="80px">P/R开始时间</th>
+      <th nzWidth="80px">P/R结束时间</th>
+      <th nzWidth="60px">Phase</th>
+      <th nzWidth="100px">维护人</th>
+      <th nzWidth="80px">修改日期</th>
+      <th nzWidth="60px">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of nzDatalog.data;  let k = index;" style="font-size: 12px;">
+        <td>{{data.plantName}}</td>
+        <td>{{data.plantId}}</td>
+        <td>{{data.process}}</td>
+        <td>{{data.model}}</td>
+        <td>{{data.stageId}}</td>
+        <td>{{data.recipientName}}</td>
+        <td>{{data.beginTime | date: 'yyyy/MM/dd'}}</td>
+        <td>{{data.endTime | date: 'yyyy/MM/dd'}}</td>
+        <td>{{data.phase}}</td>
+        <td>{{data.updatedUser}}</td>
+        <td>{{data.updatedTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+        <td>{{data.action}}</td>
+      </tr>
+  </tbody>
+  </nz-table>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="新增推送人员" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <div style="margin-left: 50px;">
+    <div class="query-row">
+        <div class="field1">
+            <span style="display: block;">廠別</span>
+            <nz-select style="width: 390px;height: 35px;" nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="add_site" (ngModelChange)="getOptions('addSite')">
+              <nz-option *ngFor="let site of objectKeys(addSiteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+            </nz-select>
+        </div>
+        <p><span class="add-span">廠区</span>
+          <nz-select style="width: 390px;height: 35px;" nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="add_plant"  (ngModelChange)="getOptions('addPlant')">
+              <nz-option *ngFor="let plant of objectValue(addPlantGroup)" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+          </nz-select>
+        </p>
+        <p><span class="add-span">製程</span>
+          <nz-select (click)="getOptList('section')" style="width: 390px;height: 35px;" nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="cur_sectionId"  (ngModelChange)="getOptions('section')">
+              <nz-option *ngFor="let section of objectValue(sectionGroup)" [nzLabel]="section['name']" [nzValue]="section['name']"></nz-option>
+          </nz-select>
+        </p>
+        <p><span class="add-span">機種(P/R)</span>
+            <input nz-input [(ngModel)]="model" style="width:390px;" (input)="onInput($event.target?.value, 'model')" [nzAutocomplete]="autoModel" (ngModelChange)="getOptions('addModel')">
+            <nz-autocomplete [nzDataSource]="modelFlteredOptions" #autoModel>
+            </nz-autocomplete>
+        </p>
+        <p><span class="add-span">站别</span>
+          <input nz-input [(ngModel)]="stageCode" style="width:390px;" (input)="onInput($event.target?.value, 'stage')" [nzAutocomplete]="autoStage">
+             <nz-autocomplete [nzDataSource]="stageFlteredOptions" #autoStage>
+         </nz-autocomplete>
+        </p>
+        <p><span class="add-span">接收人员</span>
+          <input type="text" [(ngModel)]="member" nz-input style="width: 390px;height: 35px;"/>
+        </p>
+        <p><span class="add-span">P/R开始时间</span>
+          <nz-date-picker nzShowTime nzFormat="yyyy/MM/dd" nzPlaceHolder="P/R開始時間" [(ngModel)]="dateRangeFrom"></nz-date-picker>
+        </p>
+        <p><span class="add-span">P/R结束时间</span>
+          <nz-date-picker nzShowTime nzFormat="yyyy/MM/dd" nzPlaceHolder="P/R結束時間" [(ngModel)]="dateRangeTo"></nz-date-picker>
+        </p>
+        <p><span class="add-span">Phase</span>
+          <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="phase">
+            <nz-option nzValue="C0" nzLabel="C0"></nz-option>
+            <nz-option nzValue="C1" nzLabel="C1"></nz-option>
+            <nz-option nzValue="C2" nzLabel="C2"></nz-option>
+            <nz-option nzValue="C3" nzLabel="C3"></nz-option>
+            <nz-option nzValue="C4" nzLabel="C4"></nz-option>
+            <nz-option nzValue="C5" nzLabel="C5"></nz-option>
+          </nz-select>
+        </p>
+    </div>
+  </div>
+</nz-modal>
+
+</div>

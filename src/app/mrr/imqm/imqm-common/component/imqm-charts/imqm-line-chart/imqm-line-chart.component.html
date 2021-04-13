@@ -1,0 +1,2 @@
+<div *ngIf="lineOptions" echarts [options]="lineChart" (chartClick)="showSubChart($event, lineOptions['time'], lineOptions['toolTip'], 'Over Spec 分析')"
+[ngStyle]="{ 'width': lineOptions['width'], 'height': lineOptions['height']}"  class="line-chart"></div>

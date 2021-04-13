@@ -1,0 +1,191 @@
+<div class="dfc-btn-download">
+  <button nz-button nzType="primary" title="Download" nzShape="circle" (click)="btClick()" [nzLoading]="downFlag">
+    <i nz-icon type="download"></i>
+  </button>
+  <span *ngIf="downFlag">{{'military-order.generate-file' | translate}}</span>
+</div>
+<div id="dfc-print">
+  <div class="dfc-print">
+    <div class="dfc-print-content">
+      <div class="dfc-btn">
+        <div class="dfc-btn-right">
+          <div>{{'mrr.nudd-code'|translate}}：{{table['formCode']}}</div>
+        </div>
+      </div>
+      <table class="dfc-print-table">
+        <tr>
+          <td>{{'mrr.mrr-customer'|translate}}</td>
+          <td colspan="3">{{table['customer']}}</td>
+          <td>{{'military-order.model-type'|translate}}</td>
+          <td>{{table['modelType']}}</td>
+          <td>{{'military-order.model-size'|translate}}</td>
+          <td>{{table['size']}}</td>
+          <td colspan="2" rowspan="4">
+            <img [attr.src]="table['imgSrc']">
+          </td>
+        </tr>
+        <tr>
+          <td>Project Code</td>
+          <td colspan="3">{{table['proCode']}}</td>
+          <td>Project Name</td>
+          <td colspan="3">{{table['proName']}}</td>
+        </tr>
+        <tr>
+          <td>Forecast(K/{{ 'military-order.month' | translate }})</td>
+          <td colspan="3">{{table['fcst']}}</td>
+          <td>Plant {{'military-order.scale'|translate}}(K/{{ 'military-order.month' | translate }})</td>
+          <td colspan="3">{{table['plantCapacity']}}</td>
+        </tr>
+        <tr>
+          <td>C3 P/R {{'military-order.period'|translate}}</td>
+          <td>{{table['c3']}}</td>
+          <td>C4 P/R {{'military-order.period'|translate}}</td>
+          <td>{{table['c4']}}</td>
+          <td>C5 P/R {{'military-order.period'|translate}}</td>
+          <td>{{table['c5']}}</td>
+          <td>MP {{'military-order.time-point'|translate}}</td>
+          <td>{{table['mp']}}</td>
+        </tr>
+        <!-- 以下為 model -->
+        <tr>
+          <td>Model Name</td>
+          <td>PCBA {{'military-order.part-numbers'|translate}}</td>
+          <td>{{'military-order.goal'|translate}} MOH(USD)</td>
+          <td>{{'military-order.offer'|translate}} MOH</td>
+          <td>MOH Gap</td>
+          <td>{{'military-order.manu-time'|translate}}(s)</td>
+          <td>{{'military-order.goal-time'|translate}}(s)</td>
+          <td>{{'military-order.goal-period'|translate}}</td>
+          <td>FA Y.R Goal</td>
+          <td>{{'military-order.goal-period'|translate}}</td>
+        </tr>
+        <ng-template ngFor let-model [ngForOf]="table['modelList']" let-i="index">
+          <tr *ngIf="i < 3">
+            <td>{{model['modelName']}}</td>
+            <td>{{model['parts']}}</td>
+            <td>{{model['mohTarget']}}</td>
+            <td *ngIf="DFiLeaderFlag">{{model['quoat']}}</td>
+            <td *ngIf="!DFiLeaderFlag">
+              <span *ngIf="model['quoat']">***</span>
+            </td>
+            <td *ngIf="DFiLeaderFlag">{{model['mohGap']}}</td>
+            <td *ngIf="!DFiLeaderFlag">
+              <span *ngIf="model['quoat']">***</span>
+            </td>
+            <td>{{model['workhourActual']}}</td>
+            <td>{{model['workhourTarget']}}</td>
+            <td>{{model['workhourStandardDay']}}</td>
+            <td>{{model['faYRGoal'] | percent}}</td>
+            <td>{{model['faYRGoalStandardDay']}}</td>
+          </tr>
+        </ng-template>
+        <tr>
+          <td colspan="5" style="text-align: center;"><span>WHQ</span></td>
+          <td colspan="5" style="text-align: center;"><span>MFG</span></td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <table class="dfc-print-table-pic">
+              <tr>
+                <td style="width: 20%"><span>EE:</span></td>
+                <td style="width: 30%">{{table['EE']}}</td>
+                <td style="width: 20%"><span>ME:</span></td>
+                <td style="width: 30%">{{table['ME']}}</td>
+              </tr>
+              <tr>
+                <td><span>SW:</span></td>
+                <td>{{table['SW']}}</td>
+                <td><span>PM:</span></td>
+                <td>{{table['PM']}}</td>
+              </tr>
+              <tr>
+                <td colspan="2"><span>(!table['BU_HEAD'] ? '' : 'PM Head:')</span></td>
+                <td colspan="2">{{(!table['BU_HEAD'] ? '' : table['PM_HEAD'])}}</td>
+              </tr>
+            </table>
+          </td>
+          <td colspan="5">
+            <table class="dfc-print-table-pic">
+              <tr>
+                <td style="width: 20%"><span>IE:</span></td>
+                <td style="width: 30%">{{table['IE']}}</td>
+                <td style="width: 20%"><span>PME:</span></td>
+                <td style="width: 30%">{{table['PME']}}</td>
+              </tr>
+              <tr>
+                <td><span>PE:</span></td>
+                <td>{{table['PE']}}</td>
+                <td><span>PSE:</span></td>
+                <td>{{table['PSE']}}</td>
+              </tr>
+              <tr>
+                <td><span>DFi Leader:</span></td>
+                <td>{{table['DFI_LEADER']}}</td>
+                <td><span>GSQM:</span></td>
+                <td>{{table['GSQM']}}</td>
+              </tr>
+              <tr>
+                <td colspan="2"><span>PQM:</span></td>
+                <td colspan="2">{{table['PQM']}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><span>(!table['BU_HEAD'] ? 'PM Head:' : 'BU Head:')</span></td>
+          <td colspan="3">{{(!table['BU_HEAD'] ? table['PM_HEAD'] : table['BU_HEAD'])}}</td>
+          <td colspan="2"><span>Plant Manager:</span></td>
+          <td colspan="3">{{table['PLANT_MANAGER']}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="dfc-print" *ngFor="let item of modelListPageCount">
+    <div class="dfc-print-content">
+      <div class="dfc-btn">
+        <div class="dfc-btn-right">
+        </div>
+      </div>
+      <table class="dfc-print-table">
+        <tr>
+          <td>Model Name</td>
+          <td>PCBA {{'military-order.part-numbers'|translate}}</td>
+          <td>{{'military-order.goal'|translate}} MOH(USD)</td>
+          <td>{{'military-order.offer'|translate}} MOH</td>
+          <td>MOH Gap</td>
+          <td>{{'military-order.manu-time'|translate}}(s)</td>
+          <td>{{'military-order.goal-time'|translate}}(s)</td>
+          <td>{{'military-order.goal-period'|translate}}</td>
+          <td>FA Y.R Goal
+            <br>
+            <span *ngIf="isMohFAYield" class="dfc-military-isMohFAYield">({{'military-order.source-from'|translate}}:
+              MOH {{'military-order.param'|translate}})</span>
+            <span *ngIf="!isMohFAYield" class="dfc-military-isMohFAYield">({{'military-order.source-from'|translate}}:
+              {{'military-order.dfq-yr-forecast'|translate}})</span>
+          </td>
+          <td>{{'military-order.goal-period'|translate}}</td>
+        </tr>
+        <ng-template ngFor let-model [ngForOf]="table['modelList']" let-i="index">
+          <tr *ngIf="i > 2">
+            <td>{{model['modelName']}}</td>
+            <td>{{model['parts']}}</td>
+            <td>{{model['mohTarget']}}</td>
+            <td *ngIf="DFiLeaderFlag">{{model['quoat']}}</td>
+            <td *ngIf="!DFiLeaderFlag">
+              <span *ngIf="model['quoat']">***</span>
+            </td>
+            <td *ngIf="DFiLeaderFlag">{{model['mohGap']}}</td>
+            <td *ngIf="!DFiLeaderFlag">
+              <span *ngIf="model['quoat']">***</span>
+            </td>
+            <td>{{model['workhourActual']}}</td>
+            <td>{{model['workhourTarget']}}</td>
+            <td>{{model['workhourStandardDay']}}</td>
+            <td>{{model['faYRGoal'] | percent}}</td>
+            <td>{{model['faYRGoalStandardDay']}}</td>
+          </tr>
+        </ng-template>
+      </table>
+    </div>
+  </div>
+</div>

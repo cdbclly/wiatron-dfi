@@ -1,0 +1,65 @@
+th {
+  border: 1px solid black;
+  padding: 3px;
+  text-align: center;
+  background-color: rgb(205, 205, 205);
+}
+ td {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 12px;
+}
+table {
+  background-color: white;
+  color: black;
+  margin: 0 auto;
+  width: 100%;
+}
+.box-table {
+  height: 300px;
+  overflow: auto;
+  // overflow-x: hidden;
+}
+.shadow_bg {
+  position: relative;
+  width:100%;
+  height: 88vh;
+  background:rgba(0, 0, 0, 0.5);
+}
+.scatter-chart {
+  height: 25vw;
+  width: 100%;
+  margin-top: 2vw;
+}
+body {
+  margin: 0 8px;
+  width: 100%;
+}
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+  a {
+    i {
+      padding-left: 1%;
+      cursor: pointer;
+    }
+  }
+}
+.suggest {
+  height: 40px;
+  margin-top: 20px;
+  margin-left: 5px;
+  width: 50%;
+  background-color: #333;
+  line-height: 40px;
+  font-size: 17px;
+  font-weight: 550;
+  color: white;
+  padding-left: 15px;
+}
+.test-num {
+  color: blue;
+  font-weight: 500;
+  cursor: pointer;
+}

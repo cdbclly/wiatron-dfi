@@ -1,0 +1,184 @@
+<div class="file-maintain">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-data-review' | translate }} （{{ 'mrr.vendor-sqm-maintain' | translate }}）
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+</div>
+<div class="uploadrate">
+  <div class="passRate" style="background-color: #CBCBCB; width: 140px; margin-right: 5px;">
+    {{ 'mrr.vendor-cur-upload-rate' | translate }}：</div>
+  <div class="passRate" style="background-color: #383838; color: #ffffff; width: 65px;">{{routData.uploadCompleteRate}}
+  </div>
+  <div class="passRate2">
+    <div style="background-color: #CBCBCB; width: 140px; margin-right: 5px;">
+      {{ 'mrr.vendor-cur-review-rate' | translate }}：</div>
+    <div style="background-color: #383838; color: #ffffff; width: 65px;">{{routData.passRate}}</div>
+  </div>
+</div>
+<table class="topTable">
+  <thead>
+    <tr>
+      <th>ProjectCode</th>
+      <th>{{ 'mrr.mrr-partNumber' | translate }}</th>
+      <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+      <th>{{ 'mrr.mrr-stage' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{routData.projectCode}}</td>
+      <td>{{routData.part_no}}</td>
+      <td>{{routData.manufacturer}}</td>
+      <td>{{routData.stage}}</td>
+    </tr>
+  </tbody>
+</table>
+<div class="btns">
+  <div class="dfq-btn-add">
+    <button nz-button nzType="primary" [title]="'mrr.vendor-addone' | translate" nzShape="circle" (click)="addFile()"
+      [disabled]="isAddutton">
+      <i class="anticon anticon-plus"></i>
+    </button>
+  </div>
+  <div class="dfq-btn-add" style="margin-left: 15px;">
+    <button nz-button nzType="primary" [disabled]="isEditButton" (click)="editStart()">
+      <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+    </button>&nbsp;&nbsp;<span *ngIf="disPlayText"
+      style="color: red;">{{ 'mrr.vendor-review-notice' | translate }}</span>
+    <button *ngIf="isDisplayEdit" nz-button nzType="primary" (click)="editSave()" [nzLoading]="isSaveLoading">
+      <i class="anticon anticon-save"></i>{{ 'mrr.mrr-save' | translate }}
+    </button>&nbsp;&nbsp;
+    <button *ngIf="isDisplayEdit" nz-button nzType="primary" (click)="editCancel()">
+      <i class="anticon anticon-close-circle"></i>{{ 'mrr.mrr-cancel' | translate }}
+    </button>
+    <span style="font-size: 16px; font-weight: bold;">{{ 'mrr.vendor-sop' | translate }}
+      <a><i class="anticon anticon-download" (click)="downSqmSop()" style="font-size: 16px;"></i></a></span>
+  </div>
+</div>
+<!-- table -->
+<nz-table class="nz-table" #editRowTable nzBordered [nzShowSizeChanger]="true" [nzPageSize]="6" [nzData]="showData">
+  <thead>
+    <tr>
+      <th nzShowExpand style="width: 100px;">{{ 'mrr.vendor-extension' | translate }}</th>
+      <th>{{ 'mrr.document-file-view' | translate }}</th>
+      <th>{{ 'mrr.vendor-fileList' | translate }}</th>
+      <th>{{ 'mrr.vendor-upload-time' | translate }}</th>
+      <th>{{ 'mrr.vendor-no-upload' | translate }}</th>
+      <th>{{ 'mrr.vendor-no-upload-reason' | translate }}</th>
+      <th>{{ 'mrr.vendor-review-status' | translate }}</th>
+      <th>{{ 'mrr.vendor-fail-reason' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="editRowTable.data">
+      <tr>
+        <td nzShowExpand [(nzExpand)]="data.expand"></td>
+        <td>
+          <label *ngIf="data.fileName && data.path && data.pass === false, else showBlack">
+            <button class="loadIcon" (click)="downLoad(data)">
+              <i class="anticon anticon-download"></i></button>
+          </label>
+          <ng-template #showBlack><label></label></ng-template>
+        </td>
+        <td style="text-align: left;"><i class="anticon anticon-folder-open"></i>&nbsp;&nbsp;{{data.documentName}}</td>
+        <td *ngIf="data.uploadDates === ('mrr.vendor-waiting-upload' | translate); else displayDate"
+          style="color: red;">{{data.uploadDates}}</td>
+        <ng-template #displayDate>
+          <td>{{data.uploadDates}}</td>
+        </ng-template>
+        <td>
+          <span *ngIf="checked; else displayCheck">
+            <!-- 默認顯示 -->
+            <span *ngIf="data.pass === true; else displayBlank">
+              <i class="anticon anticon-check"></i>
+              <ng-template #displayBlank><span></span></ng-template>
+            </span>
+          </span>
+          <!-- 編輯后顯示 -->
+          <ng-template #displayCheck>
+            <label nz-checkbox [(ngModel)]="data.pass" (ngModelChange)="passValueChange(data,$event)"></label>
+          </ng-template>
+        </td>
+        <td>
+          <ng-container *ngIf="data.defaultPass === true, else isEdit">
+             {{ data.passReason}}
+          </ng-container>
+          <ng-template #isEdit>
+            <ng-container *ngIf="!data.edit, else inputReason">
+              {{ data.passReason}}
+            </ng-container>
+            <ng-template #inputReason>
+              <textarea [(ngModel)]="data.passReason"></textarea>
+            </ng-template>
+          </ng-template>
+        </td>
+        <td>
+          <nz-radio-group [(ngModel)]="data.status" (ngModelChange)="statusChange(data, data.status)">
+            <label class="groupRadios" nz-radio nzValue="UNCHECKED"
+              [nzDisabled]="data.disEditUnchecked">{{ 'mrr.vendor-waiting-review' | translate }}</label>
+            <label class="groupRadios" nz-radio nzValue="FAILED"
+              [nzDisabled]="data.disEditFailed">{{ 'mrr.vendor-fail' | translate }}</label>
+            <label class="groupRadios" nz-radio nzValue="PASS"
+              [nzDisabled]="data.disEditPass">{{ 'mrr.vendor-pass' | translate }}</label>
+          </nz-radio-group>
+        </td>
+        <td>
+          <ng-container *ngIf="!data.editRejectReason, else inputRejectReason">
+            {{ data.rejectReason}}
+          </ng-container>
+          <ng-template #inputRejectReason>
+            <textarea [(ngModel)]="data.rejectReason"></textarea>
+          </ng-template>
+        </td>
+      </tr>
+      <tr [nzExpand]="data.expand">
+        <td></td>
+        <td colspan="5">
+          <nz-table class="table" #editRowTable2 nzBordered [nzData]="data.listData" [nzPageSize]=5
+            [nzHideOnSinglePage]=true>
+            <thead>
+              <tr>
+                <th>{{ 'mrr.vendor-fail-reason' | translate }}</th>
+                <th>{{ 'mrr.vendor-review-member' | translate }}</th>
+                <th>{{ 'mrr.vendor-review-date' | translate }}</th>
+              </tr>
+            </thead>
+  <tbody>
+    <tr *ngFor="let data1 of editRowTable2.data">
+      <td>{{data1.rejectReason}}</td>
+      <td>{{data1.rejectBy}}</td>
+      <td>{{data1.createDate}}</td>
+    </tr>
+  </tbody>
+</nz-table>
+</td>
+</tr>
+</ng-template>
+</tbody>
+</nz-table>
+<div class="groupButton">
+<!-- 跳轉厂商文件上传測試，请勿删除以下注解部分 -->
+<!-- <button nz-button nzType="primary" class="mailButton" (click)="jumpTest()"
+ style="background-color: #E6E6E6; color: #383838; margin-left: 10px;">
+  <i class="anticon anticon-mail"></i>跳轉測試
+</button> -->
+  <button nz-button nzType="primary" class="mailButton" (click)="sendMail()" [disabled]="isMailButton"
+    style="background-color: #E6E6E6; color: #383838;">
+    <i class="anticon anticon-mail"></i>{{ 'mrr.vendor-mail-notice' | translate }}
+  </button>
+  <span
+    style="color: red; margin-top: 10px; margin-left: 10px;">{{ 'mrr.vendor-mail-success-time' | translate }}:{{routData.lastMailSentDate | date:"yyyy-MM-dd HH:mm"}}</span>
+</div>
+
+<!-- 新增彈窗 -->
+<nz-modal nzWidth="400px" class="model-cls" [(nzVisible)]="addOneFlag" [nzOkLoading]="confirmLoading"
+  (nzOnOk)="addOne()" (nzOnCancel)="cancelAddOne()" [nzTitle]="'mrr.vendor-addFile' | translate"
+  [nzMaskClosable]="false" nzCancelText="Cancel" nzOkText="Save">
+  <label class="input-cls">
+    <span class="mustItem">*</span>{{ 'mrr.mrr-file' | translate }}:
+    <input style="width: 170px;" nz-input [(ngModel)]="addFileName" />
+  </label><br />
+  <nz-checkbox-group [(ngModel)]="checkOptions"></nz-checkbox-group>
+</nz-modal>

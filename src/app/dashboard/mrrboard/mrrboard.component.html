@@ -1,0 +1,59 @@
+<app-nudd-board *ngIf="!queryFlag"></app-nudd-board>
+<app-document-board [bg]="bg"></app-document-board>
+<app-material-board [bg]="bg"></app-material-board>
+<app-manufacturer-board [bg]="bg"></app-manufacturer-board>
+
+<div class="tit" *ngIf="queryFlag">
+  <i nz-icon type="link" theme="outline"></i>
+  <a href="javascript:void(0)" [routerLink]="['/dashboard/report/issue/iMQM材料品質監控']">MRR--iMQM材料品質監控系統的總結案率</a>
+</div>
+<div class="tit" *ngIf="!queryFlag">MRR--iMQM材料品質監控系統的總結案率</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <span>KPI:iMQM材料<br>
+          品質監控系統的總結案率</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of bgChartOptionsDFQ">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>
+
+<div class="tit" *ngIf="queryFlag">
+  <i nz-icon type="link" theme="outline"></i>
+  <a href="javascript:void(0)" [routerLink]="['/dashboard/report/issue/iMQM材料品質監控']">MRR--iMQM材料品質監控系統的總結案率</a>
+</div>
+<div class="tit" *ngIf="!queryFlag">MRR--iMQM材料品質監控系統的總結案率</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <span>KPI:材料品質監控<br>
+          當月總結案率</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of bgChartOptionsImqmCur">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height">
+      </app-pie-chart>
+    </div>
+  </div>
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <span>KPI:材料品質監控<br>
+          前月總結案率</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of bgChartOptionsImqmLast">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>

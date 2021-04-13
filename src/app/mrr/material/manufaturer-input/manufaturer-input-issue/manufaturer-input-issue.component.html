@@ -1,0 +1,265 @@
+<div class="mrr-material-all">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item *ngIf="!routeFlag"><a style="border-bottom: 1px solid #7E7E7E;"
+        (click)="goBack(0)">{{ 'mrr.material-vendor-select' | translate }}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item *ngIf="!routeFlag"><a style="border-bottom: 1px solid #7E7E7E;"
+        (click)="goBack(1)">{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}Top issue
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}Top
+      issue</span>
+  </div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-left">
+      <button nz-button nzType="primary" [disabled]="!isExt" (click)="showModal()">
+        <i class="anticon anticon-plus"></i>{{ 'mrr.mrr-add' | translate }}
+      </button>
+      <button nz-button nzType="primary" *ngIf="!issueEditFlag" (click)="edit()">
+        <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+      </button>
+      <button nz-button nzType="primary" *ngIf="issueEditFlag" (click)="save()">
+        <i class="anticon anticon-save"></i>{{ 'mrr.mrr-saveData' | translate }}
+      </button>
+      <button nz-button nzType="default" *ngIf="issueEditFlag" (click)="cancel()">
+        <i class="anticon anticon-close-circle"></i>{{ 'mrr.mrr-cancelEdit' | translate }}
+      </button>
+      <button nz-button nzType="primary" [disabled]="!isExt || issueEditFlag || !checkFlag || !submitFlag"
+        (click)="submit()">
+        <i class="anticon anticon-upload"></i>{{ 'mrr.mrr-send' | translate }}
+      </button>
+    </div>
+    <div class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" [disabled]="isExt" (click)="rejectEmail()">
+        <i class="anticon anticon-mail"></i>Send Reject Email
+      </button>
+      <button nz-button [nzType]="'primary'" (click)="download()">
+        <i class="anticon anticon-download"></i>Download
+      </button>
+    </div>
+  </div>
+  <div class="TopIssue-Table">
+    <nz-table id="topIssueTable" #basicTable nzBordered nzShowQuickJumper [nzData]="topIssueData"
+      nzShowPagination="false" nzFrontPagination="false">
+      <thead>
+        <tr>
+          <th colspan="11">Top issue</th>
+        </tr>
+        <tr>
+          <th>Critical Process</th>
+          <th>{{ 'mrr.material-input' | translate }}</th>
+          <th>{{ 'mrr.material-poor-amount' | translate }}</th>
+          <th>{{ 'mrr.mrr-defective-rate' | translate }}</th>
+          <th>{{ 'mrr.material-issue' | translate }}</th>
+          <th>{{ 'mrr.material-rootcause' | translate }}</th>
+          <th>{{ 'mrr.material-action' | translate }}</th>
+          <th>{{ 'mrr.material-owner' | translate }}</th>
+          <th>{{ 'mrr.mrr-duedate' | translate }}</th>
+          <th>{{ 'mrr.mrr-status' | translate }}</th>
+          <th>{{ 'mrr.mrr-remark' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data; let i=index;">
+          <td>{{ data.operationName }}</td>
+          <td>{{ data.input }}</td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.defectQty }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <nz-input-number style="width: 80px;" [attr.id]="'defectQty' + i"
+                [(ngModel)]="topIssueDataCache[i].defectQty"
+                (ngModelChange)="defectQtyChange($event, data.vendorRecordId)" [nzMin]="0"
+                [nzMax]="getDefectQtyMaxValue(data)" [nzStep]="1"
+                [nzPlaceHolder]="'Maximum fillable:' + getDefectQtyMaxValue(data)">
+              </nz-input-number>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.nfr }}%
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              {{ math.round((topIssueDataCache[i].defectQty / data.input) * 10000) /100  }}%
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.issue }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <textarea nz-input style="width: 100px;" [attr.id]="'issue' + i"
+                [(ngModel)]="topIssueDataCache[i].issue"></textarea>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.rootcause }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <textarea nz-input style="width: 100px;" [attr.id]="'rootcause' + i"
+                [(ngModel)]="topIssueDataCache[i].rootcause"></textarea>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.action }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <textarea nz-input style="width: 100px;" [attr.id]="'action' + i"
+                [(ngModel)]="topIssueDataCache[i].action"></textarea>
+            </ng-container>
+          </td>
+          <td>{{ data.owner }}</td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              {{ data.dueDate ? (data.dueDate | date: 'yyyy/MM/dd') : '' }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <nz-date-picker [nzStyle]='{"width": "150px"}' [nzDisabledDate]="disabledDate" [attr.id]="'dueDate' + i"
+                [(ngModel)]="topIssueDataCache[i].dueDate" nzFormat="yyyy/MM/dd">
+              </nz-date-picker>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || isExt">
+              <div [ngSwitch]="data.status" style="display: inline-block;">
+                <div *ngSwitchCase="0" class="purple-circle"></div>
+                <div *ngSwitchCase="1" class="red-circle"></div>
+                <div *ngSwitchCase="2" class="orange1-circle"></div>
+                <div *ngSwitchCase="3" class="orange-circle"></div>
+                <div *ngSwitchCase="4" class="gray-circle"></div>
+                <div *ngSwitchCase="5" class="green-circle"></div>
+              </div>
+              {{ data.status | issueStatus }}
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && !isExt">
+              <nz-select style="width:150px;" [(ngModel)]="topIssueDataCache[i].status" nzAllowClear nzShowSearch
+                [nzDropdownMatchSelectWidth]="false">
+                <ng-container *ngFor="let list of statusList">
+                  <nz-option nzCustomContent [nzValue]="list.value" [nzLabel]="list.label">
+                    <div [ngSwitch]="list.value" style="display: inline-block;">
+                      <div *ngSwitchCase="0" class="purple-circle"></div>
+                      <div *ngSwitchCase="1" class="red-circle"></div>
+                      <div *ngSwitchCase="2" class="orange1-circle"></div>
+                      <div *ngSwitchCase="3" class="orange-circle"></div>
+                      <div *ngSwitchCase="4" class="gray-circle"></div>
+                      <div *ngSwitchCase="5" class="green-circle"></div>
+                    </div>
+                    {{list.label}}
+                  </nz-option>
+                </ng-container>
+              </nz-select>
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!issueEditFlag || !isExt">
+              <div *ngIf="data.filePath && !data.docType"><a [ngStyle]="{'border-bottom': '1px solid black'}"
+                  (click)="downIssueDoc(data.filePath)">{{ data.filePath }}</a></div>
+              <img *ngIf="data.filePath && data.docType" [attr.src]="apiURL + data.filePath"
+                style="max-width: 48px;max-height: 48px;" (click)="showIssuePicture(data.filePath)">
+            </ng-container>
+            <ng-container *ngIf="issueEditFlag && isExt">
+              <button nz-button [nzType]="'primary'" [nzLoading]="isUploadLoading" (click)="manuPicUpload.click()"><i
+                  nz-icon type="upload" theme="outline"></i>
+                {{ topIssueDataCache[i].filePath ? 'Change' : 'Add' }}
+              </button>
+              <input id="pic-upload" type="file" #manuPicUpload
+                (change)="handleManuPicUpload($event.target, topIssueDataCache[i])">
+              <br>
+              <span><i nz-icon type="paper-clip" theme="outline"
+                  *ngIf="topIssueDataCache[i].filePath"></i>{{ topIssueDataCache[i].filePath }}</span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<nz-modal nzWidth="430px" nzTitle="Add Top issue" [(nzVisible)]="addTopIssueModelFlag" [nzContent]="modalContent"
+  nzMaskClosable="false" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalContent>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>Process</div>
+      <nz-select nzShowSearch style="width: 200px;" [(ngModel)]="saveData.vendorRecordId"
+        (ngModelChange)="addSelectChange($event)">
+        <ng-container *ngFor="let list of toTopIssueDate">
+          <nz-option [nzValue]="list.vendorRecordId" [nzLabel]="list.operationName"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div class="field-span">{{ 'mrr.material-input' | translate }}</div>{{ saveData.input }}
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem"
+          *ngIf="saveData.input">*</span>{{ 'mrr.material-poor-amount' | translate }}</div>
+      <nz-input-number style="width: 200px;" [(ngModel)]="saveData.defectQty" [nzMin]="0"
+        [nzMax]="getDefectQtyMaxValue(saveData)" [nzStep]="1"
+        [nzPlaceHolder]="'Maximum fillable:' + getDefectQtyMaxValue(saveData)">
+      </nz-input-number>
+    </div>
+    <div class="field">
+      <div class="field-span">{{ 'mrr.mrr-defective-rate' | translate }}</div>
+      {{ !saveData.input ? '' : (math.round((saveData.defectQty / saveData.input) * 10000) /100 + '%')  }}
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{ 'mrr.material-issue' | translate }}</div>
+      <textarea nz-input style="width: 200px;" [(ngModel)]="saveData.issue"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{ 'mrr.material-rootcause' | translate }}</div>
+      <textarea nz-input style="width: 200px;" [(ngModel)]="saveData.rootcause"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{ 'mrr.material-action' | translate }}</div>
+      <textarea nz-input style="width: 200px;" [(ngModel)]="saveData.action"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span">{{ 'mrr.material-owner' | translate }}</div>{{ saveData.owner }}
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{ 'mrr.mrr-duedate' | translate }}</div>
+      <nz-date-picker [nzStyle]='{"width": "180px"}' [nzDisabledDate]="disabledDate" [(ngModel)]="saveData.dueDate"
+        nzFormat="yyyy/MM/dd">
+      </nz-date-picker>
+    </div>
+    <div class="field">
+      <div class="field-span">{{ 'mrr.mrr-status' | translate }}</div>
+      <div style="display: inline-block;">
+        <div class="purple-circle" style="display: inline-block;"></div>
+        {{ saveData.status | issueStatus }}
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-span">{{ 'mrr.mrr-remark' | translate }}</div>
+      <div style="display: inline-block;">
+        <button nz-button [nzType]="'primary'" [nzLoading]="isUploadLoading" (click)="manuPicUpload.click()"><i nz-icon
+            type="upload" theme="outline"></i>
+          {{ saveData.filePath ? 'Change' : 'Add' }}
+        </button>
+        <input id="pic-upload" type="file" #manuPicUpload (change)="handleManuPicUpload($event.target, saveData)">
+        <br>
+        <span><i nz-icon type="paper-clip" theme="outline" *ngIf="saveData.filePath"></i>{{ saveData.filePath }}</span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary" [nzLoading]="isLoading" (click)="addTopIssueData()">Save</button>
+  </ng-template>
+</nz-modal>
+
+<nz-modal [nzVisible]="showPicture" [nzContent]="modelShowPicture" [nzFooter]="null" (nzOnCancel)="showPicture=false"
+  nzClosable="false">
+  <ng-template #modelShowPicture>
+    <img *ngIf="showPicSrc" [attr.src]="apiURL + showPicSrc" [ngStyle]="{ 'width': '100%' }" />
+  </ng-template>
+</nz-modal>

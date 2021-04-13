@@ -1,0 +1,81 @@
+<header class="main-header">
+
+  <!-- Logo -->
+  <a href="javascript:void(0)" class="logo"
+    [routerLink]="isExt ? ['/dashboard/mrrMaterial/manufaturer'] : ['/dashboard/board']">
+    <!-- mini logo for sidebar mini 50x50 pixels -->
+    <span class="logo-mini"><img class="sm-logo" src="./assets/img/logo.svg" alt="DFI" /></span>
+    <!-- logo for regular state and mobile devices -->
+    <span class="logo-lg"><img class="bg-logo" src="./assets/img/logo.svg" alt="DFI" /></span>
+    {{env}}
+  </a>
+  <!-- Header Navbar: style can be found in header.less -->
+  <nav class="navbar navbar-static-top">
+    <!-- Sidebar toggle button-->
+    <a href="javascript:void(0)" class="sidebar-toggle" data-toggle="push-menu" role="button">
+      <span class="sr-only">Toggle navigation</span>
+    </a>
+    <div class="topnav-title">{{'dashboard.title' | translate}}<span style="color: red;font-size: 8px;">{{env}}</span>
+    </div>
+    <!-- Navbar Right Menu -->
+    <div class="navbar-custom-menu">
+      <ul class="nav navbar-nav">
+        <li style="margin-right:12px;">
+          <button (click)="refreshInbox()" class="inboxIcon" nz-popover nzTitle="待簽核:" [nzContent]="contentTemplate"
+            nzTrigger="click"
+            style="background-color:rgba(128, 128, 128, 1);border: rgba(128, 128, 128, 1);outline:none;">
+            <nz-badge [nzCount]="signingAlerts.length" nzShowZero>
+              <nz-avatar nzSize="small" nzIcon="anticon anticon-inbox"></nz-avatar>
+            </nz-badge>
+          </button>
+        </li>
+        <ng-template #contentTemplate>
+          <div>
+            <div *ngIf="DFQAlerts.length" style="text-align: center">---DFQ---</div>
+            <div *ngFor="let data of DFQAlerts,let j=index">
+              <a [href]="data.path">{{data.description}}</a>
+            </div>
+          </div>
+          <div>
+            <div *ngIf="DFCAlerts.length" style="text-align: center">---DFC---</div>
+            <div *ngFor="let data of DFCAlerts,let j=index">
+              <a [href]="data.path">{{data.description}}</a>
+            </div>
+          </div>
+          <div>
+            <div *ngIf="MRRAlerts.length" style="text-align: center">---MRR---</div>
+            <div *ngFor="let data of MRRAlerts,let j=index">
+              <a [href]="data.path">{{data.description}}</a>
+            </div>
+          </div>
+        </ng-template>
+        <li>
+          <a href="javascript:void(0)">
+            <nz-avatar nzSize="small" class="avatar" nzIcon="anticon anticon-user"></nz-avatar>
+            <span class="hidden-xs">{{ userName }}</span>
+            <nz-avatar (click)="logout()" nzSize="small" [title]="'login.login-out' | translate" class="logout"
+              nzIcon="anticon anticon-logout">
+            </nz-avatar>
+          </a>
+        </li>
+        <li>
+          <div class="time">{{ dispalyTime }} </div>
+        </li>
+        <li>
+          <button class="langIcon" mat-icon-button [matMenuTriggerFor]="langMenu">
+            <mat-icon>language</mat-icon>
+          </button>
+          <mat-menu #langMenu="matMenu">
+            <button class="matMenubtn" mat-menu-item *ngFor="let lang of langSet"
+              (click)="multiLanguageSwitch(lang.key)">
+              <i *ngIf="lang.key === language" class="material-icons md-4">check_circle</i>
+              <div *ngIf="lang.key != language" class="sp-32"></div>
+              {{lang.value}}
+            </button>
+          </mat-menu>
+        </li>
+        <!-- Control Sidebar Toggle Button -->
+      </ul>
+    </div>
+  </nav>
+</header>

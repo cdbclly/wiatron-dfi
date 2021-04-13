@@ -1,0 +1,24 @@
+.dfc-delAfter-icon {
+  height: 100px;
+  width: 100%;
+  color: rgba(0, 169, 157, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i {
+    font-size: 76px;
+  }
+}
+
+.dfc-delAfter-text {
+  width: 238px;
+  height: 46px;
+  margin-left: 22px;
+  padding: 10px;
+  text-align: center;
+
+  span {
+    color: rgba(80, 80, 80, 1);
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,63 @@
+<div class="dfc-all" #DFCWorkhourReviewReport>
+  <nz-breadcrumb *ngIf="page == 'first'">
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'report.dfc-improve-performance-report' | translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <nz-breadcrumb *ngIf="page == 'second'">
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a (click)="clickSwitch()">{{'report.dfc-improve-performance-report' | translate}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{cFlow}}{{'report.stage' | translate}}{{process}}{{'report.workhour-report' | translate}}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div class="dfc-all" *ngIf="page == 'first'">
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'report.dfc-improve-performance-report' | translate}}</span>
+    </div>
+    <div class="dfc-query">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="selectValue.plant"
+          [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="selectValue.custom"
+          [querySelect]="querySelect.custom" (queryValueChange)="changeCustom()"
+          (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="selectValue.modelType"
+          [querySelect]="querySelect.modelType" (queryValueChange)="changeModelType()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="selectValue.proName"
+          [querySelect]="querySelect.proName" (searchSelectChange)="proNameSearch($event)"
+          (queryValueChange)="changeProName($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="selectValue.proCode"
+          [querySelect]="querySelect.proCode"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelName" [(queryValue)]="selectValue.modelName"
+          [querySelect]="querySelect.modelName" (searchSelectChange)="modelNameSearch($event)"
+          (queryValueChange)="changeModel($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.cFlow" [(queryValue)]="selectValue.cFlow"
+          [querySelect]="querySelect.cFlow"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button [nzSize]="'small'" nzType="primary" (click)="query()">{{'mrr.mrr-query' | translate}}</button>
+      </div>
+    </div>
+    <div class="dfc-line"></div>
+    <div class="dfc-echart">
+      <div echarts (chartClick)="onChartEvent($event, 'chartClick')" class="dfc-chart-first" [options]="optionsFirst">
+      </div>
+    </div>
+  </div>
+  <app-workhour-report-detail [stageID]="queryDetailStageID" [process]="queryDetailProcess" [tableHeight]="tableHeight"
+    *ngIf="page == 'second'"></app-workhour-report-detail>
+</div>

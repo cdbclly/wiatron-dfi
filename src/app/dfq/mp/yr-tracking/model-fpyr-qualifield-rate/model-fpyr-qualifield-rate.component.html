@@ -1,0 +1,3 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+    <div echarts (chartClick)="clickEchart($event)" [options]="getOption(title, data)"></div>
+</nz-spin>

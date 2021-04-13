@@ -1,0 +1,248 @@
+<div class="dfc-all" #DFCKpiReport>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC KPI</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">DFC KPI</span>
+  </div>
+  <div class="dfc-query">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="selectValue.plant"
+        [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.bu" [(queryValue)]="selectValue.bu" [querySelect]="querySelect.bu"
+        (searchSelectChange)="buSearch($event)" (queryValueChange)="changeBU()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="selectValue.custom"
+        [querySelect]="querySelect.custom" (queryValueChange)="changeCustomAndModelType()"
+        (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="selectValue.modelType"
+        [querySelect]="querySelect.modelType" (queryValueChange)="changeCustomAndModelType()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.standard" [(queryValue)]="selectValue.standard"
+        [querySelect]="querySelect.standard"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="selectValue.proName"
+        [querySelect]="querySelect.proName" (queryValueChange)="proNameChange($event)"
+        (searchSelectChange)="proNameSearch($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="selectValue.proCode"
+        [querySelect]="querySelect.proCode"></app-dfc-query-input>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-mol">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelName" [(queryValue)]="selectValue.modelID"
+          [querySelect]="querySelect.modelName" (queryValueChange)="modelNameChange($event)"
+          (searchSelectChange)="modelNameSearch($event)"></app-dfc-query-input>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-2mol">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.cFlow" [(queryValue)]="selectValue.cFlow"
+          [querySelect]="querySelect.cFlow"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button [nzSize]="'small'" nzType="primary" (click)="query()"
+          [nzLoading]="isTableLoading">{{'mrr.mrr-query' | translate}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-left">
+      <span>{{'report.dfc-kpi-notice' | translate}}</span>
+    </div>
+    <div class="dfc-btn-right">
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-table" [style.max-width]="nzScroll.x">
+    <nz-table id="downdata" #dfcKpiTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+      [nzScroll]="nzScroll" [nzPageSize]="10" [nzFrontPagination]="tablePaging">
+      <thead>
+        <tr>
+          <th rowspan='2'>{{'mrr.vendor-extension' | translate}}</th>
+          <th rowspan='2'>{{'report.dfc-kpi-quantity' | translate}}</th>
+          <th rowspan='2'>{{'mrr.mrr-plant' | translate}}</th>
+          <th rowspan='2'>BU</th>
+          <th rowspan='2'>{{'mrr.mrr-customer' | translate}}</th>
+          <th rowspan='2'>{{'mrr.mrr-product' | translate}}</th>
+          <th rowspan='2'>Project Code</th>
+          <th rowspan='2'>Project Name</th>
+          <th rowspan='2'>Model Name</th>
+          <th rowspan='2'>{{'report.dfc-kpi-cstage' | translate}}</th>
+          <th [colSpan]="4">MOH(USD)</th>
+          <th [colSpan]="3">{{'report.dfc-workhour' | translate}}(S)</th>
+          <th rowspan='2'>{{'report.dfc-workhour-reach-status' | translate}}</th>
+        </tr>
+        <tr>
+          <th>{{'report.dfc-am-quoted-price' | translate}}</th>
+          <th>{{'report.dfc-design-goal' | translate}}</th>
+          <th>{{'report.dfc-cur-design' | translate}}</th>
+          <th>{{'report.dfc-factory-actual' | translate}}</th>
+          <th>{{'report.dfc-design-goal' | translate}}</th>
+          <th>{{'report.dfc-cur-design' | translate}}</th>
+          <th>{{'report.dfc-factory-actual' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="dfcKpiTable.data">
+          <tr>
+            <td [nzShowExpand]="data.type === 2" [(nzExpand)]="data.expand"
+              (nzExpandChange)="nzExpandChange($event,data)">
+            </td>
+            <td>
+            </td>
+            <td>{{(data.plant | site: {type: 'plant'})}}</td>
+            <td>{{data.bu}}</td>
+            <td>{{data.customer}}</td>
+            <td>{{data.productType}}</td>
+            <td>{{data.projectCode}}</td>
+            <td>{{data.projectName}}</td>
+            <td>{{data.modelName}}</td>
+            <td>
+              <div [ngSwitch]="data.type">
+                <a *ngSwitchCase="1" style="text-decoration: underline "
+                  (click)="onClickCFlow(data.stageId, data.stage, data.projectName)"> {{data.stage}}</a>
+                <a *ngSwitchCase="2"> {{data.stage}}</a>
+              </div>
+            </td>
+            <td> {{DFiLeaderFlag? data.quote : (!!data.quote ? '***' : ' ')}}</td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickMoh(data)">{{(!data.targetMoh ? ('mrr.mrr-noData' | translate) : (data.targetMoh| number:'0.2-2'))}}</a>
+            </td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickMoh(data)">{{(!data.currentMoh ? ('mrr.mrr-noData' | translate) : (data.currentMoh | number:'0.2-2'))}}</a>
+            </td>
+            <td>
+              <span (click)="redirectDFCDataVerication(data.stageId)" class="actual-sty">
+                {{(!!data.factoryActualMoh ? data.factoryActualMoh : ('mrr.mrr-noData' | translate))}}
+              </span>
+            </td>
+            <td>
+              <a style="text-decoration:underline" *ngIf="data.targetSignFlag"
+                (click)="onClickTargethour(data)">{{data.targetOptTime | number:'0.2-2'}} </a>
+              <a style="text-decoration:underline; color:red;" *ngIf="!data.targetSignFlag"
+                (click)="onClickTargethour(data)">{{'report.dfc-target-hour-notSign' | translate}}</a>
+            </td>
+            <td>
+              <a style="text-decoration:underline" [ngStyle]="data.optTimeColor"
+                (click)="onClickWorkhour(data)">{{data.optTime | number:'0.2-2' }}</a>
+            </td>
+            <td>
+              <span (click)="redirectDFCDataVerication(data.stageId)" class="actual-sty">
+                {{(!!data.factoryActualOperationTime ? data.factoryActualOperationTime : ('mrr.mrr-noData' | translate))}}
+              </span>
+            </td>
+            <td>
+              <div [ngSwitch]="data.status" style="display: inline-block;">
+                <div *ngSwitchCase="'red'" class="red-circle" (click)="clickRewards(data.kpiReward, data)"
+                  [ngStyle]="clickRewardsStyle(data.kpiReward)"></div>
+                <div *ngSwitchCase="'green'" class="green-circle" (click)="clickRewards(data.kpiReward, data)"
+                  [ngStyle]="clickRewardsStyle(data.kpiReward)" [ngClass]="clickRewardsClass(data)"></div>
+              </div>
+            </td>
+          </tr>
+          <tr [nzExpand]="data.expand">
+            <td [colSpan]="nzWidthConfig.length" style="padding:0">
+              <nz-table [nzWidthConfig]="nzWidthConfig" #modelTable [nzData]="data.modelData"
+                [nzShowPagination]="false">
+      <tbody>
+        <ng-template ngFor let-modelData [ngForOf]="modelTable.data">
+          <tr>
+            <td></td>
+            <td>{{modelData.count}}</td>
+            <td>{{(modelData.plant | site: {type: 'plant'})}}</td>
+            <td>{{modelData.bu}}</td>
+            <td>{{modelData.customer}}</td>
+            <td>{{modelData.productType}}</td>
+            <td>{{modelData.projectCode}}</td>
+            <td>{{modelData.projectName}}</td>
+            <td>{{modelData.modelName}}</td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickCFlow(modelData.stageId, modelData.stage, modelData.projectName)">{{modelData.stage}}</a>
+            </td>
+            <td> {{DFiLeaderFlag? modelData.quote : (!!modelData.quote ? '***' : '')}}</td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickMoh(modelData)">{{(!modelData.targetMoh ? ('mrr.mrr-noData' | translate) : (modelData.targetMoh| number:'0.2-2'))}}</a>
+            </td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickMoh(modelData)">{{(!modelData.currentMoh ? ('mrr.mrr-noData' | translate) : (modelData.currentMoh| number:'0.2-2'))}}</a>
+            </td>
+            <td>
+              <span (click)="redirectDFCDataVerication(modelData.stageId)" class="actual-sty">
+                {{(!!modelData.factoryActualMoh ? modelData.factoryActualMoh : ('mrr.mrr-noData' | translate))}}
+              </span>
+            </td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickTargethour(modelData)">{{(!modelData.targetOptTime ? ('mrr.mrr-noData' | translate) : (modelData.targetOptTime| number:'0.2-2'))}}
+              </a>
+            </td>
+            <td>
+              <a style="text-decoration:underline" [ngStyle]="modelData.WorkhourActualColor"
+                (click)="onClickWorkhour(modelData)">{{(!modelData.optTime ? ('mrr.mrr-noData' | translate) : (modelData.optTime| number:'0.2-2'))}}</a>
+            </td>
+            <td>
+              <span (click)="redirectDFCDataVerication(modelData.stageId)" class="actual-sty">
+                {{(!!modelData.factoryActualOperationTime ? modelData.factoryActualOperationTime : ('mrr.mrr-noData' | translate))}}
+              </span>
+            </td>
+            <td>
+              <div [ngSwitch]="modelData.status" style="display: inline-block;">
+                <div *ngSwitchCase="'red'" class="red-circle"></div>
+                <div *ngSwitchCase="'green'" class="green-circle" [ngClass]="clickRewardsClass(modelData)"></div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </ng-template>
+    </tbody>
+    </nz-table>
+  </div>
+  <!-- Report報表 -->
+  <app-dfc-kpi-rewards *ngIf="kpiReward" [(isVisible)]="isVisibleRewards" [rewards]="kpiReward"
+    (viewRuleChange)="viewRule($event)"></app-dfc-kpi-rewards>
+  <app-dfc-kpi-rule [(isVisible)]="isVisibleRule" [rewards]="kpiReward" [modelId]="queryRewardId"
+    [type]="queryRewardType" (isBack)="ruleBack($event)"></app-dfc-kpi-rule>
+</div>
+<app-dfc-loading class="loading" *ngIf="loadingshow"></app-dfc-loading>
+
+<!-- 點擊啟動軍令狀 頁面顯示 -->
+<nz-modal ng-if="!!modalWidth" nzWrapClassName="vertical-center-modal" [nzWidth]="modalWidth"
+  [(nzVisible)]="isSendSignVisible" [nzTitle]="'report.dfc-military-startup' | translate"
+  (nzOnCancel)="cancelSendSign()" [nzFooter]="modalEditSaveFooter">
+  <div class="dfc-send">
+    <app-military-order-sign-approve [queryValue]="queryValue" [tabelHeight]="tabelHeight">
+    </app-military-order-sign-approve>
+  </div>
+  <ng-template #modalEditSaveFooter>
+    <button nz-button nzType="default" (click)="cancelSendSign()">Cancel</button>
+  </ng-template>
+</nz-modal>

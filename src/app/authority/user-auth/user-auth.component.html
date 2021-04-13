@@ -1,0 +1,160 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{'dashboard.authority-maintain'|translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-usrAuthMaintenance'|translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<h2>{{'imq-menu-usrAuthMaintenance'|translate}}</h2>
+<div class="query">
+  <input nz-input nzSize="default" [(ngModel)]="searchKey" (keyup.enter)="onSearch()">
+  <button nz-button nzType="primary" (click)="onSearch()">Query</button>
+</div>
+<nz-divider></nz-divider>
+
+<div class="dfc-btn">
+  <button *ngIf="auth.UserMangement.insert" title="add" nz-button [nzType]="'primary'" nzShape="circle"
+    (click)="operateAdd()">
+    <i class="anticon anticon-plus"></i>
+  </button>
+  <div class="dfc-btn-right">
+    <app-upload-file *ngIf="auth.UserMangement.insert && downloadFlag" class="dfc-btn-upload"
+      [showLoading]="showLoading" (uploadFile)="upload($event)"></app-upload-file>
+    <nz-dropdown>
+      <button nz-button nz-dropdown [nzLoading]="downLoading" [nzType]="'primary'">
+        {{'authority-maintain.select-download-file'|translate}}
+      </button>
+      <i nz-icon nzType="down"></i>
+      <ul nz-menu>
+        <li nz-menu-item>
+          <a (click)="download(true)">{{'authority-maintain.download-upload-template'|translate}}</a>
+        </li>
+        <li nz-menu-item *ngIf="!!searchKey">
+          <a (click)="download(false)">{{'authority-maintain.download-form-content'|translate }}</a>
+        </li>
+      </ul>
+    </nz-dropdown>
+  </div>
+</div>
+<div class="tableContainer">
+  <nz-table #basicTable nzBordered nzShowQuickJumper [nzPageSize]="10" [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>{{'imq-mt-group'|translate}}</th>
+        <th>{{'dfq.dfq-site'|translate}}</th>
+        <th>{{'dfq.dfq-plant'|translate}}</th>
+        <th>{{'imq-mt-dept'|translate}}</th>
+        <th>{{'imq-mt-userId'|translate}}</th>
+        <th>{{'imq-mt-cName'|translate}}</th>
+        <th>{{'imq-mt-eName'|translate}}</th>
+        <th>Mail</th>
+        <th>{{'dfq.dfq-role'|translate}}</th>
+        <th>{{'authority-maintain.direct-supervisor'|translate}}</th>
+        <th>DFi User</th>
+        <th>DFi Leader</th>
+        <th>{{'authority-maintain.plant-supervisor'|translate}}</th>
+        <th>{{'base-data.military-order-signing'|translate}}</th>
+        <th *ngIf="auth.UserMangement.update">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.Group && data.group.Describtion}}</td>
+        <td>{{data.Site}}</td>
+        <td>{{data.Plant}}</td>
+        <td>{{data.Dept}}</td>
+        <td>{{data.EmpID}}</td>
+        <td>{{data.Name}}</td>
+        <td>{{data.EName}}</td>
+        <td>{{data.Email}}</td>
+        <td>{{data.Role}}</td>
+        <td>{{data.Supervisor}}</td>
+        <td style="text-align: center;">
+          <i class="anticon anticon-check" *ngIf="data.DFIUser"></i>
+        </td>
+        <td style="text-align: center;">
+          <i class="anticon anticon-check" *ngIf="data.DFILeader"></i>
+        </td>
+        <td style="text-align: center;">
+          <i class="anticon anticon-check" *ngIf="data.IsPlantLevel"></i>
+        </td>
+        <td style="text-align: center;">
+          <i class="anticon anticon-check" *ngIf="data.CanSignMilitaryOrder"></i>
+        </td>
+        <td class="action" *ngIf="auth.UserMangement.update">
+          <i class="anticon anticon-edit" (click)="onEdit(data)"></i>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 新增 -->
+<nz-modal [nzWidth]="411" nzWrapClassName="vertical-center-modal" [(nzVisible)]="isAddDataVisible"
+  nzTitle={{modalTitle}} nzMaskClosable="false" (nzOnCancel)="handleAddCancel()" [nzFooter]="modalAddFooter">
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-group'|translate}}</div>
+    <nz-select [(ngModel)]="saveData.Group">
+      <nz-option *ngFor="let group of groupList" [nzLabel]="group.Describtion" [nzValue]="group.GroupID"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <div>{{'authority-maintain.search-user'|translate}}</div>
+    <div class="searchAD">
+      <app-search-user (selectedUserData)="select($event)">
+      </app-search-user>
+    </div>
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>Site</div><input nz-input [(ngModel)]="saveData.Site">
+  </div>
+  <div class="field">
+    <div>{{'dfq.dfq-plant'|translate}}</div>
+    <nz-select [(ngModel)]="saveData.Plant" nzAllowClear nzShowSearch [nzServerSearch]="true">
+      <ng-container *ngFor="let list of PlantMapping">
+        <nz-option [nzValue]="list.Plant" [nzLabel]="list.PlantName"></nz-option>
+      </ng-container>
+    </nz-select>
+  </div>
+  <div class="field">
+    <div>{{'imq-mt-dept'|translate}}</div><input nz-input [(ngModel)]="saveData.Dept">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-userId'|translate}}</div><input nz-input [(ngModel)]="saveData.EmpID"
+      [disabled]="type == 'Edit'">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-cName'|translate}}</div><input nz-input [(ngModel)]="saveData.Name">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-eName'|translate}}</div><input nz-input [(ngModel)]="saveData.EName">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>Mail</div><input nz-input [(ngModel)]="saveData.Email">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'dfq.dfq-role'|translate}}</div><input nz-input [(ngModel)]="saveData.Role">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'authority-maintain.direct-supervisor'|translate}}</div><input nz-input
+      [(ngModel)]="saveData.Supervisor">
+  </div>
+  <div class="field">
+    <label nz-checkbox [(ngModel)]="saveData.DFIUser">DFi User</label>
+    <label nz-checkbox [(ngModel)]="saveData.DFILeader">DFi Leader</label>
+    <label nz-checkbox [(ngModel)]="saveData.IsPlantLevel">{{'authority-maintain.plant-supervisor'|translate}}</label>
+    <label nz-checkbox
+      [(ngModel)]="saveData.CanSignMilitaryOrder">{{'base-data.military-order-signing'|translate}}</label>
+  </div>
+  <div class="field"
+    *ngIf="!saveData.EmpID || !saveData.Group || !saveData.Name || !saveData.Role || !saveData.Supervisor">
+    <span class="mustItem">
+      Please fill in
+      {{(!saveData.Group ? 'Group' : (!saveData.Site ? 'Site' : (!saveData.EmpID ? 'Job number' : (!saveData.Name ? 'Chinese name' : (!saveData.EName ? 'English name' : (!saveData.Email ? 'Email address' :(!saveData.Role ?  'Roles' : (!saveData.Supervisor ? 'Direct supervisor' : ''))))))))}}
+      ！
+    </span>
+  </div>
+  <ng-template #modalAddFooter>
+    <button nz-button nzType="default" (click)="handleAddCancel()">Cancel</button>
+    <button nzTooltipTitle="prompt text" nzTooltipPlacement="top" nz-tooltip nz-button nzType="primary"
+      (click)="handleAddSave()"
+      [disabled]="!saveData.Site || !saveData.EmpID || !saveData.Group || !saveData.Name || !saveData.Role || !saveData.Supervisor">Save</button>
+  </ng-template>
+</nz-modal>

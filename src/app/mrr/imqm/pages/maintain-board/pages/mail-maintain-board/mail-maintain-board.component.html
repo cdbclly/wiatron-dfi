@@ -1,0 +1,17 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-maintenance' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-mailAdrMaintenance' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="margin-top: 12px;">
+  <span style="font-size:20px;">{{'imq-menu-mailAdrMaintenance' | translate}}</span>
+</div>
+<nz-tabset>
+  <nz-tab nzTitle="{{'imq-supplier' | translate}}">
+    <app-vendor-maintain></app-vendor-maintain>
+  </nz-tab>
+  <nz-tab nzTitle="{{'imq-wistron' | translate}}">
+    <app-wistron-maintain></app-wistron-maintain>
+  </nz-tab>
+</nz-tabset>

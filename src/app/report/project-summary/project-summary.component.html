@@ -1,0 +1,26 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.meetingRecord' | translate  }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item> Digital Platform Overall Summary </nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-spin nzSimple [nzSpinning]="isLoadingOne" [nzSize]="'large'">
+  <div class="query-wrapper">
+    <span class="label-span required">{{'dfi-monthly-meeting.month'|translate}}</span>
+    <nz-month-picker [(ngModel)]="selectedMonth"></nz-month-picker>
+    <button nz-button nzType="primary" [disabled]="!selectedMonth" [nzLoading]="queryLoading"
+      (click)="query(selectedMonth)">{{'dfq.dfq-query'|translate}}</button>
+  </div>
+</nz-spin>
+<nz-divider></nz-divider>
+<div>
+  <div *ngIf="hasMeeting" class="uploadFile-cls">
+    <app-upload-file [uploadType]="'png'" (uploadFile)="preview($event)"></app-upload-file>
+  </div>
+
+  <div *ngIf="!imgFlag" id="button">
+    <label style="font-size: large; text-align: center;">{{'dfi-monthly-meeting.picture-preview'|translate}}...</label>
+    <button nz-button nzType="primary" (click)="Delete()">{{'dfi-monthly-meeting.cancel-upload'|translate}}</button>
+    <button nz-button nzType="primary" (click)="imgUpLoad()">{{'dfi-monthly-meeting.confirm-upload'|translate}}</button>
+    <img width="100%" [src]="temImgUrl">
+  </div>
+</div>
+<img *ngIf="filePath" width="100%"  [attr.src]="filePath">

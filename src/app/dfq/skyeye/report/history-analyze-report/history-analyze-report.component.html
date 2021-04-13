@@ -1,0 +1,63 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>歷史數據查詢</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  歷史數據查詢
+</div>
+<div class="query-row">
+  <div class="field1">
+    <span style="width: 29%;">
+      <span style="color: red">*</span>
+      <span>類型</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="project">
+      <nz-option nzValue="rf cpk" nzLabel="測試設備CPK監控"></nz-option>
+      <nz-option nzValue="assy fixturecpk" nzLabel="組裝設備CPK監控"></nz-option>
+      <nz-option nzValue="fpyr" nzLabel="First Pass Yield Rate監控"></nz-option>
+      <nz-option nzValue="retry rate" nzLabel="Retest Rate監控"></nz-option>
+      <nz-option nzValue="test time" nzLabel="測試時間監控"></nz-option>
+      <nz-option nzValue="ATE Temperature" nzLabel="ATE温度监控"></nz-option>
+      <nz-option nzValue="yield_rate" nzLabel="Yield Rate監控"></nz-option>
+      <nz-option nzValue="fixture retry rate" nzLabel="Fixture Retest Rate監控"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1" style="width: 58%;">
+    <span style=" width: 10%;">
+      <span style="color: red">*</span>
+      <span style="margin-right: 10px;">日期</span>
+    </span>
+    <!-- <nz-range-picker style="width: 80%;" [nzFormat]="dateFormat" [(ngModel)]="dateRange" nzShowTime (ngModelChange)="getOptions('cur_date', $event)"></nz-range-picker> -->
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateRangeFrom"
+      (ngModelChange)="getOptions('dateFrom', $event)"></nz-date-picker>
+    ~
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateRangeTo"
+      (ngModelChange)="getOptions('dateTo', $event)"></nz-date-picker>
+  </div>
+</div>
+
+<div *ngIf="(project !== 'assy fixturecpk' && project !== 'yield_rate'&& project !== 'fixture retry rate')">
+  <app-top-options [hidden]="!datefrom || !dateto" (queryOption)="queryOp($event)" [cur_site]="cur_site"
+    [cur_plant]="cur_plant" [cur_section]="cur_section" [cur_line]="cur_line" [cur_mdname]="cur_mdname"
+    [datefrom]="datefrom" [dateto]="dateto" [project]="project" [cur_model]="cur_model" [cur_item]="cur_item"
+    [cur_bt]="cur_bt" [cur_st]="cur_st" [cur_upn]="cur_upn"></app-top-options>
+</div>
+
+<div *ngIf="(project === 'assy fixturecpk' || project === 'yield_rate' || project === 'fixture retry rate')">
+  <app-select-options [hidden]="!datefrom || !dateto" (queryOption)="queryOp($event)" [cur_site]="cur_site"
+    [cur_plant]="cur_plant" [cur_section]="cur_section" [cur_line]="cur_line" [cur_mdname]="cur_mdname"
+    [datefrom]="datefrom" [dateto]="dateto" [project]="project" [cur_model]="cur_model" [cur_item]="cur_item"
+    [cur_bt]="cur_bt" [cur_st]="cur_st" [cur_MachineModel]="cur_MachineModel"></app-select-options>
+</div>
+
+
+<app-cpk-chart #cpkChart *ngIf="project === 'rf cpk'"></app-cpk-chart>
+<app-defect-loss-chart #defectChart *ngIf="project === 'fpyr'"></app-defect-loss-chart>
+<app-retry-rate-chart #retryRateChart *ngIf="project === 'retry rate'"></app-retry-rate-chart>
+<app-test-time-chart #testTimeChart *ngIf="project === 'test time'"></app-test-time-chart>
+<app-ate-temperature-chart #ateTemperature *ngIf="project === 'ATE Temperature'"></app-ate-temperature-chart>
+<app-facpk-chart #facpkChart *ngIf="project === 'assy fixturecpk'"></app-facpk-chart>
+<app-yield-rate-chart #yieldRateChart *ngIf="project === 'yield_rate'"></app-yield-rate-chart>
+<app-assembly-defec-chart #assemblyChart *ngIf="project === 'fixture retry rate'"></app-assembly-defec-chart>

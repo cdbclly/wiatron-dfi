@@ -1,0 +1,11 @@
+<h2>{{'imq-mt-upWistronManual' | translate}}</h2>
+<button nz-button nzType="primary" [nzSize]="'large'" nzShape="circle" (click)="wistronUpload.click()">
+  <i class="anticon anticon-upload"></i>
+</button>
+<h2>{{'imq-mt-upSupplierManual' | translate}}</h2>
+<button nz-button nzType="primary" [nzSize]="'large'" nzShape="circle" (click)="vendorUpload.click()">
+  <i class="anticon anticon-upload"></i>
+</button>
+
+<input #wistronUpload type="file" hidden accept=".pdf" (change)="handleUploadFile($event,'緯創')">
+<input #vendorUpload type="file" hidden accept=".pdf" (change)="handleUploadFile($event,'廠商')">

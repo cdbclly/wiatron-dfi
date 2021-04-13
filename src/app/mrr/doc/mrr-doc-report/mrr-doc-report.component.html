@@ -1,0 +1,129 @@
+<div class="mrr-doc-all" #MrrDocUpload>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>MRR Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.document-title' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.document-title' | translate }}</span>
+  </div>
+  <div class="mrr-doc-query">
+    <div class="mrr-doc-query-item" *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select" (queryValueChange)="querySelect[key].change$.next($event)">
+      </app-dfc-query-input>
+    </div>
+    <div class="mrr-doc-query-item">
+      <div class="mrr-doc-query-div" [ngStyle]="{'width': '420px', 'margin': '10px 0 0 0'}">
+        <div class="mrr-doc-query-span">
+          <span>{{ 'mrr.nudd-timeInterval' | translate }}</span>
+        </div>
+        <div class="mrr-doc-query-content">
+          <nz-range-picker [nzFormat]="rangePickerFormat" [(ngModel)]="queryOther.dateRange"></nz-range-picker>
+        </div>
+      </div>
+    </div>
+    <div class="mrr-doc-query-item">
+      <div class="mrr-doc-query-div" [ngStyle]="{'width': '300px', 'margin': '10px 0 0 0'}">
+        <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="checkStageBox($event)">
+          <div nz-row>
+            <div *ngFor="let item of queryOther.stageList" nz-col nzSpan="6">
+              <label nz-checkbox [nzValue]="item.Value" [(ngModel)]="item.Checked">{{item.Value}}</label>
+            </div>
+          </div>
+        </nz-checkbox-wrapper>
+      </div>
+    </div>
+    <div class="mrr-doc-query-item">
+      <button nz-button nzType="primary" (click)="query()">{{ 'mrr.mrr-query' | translate }}</button>
+    </div>
+  </div>
+  <div class="mrr-doc-line"></div>
+  <div class="mrr-doc-echart" *ngIf="echartFlag">
+    <div class="section" *ngFor="let item of options">
+      <div echarts (chartClick)="clickEchart($event, item)"  class="chart" [options]="item"></div>
+    </div>
+  </div>
+  <div class="mrr-doc-table-title" *ngIf="echartFlag">
+    <span>{{ 'mrr.document-unfinish-modelFile' | translate }} Summary</span>
+  </div>
+  <div class="mrr-doc-table" *ngIf="echartFlag">
+    <nz-table #reportTabel nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true'
+      [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th width="10%">{{ 'mrr.mrr-stage' | translate }}</th>
+          <th width="10%">{{ 'mrr.mrr-site' | translate }}</th>
+          <th width="20%">{{ 'mrr.mrr-model' | translate }}</th>
+          <th width="20%">{{ 'mrr.document-ungoal-file' | translate }}</th>
+          <th width="20%">{{ 'mrr.document-days-overdue' | translate }}</th>
+          <th width="20%">PIC({{ 'mrr.document-unit' | translate }})</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of reportTabel.data; let i=index">
+          <td>{{data.stage}}</td>
+          <td>{{data.plant | site}}</td>
+          <td>{{data.proName}}</td>
+          <td style="text-align: left;">
+            {{data.ungoalFileCount}}
+          </td>
+          <td>{{data.delayedDay | mrrDocDelayedDay}}</td>
+          <td>{{data.role}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<!-- Report報表 -->
+<nz-modal nzWrapClassName="vertical-center-modal" class="dfc-report-modal" [nzWidth]="popParam.width"
+  [(nzVisible)]="popParam.isVisible" (nzOnCancel)="cancelPop()" [nzContent]="reportPopContent"
+  [nzTitle]="reportPopTitle" [nzFooter]="reportPopFooter">
+  <div class="dfc-report-title" #reportPopTitle>
+    {{ 'mrr.mrr-file' | translate }}
+    {{ popParam.title }}
+    {{ 'mrr.document-model-information' | translate }}
+  </div>
+  <div class="dfc-report-content" #reportPopContent>
+    <button style="margin: 2px 0;" nz-button [nzType]="'primary'" title="Download" nzShape="circle"
+      (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+    <nz-table id="downdata" #reportPopTable nzBordered nzShowQuickJumper style="width: 100%" [nzData]="popParam.dataSet"
+      [nzPageSize]="9999" [nzHideOnSinglePage]='true'>
+      <thead>
+        <tr>
+          <th>List</th>
+          <th>{{ 'mrr.mrr-site' | translate }}</th>
+          <th>BU</th>
+          <th>{{ 'mrr.mrr-customer' | translate }}</th>
+          <th>Project Code</th>
+          <th>{{ 'mrr.mrr-model' | translate }}</th>
+          <th>{{popParam.stage}} Exit Time</th>
+          <th>{{ 'mrr.mrr-link' | translate }}</th>
+          <th>date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of reportPopTable.data; let i=index;">
+          <td>{{(i + 1)}}</td>
+          <td>{{data.plant}}</td>
+          <td>{{(data.proName | plantModel: [data.plant] | async)?.bu}}</td>
+          <td>{{(data.proName | plantModel: [data.plant] | async)?.custom}}</td>
+          <td>{{(data.proName | plantModel: [data.plant] | async)?.proCode}}</td>
+          <td>{{data.proName}}</td>
+          <td>{{(data.proName | plantModel: [data.plant, popParam.stage] | async)?.dueDay}}</td>
+          <td>
+            <a (click)="clickLink(data.proName, data.plant)" style="margin-left: 10px;">
+              <i class="anticon anticon-link"></i>
+            </a>
+          </td>
+          <td>{{(data.proName | plantModel: [data.plant] | async)?.createDay}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <ng-template #reportPopFooter>
+    <button nz-button nzType="primary" (click)="cancelPop()">{{ 'mrr.mrr-return' | translate }}</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,15 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>設備溫度監控(ATE)</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  設備溫度監控(ATE) <a *ngIf="cur_plant"
+    href="http://dmc.{{cur_site | lowercase}}.wistron.com.cn/EC/?Plant={{cur_plant}}&eventId={{project | event : 'toEvent'}}&evt_dt={{cur_date}}"
+    target="_blank"><i class="anticon anticon-link" nzTitle="Link DMC" nzPlacement="top" nz-tooltip></i></a>
+</div>
+<app-top-options (queryOption)="queryOp($event)" [cur_site]="cur_site" [cur_plant]="cur_plant"
+  [cur_section]="cur_section" [cur_line]="cur_line" [cur_mdname]="cur_mdname" [project]="project"
+  [cur_model]="cur_model"></app-top-options>
+<app-ate-temperature-chart #ateTempChart></app-ate-temperature-chart>

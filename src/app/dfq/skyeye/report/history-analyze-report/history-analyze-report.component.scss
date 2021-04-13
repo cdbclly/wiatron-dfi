@@ -1,0 +1,55 @@
+body {
+  margin: 0 8px;
+  width: 100%;
+}
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+.line-chart{
+  height: 20vw;
+  width: 100%;
+  margin-top: 2vw;
+}
+th {
+  border: 1px solid black;
+  padding: 3px;
+  text-align: center;
+  background-color: rgb(205, 205, 205);
+}
+ td {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 12px;
+}
+table {
+  background-color: white;
+  color: black;
+  margin: 0 auto;
+  width: 100%;
+}
+span {
+  font-size: 14px;
+}
+.query-row {
+  margin-bottom: 15px;
+  width: 100%;
+  // min-width: 1330px;
+
+  .field1 {
+    display: inline-block;
+    width: 25%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+  }
+}
+nz-select {
+  width: 60%;
+}

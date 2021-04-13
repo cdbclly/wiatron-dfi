@@ -1,0 +1,22 @@
+<div class="query-row">
+    <div class="field1">
+      <span class="span-width1">
+          <span style="color: red;">*</span>
+          <span>類型</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_searchBy" (ngModelChange)="getOptions('searchBy')">
+          <nz-option nzLabel="異常" nzValue="abnormal"></nz-option>
+          <nz-option nzLabel="預警" nzValue="earlyWarn"></nz-option>
+          <nz-option nzLabel="追溯" nzValue="traceBack"></nz-option>
+      </nz-select>
+    </div>
+    <div class="field">
+        <span class="span-width2">
+            <span style="color: red;">*</span>
+            <span>單號</span>
+        </span>
+        <input nz-input placeholder="" [(ngModel)]="formNos"  (ngModelChange)="getOptions('formNos')"/>
+    </div>
+    <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

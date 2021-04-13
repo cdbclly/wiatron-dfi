@@ -1,0 +1,152 @@
+<button nz-button nzType="primary" *ngIf="rawData['size'].length" style="border-radius: 6px;margin-left: 96%; height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal('title')"><i nz-icon type="download" theme="outline"></i></button>
+<!-- <nz-table
+#groupingTable
+[nzData]="rawData['size'][0]['detail']"
+nzBordered
+nzSize="middle"
+[nzScroll]="scrollConfig"
+[nzShowPagination]='false'
+    >
+    <thead>
+      <tr>
+        <th rowspan="2" nzWidth="100px" nzLeft="0px">{{"imq-snCount" | translate}}:{{rawData['size'][0]['detail'].length}}</th>
+        <th colspan="2" *ngFor="let item of rawData['size']" style="width:120px">
+            {{item['name']}}
+          </th>
+        <th colspan="2" *ngFor="let item of rawData['deformation']" style="width:120px">
+            {{item['name']}}
+          </th>
+      </tr>
+      <tr>
+          <th *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+          <th *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+      </tr>
+      <tr>
+        <th nzLeft="0px" style="font-weight: 300;">CPK</th>
+        <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300;" [ngClass]=" item['cpk'] <= judgeData ? 'redColor':''">{{item['cpk']}}</th>
+        <th colspan="2" *ngFor="let item of rawData['deformation']" style="font-weight: 300;">{{item['cpk']}}</th>
+      </tr>
+      <tr>
+        <th nzLeft="0px" >{{"imq-cpkChart"| translate}}</th>
+        <th colspan="2" *ngFor="let item of rawData['size']"   style="text-align: center; width:120px"><i style="color: white;font-size: 16px;" (click)="showChart(item)" class="anticon anticon-line-chart"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of rawData['size'][0]['detail']; let i=index">
+        <td nzLeft="0px" nzWidth="100px">{{item['unitSerialNumber']}}</td>
+        <td colspan="2" *ngFor="let maxItem of rawData['size']" style="width:120px" >
+          {{maxItem['detail'][i]['testData'] | number: '1.2-2'}}
+        </td>
+        <td colspan="2" *ngFor="let maxItem of rawData['deformation']" style="width:120px">
+          {{maxItem['detail'][i]['testData'] | number: '1.2-2'}}
+        </td>
+      </tr>
+    </tbody>
+</nz-table> -->
+
+
+
+
+
+
+<nz-table
+#groupingTable
+[nzData]="rawData['size'][0]['detail']"
+nzBordered
+nzPageSize = "10"
+[(nzPageIndex)]="currentIndex"
+nzSize="middle"
+[nzScroll]="scrollConfig"
+    >
+    <thead>
+      <tr>
+        <th rowspan="2" nzWidth="100px" nzLeft="0px">{{"imq-snCount" | translate}}: {{rawData['size'][0]['detail'].length}}</th>
+        <th colspan="2"  *ngFor="let item of rawData['size']" style="width:120px">
+            {{item['name_new']? item['name_new'] : item['name']}}
+          </th>
+        </tr>
+      <tr>
+          <th *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+          <th *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item | number: '1.0-2'}</th>
+      </tr>
+      <tr>
+          <th nzLeft="0px" style="font-weight: 300;text-align: center;">CPK</th>
+          <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300; width:120px;" [ngClass]=" item['cpk'] <= judgeData ? 'redColor':''" >{{item['cpk'] | number: '1.2-2'}}</th>
+        </tr>
+        <!-- 新增 machineID -->
+        <tr>
+          <th nzLeft="0px" style="font-weight: 300;text-align: center;">MachineID</th>
+          <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300; width:120px;" >{{item['testMachineId']}}</th>
+        </tr>
+
+        <tr>
+          <th nzLeft="0px" style="font-weight: 300;text-align: center;">{{"imq-cpkChart"| translate}}</th>
+          <th colspan="2" *ngFor="let item of rawData['size']"   style="text-align: center; width:120px"><i style="color: white;font-size: 16px;" (click)="showChart(item)" class="anticon anticon-line-chart"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable.data; let i=index">
+        <td nzLeft="0px" nzWidth="100px">{{item['unitSerialNumber']}}</td>
+        <td colspan="2"  *ngFor="let maxItem of rawData['size']" style="width:120px">{{maxItem['detail'][i + (currentIndex -1) * 10]['testData'] | number: '1.2-2'}}</td>
+        <td colspan="2" *ngFor="let maxItem of rawData['deformation']" style="width:120px">{{maxItem['detail'][i + (currentIndex -1) * 10]['testData'] | number: '1.2-2'}}</td>
+      </tr>
+    </tbody>
+</nz-table>
+
+
+<nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <div class="flexUI">
+    <div style="flex: 1; font-size: 13px; background:white; margin:5px;">
+      <div style="text-align: center;">Process Data</div>
+      <div>
+        <span class="spanx">LSL</span>
+        <span>{{xLowerSpecLimit}}</span>
+      </div>
+      <div>
+        <span class="spanx">USL</span>
+        <span>{{xUpperSpecLimit}}</span>
+      </div>
+      <div>
+        <span class="spanx">Sample Mean</span>
+        <span>{{mean}}</span>
+      </div>
+      <div>
+        <span class="spanx">Sample N</span>
+        <span>{{count}}</span>
+      </div>
+      <div>
+        <span class="spanx">StDev</span>
+        <span>{{sigma}}</span>
+      </div>
+    </div>
+    <div *ngIf="isVisible" echarts [options]="chart" class="chart"></div>
+    <div style=" flex: 1;  font-size: 13px;">
+      <div style=" background:white; margin:5px;">
+        <div style="text-align: center;">Overall Capability</div>
+        <div>
+          <span class="spanx">Cpm</span>
+          <span>{{cpm}}</span>
+        </div>
+      </div>
+      <div style="margin-top: 2px;  background:white; margin:5px;">
+        <div style="text-align: center;">Potential (Within) Capability</div>
+        <div>
+          <span class="spanx">Cp</span>
+          <span>{{cp}}</span>
+        </div>
+        <div>
+          <span class="spanx">CPL</span>
+          <span>{{cpl}}</span>
+        </div>
+        <div>
+          <span class="spanx">CPU</span>
+          <span>{{cpu}}</span>
+        </div>
+        <div>
+          <span class="spanx">Cpk</span>
+          <span>{{cpk}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nz-modal>

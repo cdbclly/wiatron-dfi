@@ -1,0 +1,123 @@
+span {
+  font-size: 14px;
+}
+.query-row {
+  margin-bottom: 15px;
+  width: 100%;
+  // min-width: 1330px;
+
+  .field1 {
+    display: inline-block;
+    width: 25%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+  }
+
+  .field2 {
+    display: inline-block;
+    width: 100%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+    nz-select {
+      width: 90%;
+    }
+  }
+
+  .field {
+    display: inline-block;
+    width: 25%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+  }
+
+  .field3 {
+    display: inline-block;
+    width: 100%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+    nz-select {
+      width: 90%;
+    }
+  }
+
+  .field5 {
+    display: inline-block;
+
+    span {
+      width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field4 {
+    display: inline-block;
+
+    span {
+      width: 50px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field6 {
+    display: inline-block;
+    margin-right: 15px;
+
+    span {
+      width: 20px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+nz-select {
+  width: 60%;
+  // margin-right: 15px;
+}
+
+.style_retryRate{
+  width: 27%;
+}
+
+.style_other{
+  width: 33%;
+}
+
+.styleWidth{
+  width: 27%;
+}
+.styleWidth1{
+  width: 33%;
+}

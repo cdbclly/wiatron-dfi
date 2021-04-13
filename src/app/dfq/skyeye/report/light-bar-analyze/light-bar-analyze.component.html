@@ -1,0 +1,111 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>光源流明監控(Light Bar)</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  光源流明監控(Light Bar)
+  <a *ngIf="cur_plant"
+    href="http://dmc.{{cur_site | lowercase}}.wistron.com.cn/EC/?Plant={{cur_plant}}&eventId={{project | event : 'toEvent'}}&evt_dt={{cur_date}}"
+    target="_blank"><i class="anticon anticon-link" nzTitle="Link DMC" nzPlacement="top" nz-tooltip></i></a>
+</div>
+
+
+<div class="query-row">
+
+  <div class="field" style="width: 45%;">
+    <span style="text-align: center;margin-right: 10px;margin-left:20px;">
+      <span style="color: red;margin-right: 10px;">*</span>
+      <span>日期</span>
+    </span>
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateInputFrom"
+      (ngModelChange)="getOptionDate($event, 'dateFrom')"></nz-date-picker>
+    ~
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateInputTo"
+      (ngModelChange)="getOptionDate($event, 'dateTo')"></nz-date-picker>
+  </div>
+
+  <div class="field">
+    <span style="width:  23%;">
+      <span style="color: red">*</span>
+      <span>廠別</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('site')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span style="width:  33%;">
+      <span style="color: red">*</span>
+      <span>廠區</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+
+<div class="query-row">
+<div style="display: inline-block; width: 45%;">
+  <div class="field" style="width: 50%;">
+    <span style="width: 24%;">
+      <span style="color: red;">*</span>
+      <span>線別</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear [(ngModel)]="cur_line" (ngModelChange)="getOptions('line')">
+      <nz-option *ngFor="let line of lineGroup" [nzLabel]="line" [nzValue]="line"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field" style="width: 50%;">
+    <span style="width: 23%;">
+      <span style="color: red">*</span>
+      <span>站別</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('mdname')">
+      <nz-option *ngFor="let mdname of mdGroup" [nzLabel]="mdname" [nzValue]="mdname"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+  <div class="field">
+    <span style="width:  23%;">
+      <span style="color: red;">*</span>
+      <span>機種</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear [(ngModel)]="cur_model" (ngModelChange)="getOptions('model')">
+      <nz-option *ngFor="let modelItem of modelGroup" [nzLabel]="modelItem" [nzValue]="modelItem"></nz-option>
+    </nz-select>
+  </div>
+
+
+  <div class="field">
+    <span style="width:  33%;">
+      <span style="color: red">*</span>
+      <span>治具編號</span>
+    </span>
+    <nz-select [nzDisabled]="nzdisabled" nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_item"
+      (ngModelChange)="getOptions('fixture')">
+      <nz-option *ngFor="let item of itemGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+    </nz-select>
+  </div>
+
+
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+  <button nz-button [nzType]="'primary'" title="下载" nzShape="round" (click)="downloadDataFun(downLoadExcelData,'MA趋势图')"
+    style="margin-bottom: 15px;">
+    <i nz-icon type="download" theme="outline"></i>
+  </button>
+</div>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<div *ngIf="isShowLineEchart" echarts [options]="line_chart" class="line-chart"></div>
+<div *ngIf="spotEchartArr.length > 0" class="setInput">Y轴上限值:<input nz-input placeholder="设定上限" [(ngModel)]="endInput" (ngModelChange)="setMaxMin()" style="width: 120px;"></div>
+
+<div class="section" *ngFor="let item of spotEchartArr">
+  <div echarts class="sport-chart" [options]="item"></div>
+</div>

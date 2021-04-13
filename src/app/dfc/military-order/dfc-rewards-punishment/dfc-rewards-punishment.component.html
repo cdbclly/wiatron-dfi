@@ -1,0 +1,140 @@
+<!-- DFC -->
+<div class="body-top">
+  <div class="table">
+    <table id="downdata" *ngIf="showUpload">
+      <tr class="row1">
+        <td [attr.colspan]="(rule.Stage.length + 2)">DFC {{'military-order.workhour-reward-punishment-rule'|translate}}
+        </td>
+        <td>{{ version }}</td>
+      </tr>
+      <tr class="row2">
+        <td colspan="2"><span class="bold">Stage</span></td>
+        <td *ngFor="let stage of rule.Stage">
+          <span class="bold">{{ stage }}</span>
+        </td>
+        <td><span class="bold">Remark</span></td>
+      </tr>
+      <tr class="row3">
+        <td colspan="2"><span class="bold">Goal</span></td>
+        <td [attr.colspan]="rule.Stage.length"><span>{{'military-order.system-auto-bringout'|translate}}</span></td>
+        <td rowspan="7">
+          <span>1. {{'military-order.workhour-calculate-Logic-standard'|translate}}</span><br />
+          <span>2. {{'military-order.special-reason-substandard'|translate}}</span>
+        </td>
+      </tr>
+      <tr class="row4">
+        <td colspan="2"><span class="bold">Actual</span></td>
+        <td *ngFor="let stage of rule.Stage" class="font-color">
+          <span>{{'military-order.system-auto-bringout'|translate}}</span>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="bold">{{'military-order.standard'|translate}}</span></td>
+        <td><span class="bold">{{'military-order.standard-condition'|translate}}</span></td>
+        <td *ngFor="let stage of rule.Stage">
+          <span>{{ rule.Standard[stage]["Reward"][0] }}</span>
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="4"><span class="bold">{{'military-order.reward-punishment'|translate}}</span></td>
+        <td>
+          <span class="bold">{{'military-order.standard-reward'|translate}}</span><br />
+          <span>{{'military-order.stage-standard-notice'|translate}}</span>
+        </td>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Reward.slice(1)">{{
+              list
+            }}</span><br />
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="3">
+          <span class="bold">{{'military-order.not-standard-punishment'|translate}}</span><br />
+          <span>{{'military-order.stage-not-standard-notice'|translate}}</span>
+        </td>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv1">{{
+              list
+            }}</span><br />
+        </td>
+      </tr>
+      <tr>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv2">{{
+              list
+            }}</span><br />
+        </td>
+      </tr>
+      <tr>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv2">{{
+              list
+            }}</span><br />
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="body-bottom">
+  <span *ngIf="sendMode.isSign">{{ sendMode.value }}</span>
+  <app-upload-file *ngIf="!sendMode.isSign" class="dfc-btn-upload" [showLoading]="showLoading" [uploadType]="uploadType"
+    (uploadFile)="upload($event)" (fileShow)="upload($event)"></app-upload-file>
+  <button (click)="sendSign()" *ngIf="!sendMode.isSign" nz-button [nzType]="'primary'">
+    {{'military-order.send-sign-off' | translate}}
+  </button>
+  <button (click)="download()" nz-button [nzType]="'primary'">
+    Download
+  </button>
+</div>
+
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="450" [(nzVisible)]="isSendSignVisible"
+  [nzTitle]="'military-order.send-sign-off' | translate" (nzOnCancel)="cancelSendSign()"
+  [nzFooter]="modalEditSaveFooter">
+  <div class="dfc-send">
+    <table>
+      <tr>
+        <td>PQM_SECTION</td>
+        <td>
+          <nz-select [(ngModel)]="sendMode.member1" [nzDisabled]="!isSendSignVisible" nzAllowClear nzShowSearch
+            [nzServerSearch]="true">
+            <ng-container *ngFor="let option of sendMode.memberOption1">
+              <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+            </ng-container>
+          </nz-select>
+        </td>
+      </tr>
+      <tr>
+        <td>PQM_DEPT</td>
+        <td>
+          <nz-select [(ngModel)]="sendMode.member2" [nzDisabled]="!isSendSignVisible" nzAllowClear nzShowSearch
+            [nzServerSearch]="true">
+            <ng-container *ngFor="let option of sendMode.memberOption2">
+              <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+            </ng-container>
+          </nz-select>
+        </td>
+      </tr>
+      <tr>
+        <td>PQM_DIVISIONS</td>
+        <td>
+          <nz-select [(ngModel)]="sendMode.member3" [nzDisabled]="!isSendSignVisible" nzAllowClear nzShowSearch
+            [nzServerSearch]="true">
+            <ng-container *ngFor="let option of sendMode.memberOption3">
+              <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+            </ng-container>
+          </nz-select>
+        </td>
+      </tr>
+      <tr>
+        <td>{{'military-order.describe' | translate}}</td>
+        <td>
+          <textarea rows="2" nz-input [(ngModel)]="sendMode.description" class="textarea"></textarea>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <ng-template #modalEditSaveFooter>
+    <button nz-button nzType="default" (click)="cancelSendSign()">Cancel</button>
+    <button nz-button nzType="primary" (click)="sendButton()">{{'military-order.send-sign-off' | translate}}</button>
+  </ng-template>
+</nz-modal>

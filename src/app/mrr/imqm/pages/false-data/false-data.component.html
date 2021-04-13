@@ -1,0 +1,23 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-magBoard' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-kPIManagement' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-falseData' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+  <app-select [subject]="subject" (queryOps)="query($event)"></app-select>
+
+  <button nz-button [nzType]="'primary'" title="{{'imq-download' | translate}}" nzShape="circle" (click)="downloadData()" style="margin-bottom: 15px;">
+    <i nz-icon type="download" theme="outline"></i>
+  </button>
+
+
+  <!-- <button nz-button [nzType]="'primary'"  *ngIf="allFormsList && allFormsList.length > 0"   (click)="chooseNoClose()" style="margin-left: 10px; margin-bottom: 15px;">
+    {{'imq-fd-noClose' | translate}}
+  </button> -->
+<span style="margin-left: 15px;  margin-bottom: 15px;"><nz-switch [(ngModel)]="switchValue" (ngModelChange)="switchChange(switchValue)"></nz-switch>{{'imq-fd-noClose' | translate}}</span>
+<app-forms-list [isEdit]="isEdit" [seriesTotalData]="allFormsList" (closeForm)="closeForm($event)"
+(rejectForm)="rejectForm($event)" (subTableDetail)="showDetail($event)"></app-forms-list>
+
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>

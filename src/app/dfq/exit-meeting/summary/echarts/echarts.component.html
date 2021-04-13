@@ -1,0 +1,6 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <span *ngFor="let option of options" style="text-align: center">
+    <span echarts class="chart" [options]="option"></span>
+  </span>
+</nz-spin>
+

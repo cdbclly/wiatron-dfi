@@ -1,0 +1,28 @@
+<nz-modal *ngIf="modalShow" [(nzVisible)]="modalShow" [nzWidth]="1300" (nzOnCancel)="handleCancel()" [nzFooter]="null"
+  [nzTitle]="material">
+  <nz-table #nzTable id="report" [nzData]="factorTypes" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>{{ 'dfq.dfq-project' | translate }}</th>
+        <th>{{ 'dfq.dfq-material' | translate }}</th>
+        <th *ngFor="let factorType of nzTable.data">{{factorType.name}}</th>
+        <th>{{ 'dfq.dfq-yield' | translate }}</th>
+        <th>{{ 'dfq.rfi-modified-time' | translate }}</th>
+        <th>PIC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr *ngFor="let data of nzTable.data, let i=index">
+      </tr> -->
+      <tr *ngFor="let item of modelHistory,let j=index">
+        <td><span *ngIf="j===0">{{ 'dfq.rfi-initial-design' | translate }}</span>
+          <span *ngIf="j!==0">The {{j}} modification</span></td>
+        <td>{{materialName}}</td>
+        <td *ngFor="let data of history[j]">{{(data.factorId | factor | async)?.name}}</td>
+        <td>{{item.yieldRate | percent}}</td>
+        <td>{{item.createdOn | datetime}}</td>
+        <td>{{item.discussion['pic'] | userEnname | async}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

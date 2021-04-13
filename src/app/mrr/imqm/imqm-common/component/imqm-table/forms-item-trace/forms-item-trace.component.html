@@ -1,0 +1,71 @@
+<!-- <button nz-button nzType="primary" *ngIf="rawData.length" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal('title')"><i nz-icon type="download" theme="outline"></i></button> -->
+
+<div style="position: relative; width: 100%;">
+  <!-- <a [attr.href]=urlString target="_blank" style="position: absolute; left: 0; top: 0;"><i nz-icon type="link" theme="outline"></i></a> -->
+  <button nz-button nzType="primary" *ngIf="rawData.length"
+    style="border-radius: 6px; height: 25px;font-size: 12px; margin-bottom: 10px; position: absolute; top: 0; right: 0;"
+    (click)="downloadTotal('title')"><i nz-icon type="download" theme="outline"></i></button>
+
+
+    <a *ngIf="imgDataArr.length === 1" [attr.href]="imgDataArr[0]['url']" target="_blank" nz-button nzType="primary"
+    style="border-radius: 6px; height: 25px; line-height: 25px; font-size: 12px; margin-bottom: 10px; position: absolute; top: 0; right: 50px; text-decoration: none; color: white;"
+    >Drawing</a>
+    <button *ngIf="imgDataArr.length > 1" nz-button nzType="primary"
+    style="border-radius: 6px; height: 25px;font-size: 12px; margin-bottom: 10px; position: absolute; top: 0; right: 50px;"
+    (click)="showModal()">Drawing</button>
+
+</div>
+<br>
+
+<nz-table #groupingTable [nzData]="newRawData['tableContent']" nzBordered nzSize="middle" [(nzPageIndex)]="currentIndex"
+  [nzScroll]="scrollConfig">
+  <thead>
+    <tr>
+      <th [attr.rowspan]="3" nzWidth="80px" nzLeft="0px"></th>
+      <th [attr.rowspan]="3" nzWidth="120px" nzLeft="80px" style="text-align: center;">SN</th>
+      <th [attr.rowspan]="3" nzWidth="120px" nzLeft="80px" style="text-align: center;">{{'imq-yr-date' | translate}}
+      </th>
+      <th [attr.rowspan]="3" nzWidth="70px" nzLeft="200px">{{'imq-inspectResult' | translate}}</th>
+
+      <th [attr.colspan]="2" *ngFor="let item of newRawData['testItem']" style="width:120px">
+        {{item}}
+      </th>
+    </tr>
+    <tr>
+      <th *ngFor="let item of upperAndLower" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+    </tr>
+    <tr>
+      <th [attr.colspan]="2" *ngFor="let item of newRawData['machineId']" style="text-align: center;">{{item}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of newRawData['tableContent']; let i=index">
+      <td nzLeft="0px">{{item[0]}}</td>
+      <td nzLeft="80px">
+        {{item[1]}}</td>
+      <td nzLeft="80px">
+        {{item[2]}}</td>
+      <td nzLeft="200px">{{item[3]}}</td>
+        <td [attr.colspan]="2" *ngFor="let maxItem of tableContent[i + (currentIndex -1) * 10]; let j=index"
+        [ngStyle]="{color: maxItem | color : newRawData['upperLower'][j]}" style="width:120px; text-align: center;">
+        {{maxItem}}</td>
+    </tr>
+  </tbody>
+</nz-table>
+
+<nz-modal *ngIf="imgDataArr.length > 1" [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '20%' }" nzWidth="75%" (nzOnCancel)="handleCancel()"  (nzOnOk)="handleOk()" [nzClosable]="cancelOK" [nzFooter]="footer">
+  <nz-table  #imgData [nzData]="imgDataArr" nzBordered nzSize="middle" [nzShowPagination]='false' >
+    <thead>
+      <tr>
+        <th style="text-align: center;">{{'imq-fd-item' | translate}}</th>
+        <th style="text-align: center;">{{'imq-fd-img' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of imgData.data">
+        <td>{{item['name']}}</td>
+        <td><a [attr.href]="item['url']" target="_blank" style="text-decoration: none;" >{{'imq-fd-check' | translate}}</a></td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

@@ -1,0 +1,34 @@
+<nz-modal [(nzVisible)]="show" [nzWidth]="1000" (nzOnCancel)="handleCancel()" [nzFooter]="null" [nzTitle]="null">
+  <br>
+  <br>
+  <div>
+    <nz-table nzBordered="true" #nzTable id="report" [nzData]="factorTypes" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th>{{ 'dfq.dfq-project' | translate }}</th>
+          <th>{{ 'dfq.rfi-factor' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let factorType of factorTypes; let i=index">
+          <td>{{factorType.name}}</td>
+          <td> <label *ngIf="Selectfactor">{{ !factor[i]? '' : (factor[i]| factor | async)?.name  }} </label>
+            <nz-select *ngIf="needEdit" style="width: 300px;" nzShowSearch [(ngModel)]="selectedFactorIds[i]"
+              (ngModelChange)="Change($event,i)">
+              <ng-container *ngFor="let item of factorType.factors">
+                <nz-option [nzValue]="item.id" [nzLabel]="item.name">
+                </nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <br>
+    <div style="text-align: center">
+      <button *ngIf="Selectfactor" nz-button nzType="primary" style="border-radius:6px;" (click)="edit()">Edit</button>
+      &nbsp;&nbsp;
+      <button *ngIf="needEdit" nz-button [nzSize]="'normal'" nzType="primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</nz-modal>

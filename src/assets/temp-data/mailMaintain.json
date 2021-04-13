@@ -1,0 +1,60 @@
+{
+  "vendor": [
+    {
+      "key": "1",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "廠商1",
+      "mailAddress": "hahaha@witrom.com"
+    },
+    {
+      "key": "2",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "廠商1",
+      "mailAddress": "hahaha@witrom.com"
+    },
+    {
+      "key": "3",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "廠商1",
+      "mailAddress": "hahaha@witrom.com"
+    }
+  ],
+  "wistron": [
+    {
+      "key": "1",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "N/A",
+      "mailAddress": "hahaha@witrom.com"
+    },
+    {
+      "key": "2",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "N/A",
+      "mailAddress": "hahaha@witrom.com"
+    },
+    {
+      "key": "3",
+      "site": "WKS",
+      "plant": "P1",
+      "model": "幾種1",
+      "partNo": "料號1",
+      "vendor": "N/A",
+      "mailAddress": "hahaha@witrom.com"
+    }
+  ]
+}

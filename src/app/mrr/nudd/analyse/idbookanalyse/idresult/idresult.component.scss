@@ -1,0 +1,43 @@
+body {
+  margin: 0 1%;
+  width: 100%;
+}
+
+td {
+  border: 1px solid white;
+  text-align: center;
+}
+
+.result {
+  margin: 0 auto;
+  width: 90%;
+
+  th {
+    text-align: center;
+    border: 1px solid;
+  }
+}
+
+.buttonarea {
+  float: right;
+
+  button {
+    margin-right: 20px;
+  }
+}
+
+.mrr-btn-download {
+  height: 100%;
+  width: 100px;
+  float: right;
+  justify-content: space-around;
+  display: flex;
+}
+
+.otherInput {
+  width: 200px;
+}
+
+.otherButton {
+  margin-left: 3px;
+}

@@ -1,0 +1,9 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>C4/C5 Exit Meeting</nz-breadcrumb-item>
+  <nz-breadcrumb-item>CX Exit Status Report</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">CX Exit Status Report</div>
+<app-query [bgs]="bgs" [sites]="sites" [isLoading]="isChartLoading && isListLoading"  (queryForm)="queryForm($event)"></app-query>
+<app-echarts [data]="stageStatus" [isLoading]="isChartLoading"></app-echarts>
+<app-result [data]="result" [site]="site" [plant]="plant" [customer]="customer" [isLoading]="isListLoading"></app-result>

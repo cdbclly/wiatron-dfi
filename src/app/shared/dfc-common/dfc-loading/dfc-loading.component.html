@@ -1,0 +1,10 @@
+<!-- 刪除后提示 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="282" [nzStyle]="{ height: '202px' }"
+  [(nzVisible)]="isVisible" [nzClosable]="false" [nzCancelText]="null" [nzOkText]="null" [nzFooter]="null" nzTitle="">
+  <div class="dfc-delAfter-icon">
+    <i nz-icon [type]="'loading'" [spin]="true"></i>
+  </div>
+  <div class="dfc-delAfter-text">
+    <span>{{'military-order.data-loading' | translate}}</span>
+  </div>
+</nz-modal>

@@ -1,0 +1,15 @@
+<div class="tit"> MRR--{{ 'mrr.vendor-dashboard-title' | translate }}
+  <span>&nbsp;/&nbsp;{{this.stageId}}</span>
+</div>
+<div class="board-row" *ngFor="let data of pieChartDatas">
+  <div class="board-row-dfc">
+    <div class="textTile">
+      {{data.producType}}
+    </div>
+    <div class="section" *ngFor="let options of data.pieChart">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height" (click)="linkMufrList(data, options)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>

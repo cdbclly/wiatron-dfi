@@ -1,0 +1,197 @@
+<div class="mrr-doc-all" #MrrDocUpload>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.document-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.document-file-view' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.document-file-view' | translate }}</span>
+  </div>
+  <div class="mrr-doc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select" (queryValueChange)="querySelect[key].change$.next($event)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="mrr-doc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">{{ 'mrr.mrr-query' | translate }}</button>
+    </div>
+  </div>
+  <div class="mrr-doc-line"></div>
+  <div class="mrr-doc-btn">
+    <div>
+      <span *ngIf="tableFlag">Project Name: {{projectName}}</span>
+    </div>
+    <div class="mrr-doc-btn-left" *ngIf="tableFlag">
+      <button nz-button nzType="primary" *ngIf="!editByPass" (click)="byPassEdit()">
+        <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+      </button>
+      <button nz-button nzType="primary" *ngIf="editByPass" (click)="byPassSave()">
+        <i class="anticon anticon-save"></i>{{ 'mrr.mrr-saveData' | translate }}
+      </button>
+      <button nz-button nzType="default" *ngIf="editByPass" (click)="byPassCancel()">
+        <i class="anticon anticon-close-circle"></i>{{ 'mrr.mrr-cancelEdit' | translate }}
+      </button>
+    </div>
+    <div class="mrr-doc-btn-right">
+      <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+        <input [(ngModel)]="searchInput" type="text" nz-input placeholder="input search part number" />
+      </nz-input-group>
+      <ng-template #suffixIconButton>
+        <i (click)="queryPLM()" style="cursor: pointer" nz-icon type="search"></ i>
+      </ng-template>
+    </div>
+  </div>
+  <div class="mrr-doc-table" *ngIf="tableFlag">
+    <nz-table #plantTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true'
+      [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th width="10%">{{ 'mrr.document-serial-number' | translate }}</th>
+          <th width="12%">{{ 'mrr.nudd-fileName' | translate }}</th>
+          <th width="12%">{{ 'mrr.document-fileType' | translate }}</th>
+          <th width="13%">{{ 'mrr.document-demand-stage' | translate }}</th>
+          <th width="10%">by Pass</th>
+          <th width="10%">{{ 'mrr.document-actual-stage' | translate }}</th>
+          <th width="12%">{{ 'mrr.document-lastest-updatetime' | translate }}</th>
+          <th width="15%">{{ 'mrr.document-pic' | translate }}</th>
+          <th width="10%">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="plantTable.data" let-i="index">
+          <ng-template ngIf [ngIf]="data.modelDocument.length > 0">
+            <tr *ngFor="let modelDoc of data.modelDocument; let j=index">
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">{{i+1}}</td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">{{data.documentName}}</td>
+              <td style="text-align: left;" [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                {{data.typeName}}
+              </td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                <nz-checkbox-group [(ngModel)]="data.stageCheckBox" [nzDisabled]="true"></nz-checkbox-group>
+              </td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                <nz-switch [(ngModel)]="modelDoc.byPass" [nzDisabled]="!editByPass" nzCheckedChildren="No upload"
+                  nzUnCheckedChildren="Need to upload"></nz-switch>
+              </td>
+              <td>{{modelDoc.currentStage}}</td>
+              <td [ngStyle]="modelDoc.ex && {'color': 'red'}">
+
+                {{(modelDoc.uploadDate | date: 'yyyy-MM-dd HH:mm:ss')}}
+
+              </td>
+              <td>
+                <a target="_blank" [href]="(modelDoc.uploadUser | member: 'mrrDocView' | async)?.email">
+                  {{ (modelDoc.uploadUser | member: 'mrrDocView' | async)?.show}}
+                </a>
+              </td>
+              <td>
+                <a *ngIf="modelDoc && ( data.documentName !== 'ID Book' || (data.documentName == 'ID Book') && canReadIDbook ) "
+                  target="_blank" [href]="downloadPath + (modelDoc.filepath) ">
+                  <i class="anticon anticon-download"></i>
+                </a>
+                <a *ngIf="modelDoc && data.documentName === 'ID Book' && !canReadIDbook" (click)="alert()">
+                  <i class="anticon anticon-download"></i>
+                </a>
+
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template ngIf [ngIf]="data.modelDocument.length === 0">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{data.documentName}}</td>
+              <td style="text-align: left;">
+                {{data.typeName}}
+              </td>
+              <td>
+                <nz-checkbox-group [(ngModel)]="data.stageCheckBox" [nzDisabled]="true"></nz-checkbox-group>
+              </td>
+              <td>
+              </td>
+              <td></td>
+              <td></td>
+              <td>{{ 'mrr.nudd-not-upload' | translate }}</td>
+              <td></td>
+            </tr>
+          </ng-template>
+        </ng-template>
+        <tr>
+          <td>{{plantTable.data.length + 1}}</td>
+          <td>BOM</td>
+          <td style="text-align: left;">機構標準文件</td>
+          <td colspan="5"></td>
+          <td>
+            <a (click)="clickBOM()">
+              <i class="anticon anticon-search"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- Report報表 -->
+<nz-modal nzWrapClassName="vertical-center-modal" class="mrr-doc-report-modal" [nzWidth]="bomList.width"
+  [(nzVisible)]="bomList.isVisible" (nzOnCancel)="cancelBomPop()" [nzContent]="reportPopContent" nzTitle="BOM文件列表"
+  [nzFooter]="reportPopFooter">
+  <div class="mrr-doc-report-content" #reportPopContent>
+    <nz-tabset (nzSelectedIndexChange)="selectedIndexChange($event)" [(nzSelectedIndex)]="selectedIndex">
+      <nz-tab nzTitle="BOM">
+        <div>
+          <input nz-input placeholder="請輸入你要篩選的bom料號" [(ngModel)]="bomFilter1"
+            style="width: 40%; float: right; margin-bottom: 5px">
+          <nz-table #reportPopTable nzBordered nzShowQuickJumper style="width: 100%"
+            [nzData]="bomList.dataSet | mrrDocBomFilter: bomFilter1" [nzPageSize]="10">
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>成品料號</th>
+                <th>成品描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of reportPopTable.data; let i=index;">
+                <td>{{(i + 1)}}</td>
+                <td (click)="queryPLMPartNum(data.PARTNUMBER)"> {{data.PARTNUMBER}}</td>
+                <td>{{data.NOMENCLATURE}}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-tab>
+
+      <nz-tab nzTitle="2" *ngIf="showBOM2">
+
+        <div>
+          <input nz-input placeholder="請輸入你要篩選的bom料號" [(ngModel)]="bomFilter2"
+            style="width: 40%; float: right; margin-bottom: 5px">
+          <i class="anticon anticon-download" (click)="download()"></i>
+          <nz-spin *ngIf="bomLoading" nzSimple [nzSize]="'large'"></nz-spin>
+          <nz-table id="reportPopTable2" #reportPopTable2 nzBordered nzShowQuickJumper style="width: 100%"
+            [nzData]="bomList.dataSet2 | mrrDocBomFilter: bomFilter2" [nzPageSize]="10" [nzFrontPagination]=paging>
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>成品料號</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of reportPopTable2.data; let i=index;">
+                <td>{{(i + 1)}}</td>
+                <td (click)="queryPartNumber(data.CPN)">{{data.CPN}}</td>
+                <!-- <td (click)="queryPartNumber(data.CPN)" >{{data[0]}}</td> -->
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+  <ng-template #reportPopFooter>
+    <button nz-button nzType="primary" (click)="cancelBomPop()">Back</button>
+  </ng-template>
+
+</nz-modal>

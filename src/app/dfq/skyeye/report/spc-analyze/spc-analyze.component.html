@@ -1,0 +1,155 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>生產過程監控(SPC)</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  生產過程監控(SPC)
+</div>
+<div class="query-row" style="margin-bottom: 25px;">
+  <!-- 厂别 -->
+<div class="field1">
+  <span style="width:  27%;">
+    <span style="color: red">*</span>
+    <span>廠別</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+    <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" ></nz-option>
+  </nz-select>
+</div>
+  <!-- 厂区 -->
+<div class="field1" (click)="getOptList('plant')">
+  <span style="width:  27%;">
+    <span style="color: red">*</span>
+    <span>廠區</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+    <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+  </nz-select>
+</div>
+<div class="field1" (click)="getOptList('upn')">
+  <span style="width: 22%;">
+  <span style="color: red">*</span>
+  <span>線別</span>
+  </span>
+  <nz-select style="width: 70%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_stationline" (ngModelChange)="getOptions('stationline')">
+    <nz-option *ngFor="let stationline of slGroup" [nzLabel]="stationline" [nzValue]="stationline"></nz-option>
+  </nz-select>
+</div>
+  <!-- 机种 -->
+<div class="field1" (click)="getOptList('model')">
+  <span style="width:  22%;">
+    <span style="color: red">*</span>
+    <span>機種</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear style="width: 70%;height: 35px;" [(ngModel)]="cur_model" (ngModelChange)="getOptions('model')">
+    <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model" ></nz-option>
+  </nz-select>
+</div>
+</div>
+<div class="query-row" style="margin-bottom: 25px;">
+<div class="field1" >
+    <span style="width: 27%;">
+    <span style="color: red">*</span>
+    <span>站別</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_stationtype" (ngModelChange)="getOptions('stationtype')">
+      <nz-option *ngFor="let stationtype of stGroup" [nzLabel]="stationtype" [nzValue]="stationtype"></nz-option>
+    </nz-select>
+</div>
+<div class="field1" >
+  <span style="width: 27%;">
+  <span style="color: red">*</span>
+  <span>治具名稱</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_machinemodel" (ngModelChange)="getOptions('machinemodel')">
+    <nz-option *ngFor="let machinemodel of mcGroup" [nzLabel]="machinemodel" [nzValue]="machinemodel"></nz-option>
+  </nz-select>
+</div>
+<div class="field1" style="width: 24%;">
+  <span style="width: 20%;">
+  <span style="color: red">*</span>
+  <span>总项目</span>
+  </span>
+  <nz-select style="width: 68%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_tdname" (ngModelChange)="getOptions('tdname')">
+    <nz-option *ngFor="let tdname of tdGroup" [nzLabel]="tdname" [nzValue]="tdname"></nz-option>
+  </nz-select>
+</div>
+<div class="field1" style="width: 24%;">
+  <span style="width: 19%;margin-right: 2%;">
+  <span style="color: red">*</span>
+  <span>子项目</span>
+  </span>
+  <nz-select style="width: 68%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('mdname')">
+    <nz-option *ngFor="let mdname of mdGroup" [nzLabel]="mdname" [nzValue]="mdname"></nz-option>
+  </nz-select>
+</div>
+</div>
+<div class="query-row">
+  <div class="field1" style="width: 50%;margin-bottom: 5px;">
+    <span style=" width:12%; margin-right: 2%;">
+      <span style="color: red">*</span>
+      <span>日期</span>
+    </span>
+      <!-- <nz-range-picker style="width: 80%;" [nzFormat]="dateFormat" [(ngModel)]="dateRange" nzShowTime (ngModelChange)="getOptions('cur_date', $event)"></nz-range-picker> -->
+      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateRangeFrom" (ngModelChange)="getOptions('datefrom')"></nz-date-picker>
+      ~
+      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateRangeTo" (ngModelChange)="getOptions('dateto')"></nz-date-picker>
+  </div>
+  <button class="field1_2" nz-button nzType="primary" (click)="queryclick()" style="border-radius:6px" [disabled]="queryButton">Query</button>  
+</div>
+<div class="query-row" style="border-bottom:1px solid rgb(151, 144, 144); margin-top: 2%;"></div>
+
+<div id="lineChart" class="field9" style="width:100%;height:600px;background-color:#e6e6e6;margin-top: 10px;margin-left:0px;">
+  <div id="lineChart1" class="field9" style="width:100%;height:295px;background-color: white;margin-top: 5px;margin-left:0px;">
+  </div>
+  <div id="lineChart2" class="field9" style="width:100%;height:295px;background-color: white;margin-top: 5px;margin-left:0px;">
+  </div>
+</div>
+
+<!-- <nz-modal [nzWidth]="850" [(nzVisible)]="isVisible_materials" nzTitle="" (nzOnCancel)="CancelmaterialsModal()" (nzOnOk)="handleOkmaterialsModal()">
+   -->
+  <nz-modal [(nzVisible)]="isVisible1" nzWidth="90%" nzTitle="" (nzOnCancel)="handleCancel1()" [nzClosable]="cancelOK1" [nzFooter]="footer1" (nzOnOk)="handleOk1()">
+    <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(spcrowdata, 'SPCRawData total')">下载</button>
+  <div>
+    <nz-table
+      nzBordered
+      nzShowQuickJumper
+      [nzData]="spcrowdata"
+      [nzPageSize]="10"
+      [nzWidthConfig] = "THwidth"
+      [(nzPageIndex)]="curPage"
+      [nzScroll]="{ x: '1000px' }">
+      <thead>
+        <tr style="font-size: 12px;">
+          <th>機種</th>
+          <th>線別</th>
+          <th>站別</th>
+          <th>机台序列号</th>
+          <th>总项目</th>
+          <th>子项目</th>
+          <th>开始测试时间</th>
+          <th>结束测试时间</th>
+          <th>测试值</th>
+          <th>测试值上限</th>
+          <th>测试值下限</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let data of spcrowdata;  let i = index;" style="font-size: 12px;">
+        <td>{{data.modelname}}</td>
+        <td>{{data.stationline}}</td>
+        <td>{{data.stationtype}}</td>
+        <td>{{data.unitserialnumber}}</td>
+        <td>{{data.tdname}}</td>
+        <td>{{data.mdname}}</td>
+        <td>{{data.startdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+        <td>{{data.stopdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+        <td>{{data.mdresult}}</td>
+        <td>{{data.mdupperlimit}}</td>
+        <td>{{data.mdlowerlimit}}</td>           
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-modal>

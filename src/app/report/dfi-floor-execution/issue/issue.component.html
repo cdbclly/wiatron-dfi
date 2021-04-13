@@ -1,0 +1,211 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.meetingRecord' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.each-site-floor-execution' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.floor-execution-issues' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="margin-top: 12px;">
+  <span style="font-size:20px;">{{'dfi-monthly-meeting.floor-execution-issues' | translate}}</span>
+</div>
+<div style="margin-top: 20px;">
+  <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{'dfi-monthly-meeting.module-name' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select style="width: 200px;" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+          formControlName="selectModule">
+          <ng-container *ngFor="let list of modules">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{'dfq.dfq-plant' | translate}}</nz-form-label>
+      <nz-form-control>
+        <nz-select style="width: 100px" nzAllowClear nzShowSearch formControlName="selectPlant">
+          <ng-container *ngFor="let list of plants">
+            <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!validateForm.valid">{{'dfq.dfq-query' | translate}}</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<div class="center-line"></div>
+<div class="dfc-btn">
+  <div class="dfc-btn-left">
+    <button nz-button nzType="primary" (click)="showModal()">
+      <i class="anticon anticon-plus">{{'dfq.dfq-add' | translate}}</i>
+    </button>
+  </div>
+</div>
+<!-- list of table -->
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <nz-table class="issue-table" #basicTable nzBordered nzShowQuickJumper [nzData]="issueSet" [nzPageSize]="10">
+    <thead (nzSortChange)="tableSort($event)" nzSingleSort>
+      <tr>
+        <th>{{'dfi-monthly-meeting.serial-number' | translate }}</th>
+        <th>{{'dfq.dfq-plant' | translate}}</th>
+        <th>{{'dfi-monthly-meeting.module-name' | translate }}</th>
+        <th nzShowFilter [(nzFilters)]="listOfCategorys" (nzFilterChange)="filter1($event)">
+          {{'dfi-monthly-meeting.issue-classification' | translate }}</th>
+        <th nzShowSort nzSortKey="priority">{{'dfi-monthly-meeting.priority' | translate }}</th>
+        <th nzWidth="220px">{{'mrr.nudd-describe' | translate}}</th>
+        <th nzWidth="150px">{{'dfi-monthly-meeting.reason' | translate }}</th>
+        <th nzWidth="150px">{{'dfi-monthly-meeting.solution' | translate }}</th>
+        <th>{{'dfi-monthly-meeting.proposer' | translate }}</th>
+        <th>{{'dfi-monthly-meeting.principal' | translate }}</th>
+        <th nzShowSort nzSortKey="dueDate">{{'dfq.dfq-due-date' | translate }}</th>
+        <th>{{'dfi-monthly-meeting.closing-date' | translate }}</th>
+        <th nzShowFilter [(nzFilters)]="ListOfStatus" (nzFilterChange)="filter2($event)"> {{'dfq.dfq-status' | translate }}</th>
+        <th>{{'dfi-monthly-meeting.operating' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data; let i = index">
+        <td>{{ data.id }}</td>
+        <td>{{ data.plantId == 'All'? data.plantId: data.plantId | site: {type: 'plant'} }}</td>
+        <td>{{ data.subsystemName }}</td>
+        <td>{{ data.category }}</td>
+        <td>{{ data.priority }}</td>
+        <td>{{ data.description }}</td>
+        <td>{{ data.rootCause }}</td>
+        <td>{{ data.solution }}</td>
+        <td>{{ data.createdBy | userEnname | async }} </td>
+        <td>{{ data.pic | userEnname | async }}</td>
+        <td>{{ data.dueDate | date: 'yyyy/MM/dd' }}</td>
+        <td>{{ data.actualCloseDay | date: 'yyyy/MM/dd' }}</td>
+        <td>
+          <div *ngIf="data.status === 3 else close" class="blue-circle"></div>
+          <ng-template #close>
+            <div *ngIf="data.status === 2 else open" class="green-circle"></div>
+          </ng-template>
+          <ng-template #open>
+            <div *ngIf="data.status === 0 else delay" class="orange1-circle"></div>
+          </ng-template>
+          <ng-template #delay>
+            <div *ngIf="getExpirationDays(data.dueDate) > 0 else ongoing" class="red1-circle"></div>
+          </ng-template>
+          <ng-template #ongoing>
+            <div *ngIf="data.status === 1" class="orange-circle"></div>
+          </ng-template>
+          {{data.status === 1 && getExpirationDays(data.dueDate) > 0 ? 'Delay' : data.status|statusName}}
+        </td>
+        <td>
+          <ng-container *ngIf="data.status ===2; else elseTemplate">
+            <span class="no-operate">{{'dfi-monthly-meeting.prohibited-operation' | translate }}</span>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <a (click)="showModal(data)"><i class="anticon anticon-edit"></i></a>
+            &nbsp;| &nbsp;
+            <a nz-popconfirm nzTitle="確定要刪除該項?" (nzOnConfirm)="deleteIssueRaw(data.id)"><i nz-icon type="delete"
+                theme="outline"></i></a>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>
+
+<!-- add and edit -->
+<nz-modal nzWidth="430px" *ngIf="saveData" [nzTitle]="modalTitle" [(nzVisible)]="issueFlag" [nzContent]="modalContent"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalTitle>
+    {{ title }}
+  </ng-template>
+  <ng-template #modalContent>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfi-monthly-meeting.module-name' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="saveData.subsystemName">
+        <ng-container *ngFor="let list of modules">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfq.dfq-plant' | translate}}</div>
+      <nz-select nzShowSearch [(ngModel)]="saveData.plantId">
+        <ng-container *ngFor="let list of plants">
+          <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfi-monthly-meeting.issue-classification' | translate }}</div>
+      <ng-container *ngIf="modalFlag">
+        <nz-select nzShowSearch [disabled]="!isRolePMO" [(ngModel)]="saveData.category">
+          <ng-container *ngFor="let list of issueCategory">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </ng-container>
+      <ng-container *ngIf="!modalFlag">
+        {{ saveData.category}}
+      </ng-container>
+    </div>
+    <div class="field" *ngIf="modalFlag">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfi-monthly-meeting.priority' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="saveData.priority">
+        <ng-container *ngFor="let list of priorityList">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'mrr.nudd-describe' | translate}}</div><textarea nz-input
+        [(ngModel)]="saveData.description"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span">{{'dfi-monthly-meeting.reason' | translate }}</div><textarea nz-input [(ngModel)]="saveData.rootCause"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span">{{'dfi-monthly-meeting.solution' | translate }}</div><textarea nz-input [(ngModel)]="saveData.solution"></textarea>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfi-monthly-meeting.principal' | translate }}</div>
+      <div class="input-search">
+        <app-search-user (selectedUserData)="getPic($event)" [picId]="saveData.pic"></app-search-user>
+      </div>
+    </div>
+    <div class="field" *ngIf="modalFlag">
+      <div class="field-span">{{'dfq.dfq-due-date' | translate }}</div>
+      <nz-date-picker [nzStyle]='{"width": "180px"}' [(ngModel)]="saveData.dueDate"></nz-date-picker>
+    </div>
+    <div class="field">
+      <div class="field-span"><span class="mustItem">*</span>{{'dfq.dfq-status' | translate }}</div>
+      <ng-container *ngIf="modalFlag">
+        <nz-select [(ngModel)]="saveData.status" nzShowSearch>
+          <ng-container *ngFor="let list of statusList">
+            <nz-option [nzValue]="list.Value" [nzLabel]="list.Label">
+              <div [ngSwitch]="list.Value" style="display: inline-block;">
+                <div *ngSwitchCase="0" class="orange1-circle"></div>
+                <div *ngSwitchCase="1" class="orange-circle"></div>
+                <div *ngSwitchCase="2" class="green-circle"></div>
+                <div *ngSwitchCase="3" class="blue-circle"></div>
+              </div>
+              {{list.Label}}
+            </nz-option>
+          </ng-container>
+        </nz-select>
+      </ng-container>
+      <ng-container *ngIf="!modalFlag">
+        <div [ngSwitch]="saveData.status" style="display: inline-block;">
+          <div *ngSwitchCase="0" class="orange1-circle"></div>
+          <div *ngSwitchCase="1" class="orange-circle"></div>
+          <div *ngSwitchCase="2" class="green-circle"></div>
+          <div *ngSwitchCase="3" class="blue-circle"></div>
+        </div>
+        {{saveData.status === 1 && getExpirationDays(saveData.dueDate) > 0 ? 'Delay' : saveData.status|statusName}}
+      </ng-container>
+    </div>
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">cancel</button>
+    <button nz-button nzType="primary" (click)="patchOrCreateIssue()">determine</button>
+  </ng-template>
+</nz-modal>

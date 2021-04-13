@@ -1,0 +1,452 @@
+<div class="dfc-all" #DFCModelTarget>
+  <div *ngIf="targetHoursFlag">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'authority-maintain.target-time-generation'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'authority-maintain.target-time-generation'|translate}}</span>
+    </div>
+    <div class="dfc-query">
+      <div class="dfc-query-half">
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>{{'dfq.dfq-plant'|translate}}</span>
+          </div>
+          <nz-select nzMode="multiple" [(ngModel)]="plantSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+            (ngModelChange)="changePlant()">
+            <ng-container *ngFor="let list of listOfPlantSelectOption">
+              <nz-option *ngIf="!isPlantListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+            </ng-container>
+            <nz-option *ngIf="isPlantListLoading" nzDisabled nzCustomContent>
+              <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+            </nz-option>
+          </nz-select>
+        </div>
+        <div>
+          <app-dfc-query-input [queryStyle]="queryBUSelect.style" [(queryValue)]="queryBUSelect.value"
+            [querySelect]="queryBUSelect.select" (queryValueChange)="buSearch($event)"></app-dfc-query-input>
+        </div>
+        <div>
+          <app-dfc-query-input [queryStyle]="queryCustomSelect.style" [(queryValue)]="queryCustomSelect.value"
+            [querySelect]="queryCustomSelect.select" (queryValueChange)="customSearch($event)"></app-dfc-query-input>
+        </div>
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>{{'dfq.dfq-product'|translate}}</span>
+          </div>
+          <nz-select [(ngModel)]="modelTypeSelectValue" nzMode="multiple" nzAllowClear [nzServerSearch]="true"
+            (nzOnSearch)="onModelTypeSearch($event)" [nzDisabled]="modelTypeSelectFlag"
+            (ngModelChange)="changeModelType()">
+            <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+              <nz-option *ngIf="!isModelTypeListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+            </ng-container>
+            <nz-option *ngIf="isModelTypeListLoading" nzDisabled nzCustomContent>
+              <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-query">
+      <div class="dfc-query-full">
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>Project Name</span>
+          </div>
+          <nz-select [(ngModel)]="modelNameSelectValue" nzMode="multiple" nzAllowClear [nzServerSearch]="true"
+            (nzOnSearch)="onModelNameSearch($event)" [nzDisabled]="modelNameSelectFlag"
+            (ngModelChange)="changeModelName($event)">
+            <ng-container *ngFor="let list of listOfModelNameSelectOption">
+              <nz-option *ngIf="!isModelNameListLoading" [nzValue]="list" [nzLabel]="list.Label"></nz-option>
+            </ng-container>
+            <nz-option *ngIf="isModelNameListLoading" nzDisabled nzCustomContent>
+              <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-query">
+      <div class="dfc-query-full">
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>Project Code</span>
+          </div>
+          <nz-select nzMode="multiple" [(ngModel)]="modelFamilySelectValue" nzAllowClear [nzDisabled]="true">
+            <ng-container *ngFor="let list of modelFamilySelectValue">
+              <nz-option *ngIf="!isModelFamilyListLoading" [nzValue]="list" [nzLabel]="list?.ProjectCode"></nz-option>
+            </ng-container>
+            <nz-option *ngIf="isModelFamilyListLoading" nzDisabled nzCustomContent>
+              <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-query">
+      <div class="dfc-query-full">
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>Model Name</span>
+          </div>
+          <nz-select [(ngModel)]="groupModel.groupModelAndModelValue" nzMode="multiple" nzAllowClear nzShowSearch
+            [nzServerSearch]="true" (nzOnSearch)="onGroupModelSearch($event)" (ngModelChange)="changeroupModel($event)">
+            <ng-container *ngFor="let list of groupModel.groupModelAndModelSelectOption">
+              <nz-option *ngIf="!groupModel.isGroupModelNameListLoading" [nzValue]="list.modelId"
+                [nzLabel]="list.modelName">
+              </nz-option>
+            </ng-container>
+            <nz-option *ngIf="groupModel.isGroupModelNameListLoading" nzDisabled nzCustomContent>
+              <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-query">
+      <div class="dfc-query-half">
+        <div>
+          <div class="dfc-query-span">
+            <span style="color:red">*</span>
+            <span>C {{'dfq.dfq-stage'|translate}}</span>
+          </div>
+          <nz-select [(ngModel)]="cFlowSelectValue" nzMode="multiple" nzAllowClear [nzDisabled]="true">
+            <ng-container *ngFor="let list of listOfCFlowSelectOption">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+        <div>
+          <div class="dfc-query-btn">
+            <button nz-button nzType="primary" [nzLoading]="queryLoading" (click)="queryFirstEchart()">Query</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-line"></div>
+    <div class="dfc-echart">
+      <div echarts (chartClick)="onChartEvent($event, 'chartClick')" class="dfc-chart-first" [options]="optionsFirst">
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!targetHoursFlag">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item><a (click)="clickSwitch()">{{'authority-maintain.target-time-generation'|translate}}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'authority-maintain.target-time-generation'|translate}}-{{processTarget}}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'authority-maintain.target-time-generation'|translate}}-{{processTarget}}</span>
+    </div>
+    <div class="dfc-echart">
+      <div echarts class="dfc-chart-second" [options]="optionsSecond"></div>
+    </div>
+    <div class="dfc-btn">
+      <div class="dfc-btn-left">
+        <button nz-button nzType="primary" *ngIf="!isItemOrGap" (click)="showTableItem()" [nzLoading]="isTableLoading">
+          <i nz-icon type="plus"></i>{{'dfc.expand-details'|translate}}
+        </button>
+        <button nz-button nzType="primary" *ngIf="isItemOrGap" (click)="showTableItem()" [nzLoading]="isTableLoading">
+          <i nz-icon type="minus"></i>{{'report.only-show-differ'|translate}}
+        </button>
+        <div style="margin-left: 20px">
+          {{'dfc.search-material'|translate}}： </div>
+        <input nz-input placeholder="filter" [(ngModel)]="filterStr" style="width:40%" />
+      </div>
+      <div class="dfc-btn-center">
+        <span>Status:</span>
+        <div class="red-circle"></div><span>Open</span>
+        <div class="orange-circle"></div><span>Ongoing</span>
+        <div class="green-circle"></div><span>Close</span>
+      </div>
+      <div class="dfc-btn-right">
+        <button nz-button [disabled]="sendMode.isComplete || isPassFlag || sendFlag" [nzType]="'primary'"
+          title="send sign" (click)="clickSend()">{{'dfq.dfq-send-sign'|translate}}</button>
+        <button nz-button [disabled]="sendMode.isComplete || !isPassFlag || sendFlag" [nzType]="'primary'" title="Pass"
+          (click)="clickPass()">Pass</button>
+        <app-upload-file *ngIf="Auth.insert && !sendMode.isComplete" class="dfc-btn-upload" [showLoading]="showLoading"
+          (uploadFile)="upload($event)"></app-upload-file>
+        <div class="dfc-btn-download">
+          <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+            <i class="anticon anticon-download"></i>
+          </button>
+        </div>
+        <div class="dfc-btn-email" *ngIf="!sendMode.isComplete">
+          <button nz-button [nzType]="'primary'" title="Send Email" *ngIf="sendEmailLoading"
+            disabled="!sendEmailLoading" nzShape="circle" (click)="sendEmail()">
+            <i class="anticon anticon-mail"></i>
+          </button>
+          <button nz-button [nzType]="'primary'" title="Send Email" *ngIf="!sendEmailLoading" nzShape="circle"
+            (click)="sendEmail()">
+            <i class="anticon anticon-mail"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="dfc-table">
+      <nz-table #mohModelTable nzBordered nzShowQuickJumper
+        [nzData]="(dataSet|MaterialFilter:filterStr | targetReportTableDatasFilter: {type: 'factorDetailActual', change: searchFactorDetail.actual} | targetReportTableDatasFilter: {type: 'factorDetailTarget', change: searchFactorDetail.target} | targetReportTableDatasFilter: {type: 'factorDetailBest', change: searchFactorDetail.best})"
+        [nzWidthConfig]="nzWidthConfig" [nzScroll]="nzScroll" [nzPageSize]="10"
+        (nzPageIndexChange)="tablePageIndexChange($event)">
+        <thead>
+          <tr>
+            <th rowspan='2'>{{'dfq.dfq-material'|translate}}</th>
+            <th rowspan='2'>{{'report.affect-workhour-factor'|translate}}</th>
+            <th colspan='3'>{{'dfc.model-information-quantity'|translate}}</th>
+            <th colspan='2'>{{'report.dfc-workhour'|translate}}</th>
+            <th rowspan='2' *ngIf="editFlag">{{'report.isChange'|translate}}</th>
+            <th colspan='2'>{{'report.change-oppo'|translate}}</th>
+            <th rowspan='2'>{{'report.bom-cost-differ'|translate}}</th>
+            <th rowspan='2'>{{'report.discuss-result'|translate}}</th>
+            <th rowspan='2'>
+              {{'report.goal-design'|translate}}
+              <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+                <i class="anticon anticon-search" nz-dropdown></i>
+                <div class="dfc-factorDetail">
+                  <input type="text" nz-input placeholder="Search factor details"
+                    [(ngModel)]="searchFactorDetail.target">
+                </div>
+              </nz-dropdown>
+            </th>
+            <th rowspan='2'>{{'report.goal-quantity'|translate}}</th>
+            <th rowspan='2'>{{'military-order.goal-workhour'|translate}}</th>
+            <th rowspan='2'>{{'report.predict-improve-workhour'|translate}}</th>
+            <th rowspan='2'>PIC</th>
+            <th rowspan='2'>Status</th>
+            <th rowspan='2'>Due Day</th>
+            <th rowspan='2' nzRight="0px" *ngIf="!sendMode.isComplete">Action</th>
+          </tr>
+          <tr>
+            <th>
+              {{'report.the-best-design'|translate}}
+              <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+                <i class="anticon anticon-search" nz-dropdown></i>
+                <div class="dfc-factorDetail">
+                  <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.best">
+                </div>
+              </nz-dropdown>
+            </th>
+            <th>
+              {{'report.dfc-cur-design'|translate}}
+              <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+                <i class="anticon anticon-search" nz-dropdown></i>
+                <div class="dfc-factorDetail">
+                  <input type="text" nz-input placeholder="Search factor details"
+                    [(ngModel)]="searchFactorDetail.actual">
+                </div>
+              </nz-dropdown>
+            </th>
+            <th>{{'report.design-quantity'|translate}}</th>
+            <th>{{'report.the-best-workhour'|translate}}</th>
+            <th>{{'report.design-workhour'|translate}}</th>
+            <th>{{'report.dfc-workhour'|translate}}</th>
+            <th>{{'report.affect-moh'|translate}}(USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of mohModelTable.data; let i = index;">
+            <td title="{{data.Material}}">{{data.Material}}</td>
+            <td>{{data.Factor}}</td>
+            <td>{{data.BestFactorDetail}}</td>
+            <td>{{data.FactorDetailActural}}</td>
+            <td>{{data.Count}}</td>
+            <td>{{data.BestCostTime | number: '0.2'}}</td>
+            <td>{{data.CostTimeActural | number: '0.2'}}</td>
+            <td *ngIf="editFlag">
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <nz-radio-group [(ngModel)]="editChange">
+                  <label nz-radio nzValue="Y">Y</label>
+                  <label nz-radio nzValue="N">N</label>
+                </nz-radio-group>
+              </ng-container>
+            </td>
+            <td>{{data.gap | number: '0.2'}}</td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{(!data.ModifiedMOH ? data.gapCost : data.ModifiedMOH) | number: '0.2'}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <input type="text" nz-input [(ngModel)]="ModifiedMOHEditCache">
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.BOMCost}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <input type="text" nz-input [(ngModel)]="editCache[data.ModelOperationID].data.BOMCost">
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.Comment}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <input type="text" nz-input [(ngModel)]="editCache[data.ModelOperationID].data.Comment">
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.TargetFactorDetail}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <nz-select *ngIf="editChange === 'Y'" style="width:100px;"
+                  [(ngModel)]="editCache[data.ModelOperationID].data.TargetFactorDetailCode" nzAllowClear nzShowSearch
+                  [nzDropdownMatchSelectWidth]="false">
+                  <ng-container *ngFor="let list of listOfTargetFactorDetailSelectOption[data.FactorID]">
+                    <nz-option style="width: 200px;" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+                  </ng-container>
+                </nz-select>
+                <span *ngIf="editChange === 'N'">{{data.FactorDetailActural}}</span>
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.TargetCount}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <input *ngIf="editChange === 'Y'" type="text" nz-input
+                  [(ngModel)]="editCache[data.ModelOperationID].data.TargetCount">
+                <span *ngIf="editChange === 'N'">{{data.Count}}</span>
+              </ng-container>
+            </td>
+            <td>{{data.CostTimeTarget | number: '0.2'}}</td>
+            <td>{{data.improve | number: '0.2'}}</td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.PICName}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <nz-select style="width: 100px;" [(ngModel)]="editCache[data.ModelOperationID].data.PICID" nzAllowClear
+                  nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false"
+                  (nzOnSearch)="onPICSearch($event)">
+                  <ng-container *ngFor="let list of listOfPICSelectOption">
+                    <nz-option style="width: 150px;" *ngIf="!isPICListLoading" [nzValue]="list.EmpID"
+                      [nzLabel]="list.EName" nzCustomContent>
+                      {{list.Show}}
+                    </nz-option>
+                  </ng-container>
+                  <nz-option *ngIf="isPICListLoading" nzDisabled nzCustomContent>
+                    <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+                  </nz-option>
+                </nz-select>
+              </ng-container>
+            </td>
+            <td style="text-align: center">
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                <div [ngSwitch]="data.Status">
+                  <div *ngSwitchCase="0" class="red-circle"></div>
+                  <div *ngSwitchCase="1" class="orange-circle"></div>
+                  <div *ngSwitchCase="2" class="green-circle"></div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <nz-select style="width:80px;" *ngIf="editChange === 'Y'"
+                  [(ngModel)]="editCache[data.ModelOperationID].data.Status" nzAllowClear nzShowSearch
+                  [nzDropdownMatchSelectWidth]="false">
+                  <ng-container *ngFor="let list of listOfStatusSelectOption">
+                    <nz-option nzCustomContent style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label">
+                      <div [ngSwitch]="list.Value" style="display: inline-block;">
+                        <div *ngSwitchCase="0" class="red-circle"></div>
+                        <div *ngSwitchCase="1" class="orange-circle"></div>
+                        <div *ngSwitchCase="2" class="green-circle"></div>
+                      </div>
+                      {{list.Label}}
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+                <div class="green-circle" *ngIf="editChange === 'N'"></div>
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                {{data.DueDay}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <nz-date-picker *ngIf="editChange === 'Y'" [(ngModel)]="editCache[data.ModelOperationID].data.DueDay"
+                  [nzFormat]="dateFormat">
+                </nz-date-picker>
+                <span *ngIf="editChange === 'N'">{{defultDueDay}}</span>
+              </ng-container>
+            </td>
+            <td style="text-align: center" nzRight="0px" *ngIf="!sendMode.isComplete">
+              <ng-container *ngIf="!editCache[data.ModelOperationID].edit">
+                <a *ngIf="!actionEnabled || !Auth.update" disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+                <!-- 先修改一個，等數據有了看看 -->
+                <button nz-button (click)="startEdit(data.ModelOperationID, i)" *ngIf="actionEnabled && Auth.update"
+                  [disabled]="sendMode.isComplete ? true : false">
+                  <i class="anticon anticon-edit"></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.ModelOperationID].edit">
+                <a (click)="saveEdit(data.ModelOperationID)">
+                  <i class="anticon anticon-save"></i>
+                </a>
+                <a style="margin-left:10px;" (click)="Delete(data.ModelOperationID)"
+                  [title]="'dfc.forecast.delete-target-hour' | translate"
+                  [attr.disabled]="!data.TargetCount ? true : null">
+                  <i class="anticon anticon-delete"></i>
+                </a>
+                <a style="margin-left:10px;" (click)="cancelEdit(data.ModelOperationID)">
+                  <i class="anticon anticon-close-circle"></i>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+
+  <!-- 失去焦点判断编辑状态是否需要储存 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="450" [(nzVisible)]="isSendSignVisible"
+    nzTitle="send sign" (nzOnCancel)="cancelSendSign()" [nzFooter]="modalEditSaveFooter">
+    <div class="dfc-send">
+      <table>
+        <tr>
+          <td>
+            {{'dfc.mechanism'|translate}}IE</td>
+          <td>
+            <nz-select [(ngModel)]="sendMode.member[0]" nzAllowClear nzShowSearch [nzServerSearch]="true"
+              (nzOnSearch)="onMemberSearch1($event)" (ngModelChange)="changeSendMember()">
+              <ng-container *ngFor="let option of sendMode.memberOption1">
+                <nz-option [nzValue]="option.Value" [nzLabel]="option.Label"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+        <tr>
+          <td>{{'dfc.class-level'|translate}}</td>
+          <td>
+            <nz-select [(ngModel)]="sendMode.member[1]" nzAllowClear nzShowSearch [nzServerSearch]="true"
+              (nzOnSearch)="onMemberSearch2($event)">
+              <ng-container *ngFor="let option of sendMode.memberOption2">
+                <nz-option [nzValue]="option.Value" [nzLabel]="option.Label"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+        <tr>
+          <td>{{'military-order.describe'|translate}}</td>
+          <td><textarea rows="2" nz-input [(ngModel)]="sendMode.description" class="textarea"></textarea></td>
+        </tr>
+      </table>
+    </div>
+    <ng-template #modalEditSaveFooter>
+      <button nz-button nzType="default" (click)="cancelSendSign()">Cancel</button>
+      <button nz-button nzType="primary" (click)="sendButton()">{{'dfq.dfq-send-sign'|translate}}</button>
+    </ng-template>
+  </nz-modal>
+</div>

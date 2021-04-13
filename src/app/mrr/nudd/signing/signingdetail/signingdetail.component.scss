@@ -1,0 +1,154 @@
+.body {
+  margin: 0 1%;
+  width: 100%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+nz-table th {
+  border: 1px solid;
+  text-align: center;
+}
+
+td {
+  border: 1px solid white;
+  text-align: center;
+}
+
+#comments {
+  width: 400px;
+}
+
+.query-row {
+  // text-align: center;
+  margin-bottom: 15px;
+  min-width: 1100px;
+
+  .field1 {
+    display: inline-block;
+
+    span {
+      width: 105px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field2 {
+    display: inline-block;
+
+    span {
+      width: 230px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field {
+    display: inline-block;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field3 {
+    display: inline-block;
+
+    span {
+      width: 375px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field5 {
+    display: inline-block;
+
+    span {
+      width: 124px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field6 {
+    display: inline-block;
+
+    span {
+      width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field4 {
+    display: inline-block;
+
+    span {
+      width: 50px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+
+#row1 {
+  width: 170px;
+  height: 32px;
+  margin-right: 30px;
+  display: inline-block;
+  background-color: white;
+  padding-left: 10px;
+  padding-top: 6px;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: left;
+}
+
+.dfc-delAfter-icon {
+  height: 100px;
+  width: 100%;
+  color: rgba(0, 169, 157, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 76px;
+  }
+}
+
+.dfc-delAfter-text {
+  width: 238px;
+  height: 46px;
+  margin-left: 22px;
+  padding: 10px;
+  text-align: center;
+
+  span {
+    color: rgba(80, 80, 80, 1);
+    font-size: 18px;
+  }
+}

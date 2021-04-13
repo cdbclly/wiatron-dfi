@@ -1,0 +1,250 @@
+.dfc-all {
+  height: 100vh;
+  width: 100%;
+}
+
+.dfc-query {
+  margin-top: 17px;
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .dfc-query-3mol {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    div {
+      width: 33%;
+    }
+  }
+
+  .dfc-query-2mol {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    div {
+      width: 50%;
+    }
+  }
+
+  .dfc-query-mol {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    div {
+      width: 100%;
+    }
+  }
+
+  .dfc-query-btn {
+    width: 83px;
+
+    button {
+      margin-left: 30px;
+      width: 73px;
+    }
+  }
+}
+
+.kanban-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dfc-query-5mol {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+  display: flex;
+
+  .div1 {
+
+    width: 15%;
+  }
+
+  .div2 {
+    width: 25%;
+  }
+}
+
+.kanban-cFlow {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.dfc-btn {
+  margin-top: 30px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-left {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin-right: 30px;
+  }
+
+  .dfc-btn-center {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 14px;
+      font-weight: normal;
+      color: rgba(80, 80, 80, 1);
+    }
+
+    div {
+      margin-left: 10px;
+      margin-right: 5px;
+    }
+  }
+
+  .dfc-btn-right {
+    position: absolute;
+    right: 0;
+    float: right;
+    width: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    .dfc-btn-download {
+      margin-left: 12px;
+      height: 100%;
+      width: 36px;
+      display: inline-block;
+    }
+
+    .dfc-btn-email {
+      margin-left: 12px;
+      height: 100%;
+      width: 36px;
+      display: inline-block;
+    }
+
+    label.upload {
+      margin: 0;
+    }
+
+    .upload {
+      input {
+        display: none;
+      }
+
+      i {
+        vertical-align: bottom;
+      }
+    }
+
+    div.fakeInput {
+      margin-left: 10px;
+      display: inline-block;
+      width: 200px;
+      color: #505050;
+      background-color: white;
+      border-radius: 3px 0px 0px 3px;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 150%;
+      border: #cccccc solid 1px;
+      text-align: left;
+      height: 32px;
+      cursor: pointer;
+
+      span {
+        padding-left: 10px;
+        vertical-align: sub;
+        color: #999;
+      }
+    }
+
+    .ant-btn.upload {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  .spin {
+    position: fixed;
+    top: 100px;
+    left: 49%;
+  }
+}
+
+.table {
+  width: 100%;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+
+  .odd {
+    td {
+      background-color: white
+    }
+  }
+
+  .even {
+    td {
+      background-color: #dcdcdc
+    }
+  }
+}
+
+
+.window {
+  position: fixed;
+  top: 25%;
+  left: 35%;
+  z-index: 150;
+  width: 30%;
+  height: 50%;
+
+  .closeComments {
+    z-index: 200;
+    margin-left: 85%;
+    width: 15%;
+    height: 8%;
+  }
+
+  table {
+    tr {
+      height: 40px;
+      background-color: white
+    }
+
+    .title {
+      background-color: #333;
+      color: white;
+    }
+  }
+}
+
+table tr {
+  height: 40px;
+}
+
+.discuss_head {
+  color: white;
+  text-align: center;
+}
+
+.title {
+  background-color: #505050;
+}

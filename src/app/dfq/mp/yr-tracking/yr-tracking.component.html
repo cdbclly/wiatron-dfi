@@ -1,0 +1,83 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item> {{ 'dfq.mp-warning-tracking-system' | translate }} </nz-breadcrumb-item>
+  <nz-breadcrumb-item><a style="border-bottom: 1px solid black;">{{ 'dfq.mp-warning-tracking' | translate }}</a></nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="dfc-query">
+  <form nz-form [nzLayout]="'inline'" [formGroup]="formGroup" (ngSubmit)="query()">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="plant"
+          (ngModelChange)="getModels($event, formGroup.value.mfgType, formGroup.value.modelFamily)" nzShowSearch
+          nzAllowClear>
+          <nz-option *ngFor="let plant of plants" [nzValue]="plant.id" [nzLabel]="plant.id | plantName | async">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.mp-finished-product-type' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="mfgType"
+          (ngModelChange)="getModels(formGroup.value.plant, formGroup.value.mfgType, formGroup.value.modelFamily)"
+          nzShowSearch nzAllowClear>
+          <nz-option nzValue="PCBA" nzLabel="PCBA"></nz-option>
+          <nz-option nzValue="FA" nzLabel="FA"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="4" [nzXs]="24">{{ 'dfq.dfq-production-date' | translate }}</nz-form-label>
+      <nz-form-control [nzSm]="16" [nzXs]="24">
+        <nz-range-picker formControlName="rangePicker" [(ngModel)]="dateRange" [nzDisabledDate]="disabledDate">
+        </nz-range-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Model Family</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="modelFamily"
+          (ngModelChange)="getModels(formGroup.value.plant, formGroup.value.mfgType, formGroup.value.modelFamily)"
+          nzShowSearch nzAllowClear>
+          <nz-option *ngFor="let modelFamily of modelFamilies" [nzValue]="modelFamily.id" [nzLabel]="modelFamily.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-spin [nzSpinning]="isModelLoading">
+          <nz-select formControlName="model" nzMode="multiple" nzShowSearch nzAllowClear>
+            <ng-container *ngFor="let model of models">
+              <nz-option [nzLabel]="model" [nzValue]="model"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-spin>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control class="query-cls">
+        <button nz-button nzType="primary"
+          [nzLoading]="isWeightedMovingAvgLoading || isModelFpyrQualifieldRateLoading || isLineYieldRateComparisonLoading || isPieYieldRateComparisonLoading || isDpmUrlLoading"
+          [disabled]="formGroup.invalid">{{ 'dfq.dfq-query' | translate }}</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<nz-divider></nz-divider>
+<div *ngIf="queried">
+  <mp-model-fpyr-qualifield-rate *ngIf="!byModel" [title]="trans.standard" [data]="modelFpyrOnTargetStatus"
+    [isLoading]="isModelFpyrQualifieldRateLoading">
+  </mp-model-fpyr-qualifield-rate>
+  <mp-fpyr-moving-average [forecast]="trans.forecast" [actual]="trans.actual" [data]="fpyr" [wma]="wma" [isLoading]="isWeightedMovingAvgLoading">
+  </mp-fpyr-moving-average>
+  <mp-line-yield-rate-comparison *ngIf="byModel" [title]="trans.lineToLine"   [data]="lineYieldRate" [isLoading]="isLineYieldRateComparisonLoading"
+    (line)="genRepairMaster(this.formGroup.value.plant, this.formGroup.value.mfgType, this.modelFilter, this.trnDateFilter, undefined, $event)">
+  </mp-line-yield-rate-comparison>
+  <mp-pie-yield-rate-comparison  [titles]="trans.reason"   [data]="pieYieldRate" [isLoading]="isPieYieldRateComparisonLoading">
+  </mp-pie-yield-rate-comparison>
+  <mp-yr-dpm-link *ngIf="!byModel" [url]="dpmUrl" [isLoading]="isDpmUrlLoading">
+  </mp-yr-dpm-link>
+</div>

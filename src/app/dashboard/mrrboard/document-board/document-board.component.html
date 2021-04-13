@@ -1,0 +1,39 @@
+<div class="tit" *ngIf="!bg">
+  <i nz-icon type="link" theme="outline"></i>
+  <a [routerLink]="['/dashboard/report/issue/產品標準文件管理']">{{ 'dashboard.productDocument' | translate }}</a>
+  <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummary">
+    <span
+      style="color:blue;font-weight:bold;">{{ siteSummary.title }}:{{ siteSummary.top }}{{ 'dashboard.pie-item' | translate }};</span>
+  </label>
+</div>
+<div class="tit" *ngIf="bg">{{ 'dashboard.productDocument' | translate }}</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>C3~C5<br>KPI:{{ 'dashboard.fileAchievementRatio' | translate }}<br>{{ 'dashboard.uploadModel' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of options">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onDocChartEvent($event, false)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </div>
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>C6<br>KPI:{{ 'dashboard.fileAchievementRatio' | translate }}<br>{{ 'dashboard.mpModelUpload' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of c6Options">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onDocChartEvent($event, true)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>

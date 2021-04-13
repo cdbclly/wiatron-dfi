@@ -1,0 +1,509 @@
+<div class="dfc-all" #DFCReportMoh>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'report.dfc-model-moh-report' | translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'report.dfc-model-moh-report' | translate}}</span>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-select">
+      <div>
+        <div class="dfc-query-span">
+          <span style="color:red">*</span>
+          <span>{{'mrr.mrr-plant' | translate}}</span>
+        </div>
+        <nz-select [(ngModel)]="plantSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (ngModelChange)="changePlant()">
+          <ng-container *ngFor="let list of listOfPlantSelectOption">
+            <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span">
+          <span>BU</span>
+        </div>
+        <nz-select [(ngModel)]="queryBUSelect.value" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (ngModelChange)="buSearch()" (nzOnSearch)="onBuSearch($event)" [nzDropdownMatchSelectWidth]="false">
+          <ng-container *ngFor="let list of queryBUSelect.select.selectList">
+            <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span">
+          <span>{{'mrr.mrr-customer' | translate}}</span>
+        </div>
+        <nz-select [(ngModel)]="queryCustomSelect.value" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (ngModelChange)="customSearch()" (nzOnSearch)="onCustomSearch($event)" [nzDropdownMatchSelectWidth]="false">
+          <ng-container *ngFor="let list of queryCustomSelect.select.selectList">
+            <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-select">
+      <div>
+        <div class="dfc-query-span">
+          <span style="color:red">*</span>
+          <span>{{'mrr.mrr-product' | translate}}</span>
+        </div>
+        <nz-select [(ngModel)]="modelTypeSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (nzOnSearch)="onModelTypeSearch($event)" [nzDisabled]="modelTypeSelectFlag"
+          (ngModelChange)="changeModelType()" [nzDropdownMatchSelectWidth]="false">
+          <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+            <nz-option *ngIf="!isModelTypeListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelTypeListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span">
+          <span style="color:red">*</span>
+          <span>{{'report.dfc-kpi-cstage' | translate}}</span>
+        </div>
+        <nz-select [(ngModel)]="cFlowSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          [nzDisabled]="cFlowSelectFlag" (ngModelChange)="changeCFlow()">
+          <ng-container *ngFor="let list of listOfCFlowSelectOption">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span">
+          <span>{{'mrr.material-compliance' | translate}}</span>
+        </div>
+        <nz-select [(ngModel)]="standardSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true">
+          <ng-container *ngFor="let list of listOfStandardSelectOption">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-input">
+      <div>
+        <div class="dfc-query-span">
+          <span>Project Name</span>
+        </div>
+        <nz-select [(ngModel)]="modelNameSelectValue" nzMode="multiple" nzAllowClear nzShowSearch
+          [nzServerSearch]="true" (nzOnSearch)="onModelNameSearch($event)" (ngModelChange)="changeModelName($event)">
+          <ng-container *ngFor="let list of listOfModelNameSelectOption">
+            <nz-option *ngIf="!isModelNameListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelNameListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-input">
+      <div>
+        <div class="dfc-query-span">
+          <span>Project Code</span>
+        </div>
+        <nz-select nzMode="multiple" [(ngModel)]="modelFamilySelectValue" [nzDisabled]="modelFamilySelectFlag">
+          <ng-container *ngFor="let list of modelFamilySelectValue">
+            <nz-option *ngIf="!isModelFamilyListLoading" [nzValue]="list" [nzLabel]="list?.ProjectCode">
+            </nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelFamilyListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-input">
+      <div>
+        <div class="dfc-query-span">
+          <span>Model Name</span>
+        </div>
+        <nz-select [(ngModel)]="groupModel.groupModelAndModelValue" nzMode="multiple" nzAllowClear nzShowSearch
+          [nzServerSearch]="true" (nzOnSearch)="onGroupModelSearch($event)" (ngModelChange)="changeroupModel($event)">
+          <ng-container *ngFor="let list of groupModel.groupModelAndModelSelectOption">
+            <nz-option *ngIf="!groupModel.isGroupModelNameListLoading" [nzValue]="list.modelId"
+              [nzLabel]="list.modelName">
+            </nz-option>
+          </ng-container>
+          <nz-option *ngIf="groupModel.isGroupModelNameListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button [nzSize]="'small'" nzType="primary" (click)="query()">{{'mrr.mrr-query' | translate}}</button>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-right">
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-table">
+    <nz-table id='downdata' #mohModelTable nzBordered nzShowQuickJumper [nzData]="dataSet"
+      [nzWidthConfig]="nzWidthConfig" [nzScroll]="nzScroll" [nzPageSize]="10" [nzFrontPagination]="tablePaging">
+      <thead>
+        <tr>
+          <th nzShowExpand rowspan="2">{{'mrr.vendor-extension' | translate}}</th>
+          <th rowspan='2'>{{'report.dfc-kpi-quantity' | translate}}</th>
+          <th rowspan='2'>{{'mrr.mrr-plant' | translate}}</th>
+          <th rowspan='2'>BU</th>
+          <th rowspan='2'>{{'mrr.mrr-customer' | translate}}</th>
+          <th rowspan='2'>{{'mrr.mrr-product' | translate}}</th>
+          <th rowspan='2'>Project Code</th>
+          <th rowspan='2'>Project Name</th>
+          <th rowspan='2'>Model Name</th>
+          <th rowspan='2'>{{'report.dfc-kpi-cstage' | translate}}</th>
+          <th colspan='3'>Unit MOH(USD)</th>
+          <th [attr.colspan]="tableColspan">{{'report.moh-single-shift-manpower' | translate}}</th>
+          <th [attr.colspan]="tableColspan">UPH</th>
+          <th [attr.colspan]="tableColspan">Online UPPH</th>
+        </tr>
+        <tr>
+          <th>{{'report.dfc-am-quoted-price' | translate}}</th>
+          <th>Target</th>
+          <th>{{'report.model-workhour-design' | translate}}</th>
+          <th *ngIf="processShow.LCM.show">LCM</th>
+          <th *ngIf="processShow.PCBA.show">PCBA</th>
+          <th *ngIf="processShow.FA.show">FA</th>
+          <th *ngIf="processShow.LCM.show">LCM</th>
+          <th *ngIf="processShow.PCBA.show">PCBA</th>
+          <th *ngIf="processShow.FA.show">FA</th>
+          <th *ngIf="processShow.LCM.show">LCM</th>
+          <th *ngIf="processShow.PCBA.show">PCBA</th>
+          <th *ngIf="processShow.FA.show">FA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="mohModelTable.data">
+          <tr>
+            <td [nzShowExpand]=" data.type == 'group' " [(nzExpand)]="data.expand"
+              (nzExpandChange)="nzExpandChange($event,data)"></td>
+            <td></td>
+            <td>{{(data.Plant | site: {type: 'plant'})}}</td>
+            <td>{{data.BU}}</td>
+            <td>{{data.Custom}}</td>
+            <td>{{data.ModelType}}</td>
+            <td>{{data.ModelFamily}}</td>
+            <td>{{data.ModelName}}</td>
+            <td>{{data.mName}}</td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickCFlow(data.StageID,data.CFlow, data.ModelID)">{{data.CFlow}}</a>
+            </td>
+            <td *ngIf="!data.errorFlag">{{ DFiLeaderFlag ? data.AMOffer : (!!data.AMOffer ? '***' : '')}}</td>
+            <td *ngIf="!data.errorFlag">{{data.mohTarget}}</td>
+            <td *ngIf="!data.errorFlag"><a (click)="clickActural(data.StageID, data.Plant, data)"
+                [ngStyle]="data.mohActualColor" style="text-decoration:underline">{{data.mohActual}}</a></td>
+            <ng-container *ngIf="data.type=='basic'">
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">{{data.LCMOnlineMan}}</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">{{data.PCBAOnlineMan}}</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">{{data.FAOnlineMan}}</td>
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">{{data.LCMUPH}}</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">{{data.PCBAUPH}}</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">{{data.FAUPH}}</td>
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">{{data.LCMUPPH}}</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">{{data.PCBAUPPH}}</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">{{data.FAUPPH}}</td>
+            </ng-container>
+            <ng-container *ngIf="data.type=='group'">
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.LCM.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.PCBA.show">-</td>
+              <td *ngIf="!data.errorFlag && processShow.FA.show">-</td>
+            </ng-container>
+            <td *ngIf="data.errorFlag" colspan="12" style="color: red; text-align: left;">{{data.errorMsg}}</td>
+          </tr>
+          <tr [nzExpand]="data.expand">
+            <td [attr.colspan]="13 + tableColspan*3" style="padding:0">
+              <nz-table [nzLoading]="modelTableLoading" [nzWidthConfig]="nzWidthConfig" #modelTable
+                [nzData]="data.modelData" [nzShowPagination]="false">
+      <tbody>
+        <ng-template ngFor let-item [ngForOf]="modelTable.data" let-i="index">
+          <tr>
+            <td></td>
+            <td>{{item.Count}}</td>
+            <td>{{(item.Plant | site: {type: 'plant'})}}</td>
+            <td>{{data.ModelType}}</td>
+            <td>{{data.ModelType}}</td>
+            <td>{{item.ModelType}}</td>
+            <td>{{item.ModelFamily}}</td>
+            <td>{{item.ModelName}} </td>
+            <td>{{item.mName}}</td>
+            <td>
+              <a style="text-decoration:underline"
+                (click)="onClickCFlow(item.StageID,item.CFlow, item.ModelID)">{{item.CFlow}}</a>
+            </td>
+            <td *ngIf="!item.errorFlag && DFiLeaderFlag">{{item.AMOffer}}</td>
+            <td *ngIf="!item.errorFlag && !DFiLeaderFlag"></td>
+            <td *ngIf="!item.errorFlag">{{item.mohTarget}}</td>
+            <td *ngIf="!item.errorFlag"><a (click)="clickActural(item.StageID, item.Plant, item)"
+                [ngStyle]="item.mohActualColor" style="text-decoration:underline">{{item.mohActual}}</a></td>
+            <td *ngIf="!item.errorFlag && processShow.LCM.show">{{item.LCMOnlineMan}}</td>
+            <td *ngIf="!item.errorFlag && processShow.PCBA.show">{{item.PCBAOnlineMan}}</td>
+            <td *ngIf="!item.errorFlag && processShow.FA.show">{{item.FAOnlineMan}}</td>
+            <td *ngIf="!item.errorFlag && processShow.LCM.show">{{item.LCMUPH}}</td>
+            <td *ngIf="!item.errorFlag && processShow.PCBA.show">{{item.PCBAUPH}}</td>
+            <td *ngIf="!item.errorFlag && processShow.FA.show">{{item.FAUPH}}</td>
+            <td *ngIf="!item.errorFlag && processShow.LCM.show">{{item.LCMUPPH}}</td>
+            <td *ngIf="!item.errorFlag && processShow.PCBA.show">{{item.PCBAUPPH}}</td>
+            <td *ngIf="!item.errorFlag && processShow.FA.show">{{item.FAUPPH}}</td>
+            <td *ngIf="item.errorFlag" colspan="12" style="color: red; text-align: left;">{{item.errorMsg}}</td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </ng-template>
+    </tbody>
+    </nz-table>
+  </div>
+  <!-- Report報表 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1200" [(nzVisible)]="isReportPopVisible"
+    (nzOnCancel)="cancelPop()" nzTitle="Report" [nzContent]="reportPopContent" [nzFooter]="reportPopFooter">
+    <div class="dfc-report-content" #reportPopContent>
+      <div class="dfc-report-content-1">
+        <table>
+          <tr>
+            <td width="50%">{{'military-order.moh-param-item' | translate}}</td>
+            <td width="50%">{{'dfc.set-value' | translate}}</td>
+          </tr>
+          <tr *ngFor="let data of popLeftDataSet">
+            <td>{{data.Param}}</td>
+            <td>{{data.Value}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="dfc-report-content-2">
+        <i class="anticon anticon-arrow-right"></i>
+      </div>
+      <div class="dfc-report-content-3">
+        <table>
+          <tr>
+            <td width="15%"></td>
+            <td width="39%"></td>
+            <td width="23%"></td>
+            <td width="23%"></td>
+          </tr>
+          <tr style="background-color:rgba(128, 128, 128, 0.3)">
+            <td colspan="2">Output(K)</td>
+            <td colspan="2">{{popCenterDataSet.output}}</td>
+          </tr>
+          <tr style="background-color:rgba(128, 128, 128, 0.3)">
+            <td colspan="2">MOH(USD/Set)</td>
+            <td colspan="2">{{popCenterDataSet.moh}}</td>
+          </tr>
+          <tr style="background-color:rgb(90, 90, 90);color:white;">
+            <td colspan="2">
+              <div class="dfc-report-line">
+                <div></div>
+                <div></div>
+              </div>
+            </td>
+            <td>Expense(NTDK)</td>
+            <td>Unit MOH(USD)</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td rowspan="3">{{'report.fixed' |translate}}</td>
+            <td>{{'report.depreciation-expense' |translate}}</td>
+            <td>{{popCenterDataSet.fixdepre}}</td>
+            <td>{{popCenterDataSet.fixdepreR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>Amortization</td>
+            <td>{{popCenterDataSet.fixamort}}</td>
+            <td>{{popCenterDataSet.fixamortR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.plant-depreciation/rent' |translate}}</td>
+            <td>{{popCenterDataSet.fixrent}}</td>
+            <td>{{popCenterDataSet.fixrentR}}</td>
+          </tr>
+          <tr style="background-color:#333; color:white">
+            <td colspan="2">Total {{'report.fixed' |translate}} Expense</td>
+            <td>{{popCenterDataSet.fixTotal}}</td>
+            <td>{{popCenterDataSet.fixTotalR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td rowspan="6">{{'report.half-fixed' |translate}}</td>
+            <td>{{'report.IDL-taiwan' |translate}}</td>
+            <td>{{popCenterDataSet.sfixidl}}</td>
+            <td>{{popCenterDataSet.sfixidlR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>Site Allocate</td>
+            <td>{{popCenterDataSet.sfixsitealloc}}</td>
+            <td>{{popCenterDataSet.sfixsiteallocR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>HQ Support</td>
+            <td>{{popCenterDataSet.sfixhqsup}}</td>
+            <td>{{popCenterDataSet.sfixhqsupR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>PA Charge Out</td>
+            <td>{{popCenterDataSet.sfixpacout}}</td>
+            <td>{{popCenterDataSet.sfixpacoutR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.water-and-electricity-costs' |translate}}</td>
+            <td>{{popCenterDataSet.sfixhpwr}}</td>
+            <td>{{popCenterDataSet.sfixhpwrR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.maintenance-costs' |translate}}</td>
+            <td>{{popCenterDataSet.sfixrepair}}</td>
+            <td>{{popCenterDataSet.sfixrepairR}}</td>
+          </tr>
+          <tr style="background-color:#333; color:white">
+            <td colspan="2">Total {{'report.half-fixed' |translate}} Expense</td>
+            <td>{{popCenterDataSet.sfixTotal}}</td>
+            <td>{{popCenterDataSet.sfixTotalR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td rowspan="7">{{'report.change' |translate}}</td>
+            <td>{{'report.DL-personnel-expenses' |translate}}</td>
+            <td>{{popCenterDataSet.vardl}}</td>
+            <td>{{popCenterDataSet.vardlR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.purchase-costs' |translate}}</td>
+            <td>{{popCenterDataSet.varmpa}}</td>
+            <td>{{popCenterDataSet.varmpaR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.indirect-material-cost' |translate}}</td>
+            <td>{{popCenterDataSet.varmaterial}}</td>
+            <td>{{popCenterDataSet.varmaterialR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>Other Expense</td>
+            <td>{{popCenterDataSet.varother}}</td>
+            <td>{{popCenterDataSet.varotherR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.tansportation' |translate}}</td>
+            <td>{{popCenterDataSet.vardrive}}</td>
+            <td>{{popCenterDataSet.vardriveR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.travel-expenses' |translate}}</td>
+            <td>{{popCenterDataSet.vartravel}}</td>
+            <td>{{popCenterDataSet.vartravelR}}</td>
+          </tr>
+          <tr style="background-color:#f0f0f0">
+            <td>{{'report.taxes' |translate}}</td>
+            <td>{{popCenterDataSet.vartax}}</td>
+            <td>{{popCenterDataSet.vartaxR}}</td>
+          </tr>
+          <tr style="background-color:#333; color:white">
+            <td colspan="2">Total {{'report.change' |translate}} Expense</td>
+            <td>{{popCenterDataSet.varTotal}}</td>
+            <td>{{popCenterDataSet.varTotalR}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="dfc-report-content-2">
+        <i class="anticon anticon-arrow-left"></i>
+      </div>
+      <div class="dfc-report-content-4">
+        <table>
+          <tr>
+            <td width="50%">{{'report.MOH-difference-item' |translate}}(NTDK/{{'military-order.month' |translate}})</td>
+            <td width="50%">{{'dfc.set-value' | translate}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.depreciation-expense' |translate}}</td>
+            <td>{{popRightDataSet.fixdepre}}</td>
+          </tr>
+          <tr>
+            <td>Amortization</td>
+            <td>{{popRightDataSet.fixamort}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.plant-depreciation/rent' |translate}}</td>
+            <td>{{popRightDataSet.fixrent}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.IDL-taiwan' |translate}}</td>
+            <td>{{popRightDataSet.sfixidl}}</td>
+          </tr>
+          <tr>
+            <td>Site Allocate</td>
+            <td>{{popRightDataSet.sfixsitealloc}}</td>
+          </tr>
+          <tr>
+            <td>HQ Support</td>
+            <td>{{popRightDataSet.sfixhqsup}}</td>
+          </tr>
+          <tr>
+            <td>PA Charge Out</td>
+            <td>{{popRightDataSet.sfixpacout}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.water-and-electricity-costs' |translate}}</td>
+            <td>{{popRightDataSet.sfixhpwr}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.maintenance-costs' |translate}}</td>
+            <td>{{popRightDataSet.sfixrepair}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.DL-personnel-expenses' |translate}}</td>
+            <td>{{popRightDataSet.vardl}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.purchase-costs' |translate}}</td>
+            <td>{{popRightDataSet.varmpa}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.indirect-material-cost' |translate}}</td>
+            <td>{{popRightDataSet.varmaterial}}</td>
+          </tr>
+          <tr>
+            <td>Other Expense</td>
+            <td>{{popRightDataSet.varother}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.tansportation' |translate}}</td>
+            <td>{{popRightDataSet.vartax}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.travel-expenses' |translate}}</td>
+            <td>{{popRightDataSet.vartravel}}</td>
+          </tr>
+          <tr>
+            <td>{{'report.taxes' |translate}}</td>
+            <td>{{popRightDataSet.vardrive}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <ng-template #reportPopFooter>
+      <button nz-button nzType="primary" (click)="cancelPop()">Back</button>
+    </ng-template>
+  </nz-modal>
+</div>

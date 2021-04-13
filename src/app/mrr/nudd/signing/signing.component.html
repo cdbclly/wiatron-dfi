@@ -1,0 +1,38 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item style="cursor:pointer" (click)="trans()"><a
+      style="border-bottom: 1px solid black;">{{ 'mrr.nudd-sign' | translate }}</a>
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'mrr.nudd-sign' | translate }}
+</div>
+
+<app-signingqueryform (menu)="getQueryForm($event)"></app-signingqueryform>
+
+<div *ngIf="showList">
+  <nz-table #nzTable [nzData]="showData" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>List</th>
+        <th>Project Code</th>
+        <th>Project Name</th>
+        <th>{{ 'mrr.nudd-supervisor-in-sign-off' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data">
+        <td (click)="goSigning(data.projectName,data.signer,data.customer)">{{data.key}}</td>
+        <td (click)="goSigning(data.projectName,data.signer,data.customer)">{{data.projectCode}}</td>
+        <td (click)="goSigning(data.projectName,data.signer,data.customer)">{{data.projectName}}</td>
+        <td (click)="goSigning(data.projectName,data.signer,data.customer)">
+          {{data.signer + ': ' + (data.userId | member: 'userId' | async)?.show + '(' + data.userId + ')'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<app-signingdetail *ngIf="showDetail" [Signers]="Signers" [projectCode]="projectCode" [product]="product"
+  [users]="sendUsers" [site]="site" [projectName]="projectName" [signingDetails]="signingDetails"
+  [currentRole]="currentRole"></app-signingdetail>

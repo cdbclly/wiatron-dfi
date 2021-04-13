@@ -1,0 +1,41 @@
+.query-row {
+  width: 100%;
+  .field1 {
+    width: 25%;
+    display: inline-block;
+    margin: 15px 0;
+    margin-left: 15px;
+    span {
+      text-align: right;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+    nz-select {
+      width: 55%;
+    }
+  }
+  .field {
+    width: 20%;
+    display: inline-block;
+    margin: 15px 0;
+    span {
+      text-align: center;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+  }
+}
+nz-select {
+  width: 70%;
+}
+.span-width1 {
+  width:30%;display: inline-block;
+}
+.span-width2 {
+  width:22%;display: inline-block;
+}
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.6;
+}

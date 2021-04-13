@@ -1,0 +1,38 @@
+.dfc-all{
+	width: 100%;
+}
+
+.dfc-query{
+	margin-top:17px;
+	width: 100%;
+	height: 32px;
+	display: flex;
+  align-items: center;
+
+  .dfc-query-3mol{
+    width: calc(100% - 83px);
+    display: flex;
+    align-items: center;
+    div{
+      width: 33.33%;
+    }
+  }
+
+  .dfc-query-btn{
+      width: 83px;
+      button{
+          margin-left: 10px;
+          width: 73px;
+      }
+  }
+}
+
+.dfc-table{
+	margin-top:9px;
+	width: 100%;
+	input{
+		height: 20px;
+		text-align: right;
+		width: 80%;
+	}
+}

@@ -1,0 +1,55 @@
+<div class="query-row">
+  <div class="field1">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-site' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="site" (ngModelChange)="getModelResultIds()">
+      <nz-option *ngFor="let site of sites" [nzLabel]="site.id" [nzValue]="site.id"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1" *ngIf="plantFlag">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-plant' | translate }}</span>
+    <nz-select nzShowSearch [(ngModel)]="plant">
+      <nz-option *ngFor="let plant of plantData" [nzLabel]="plant.plant" [nzValue]="plant.id"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-product' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="product" (ngModelChange)="getProjectCode(product)">
+      <nz-option *ngFor="let product of products" [nzLabel]="product.id" [nzValue]="product.id"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field2">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>Project Code</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="projectCode" (ngModelChange)="getProjectName(projectCode)">
+      <nz-option *ngFor="let projectCode of needShowProjectCodes" [nzLabel]="projectCode" [nzValue]="projectCode">
+      </nz-option>
+      <nz-option *ngIf="isProLoading" nzDisabled nzCustomContent>
+        <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+      </nz-option>
+    </nz-select>
+  </div>
+  <div class="field2">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>Project Name</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="projectName" (ngModelChange)="getAddEnable()"
+      [nzDropdownMatchSelectWidth]="false">
+      <nz-option *ngFor="let projectName of projectNames" [nzLabel]="projectName.id" [nzValue]="projectName.id">
+      </nz-option>
+    </nz-select>
+  </div>
+  <div class="field" *ngIf="typeShow">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>2D/3D</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="type" (ngModelChange)="getAddEnable()">
+      <nz-option *ngFor="let type of types" [nzLabel]="type.name" [nzValue]="type.name"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button *ngIf="queryShow" nzType="primary" style="border-radius:6px" (click)="query()"
+    [disabled]="!queryEnable">{{ 'mrr.nudd-next' | translate }}</button>
+  <button nz-button *ngIf="!queryShow" nzType="primary" style="border-radius:6px" (click)="query()"
+    [disabled]="!queryEnable">{{ 'mrr.mrr-query' | translate }}</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

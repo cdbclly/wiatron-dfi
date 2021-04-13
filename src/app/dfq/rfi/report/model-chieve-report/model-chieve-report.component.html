@@ -1,0 +1,17 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dashboard.yieldPrediction' | translate }} Report</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="margin-top: 12px;">
+  <span style="font-size:20px;">{{ 'dashboard.yieldPrediction' | translate }} Report</span>
+</div>
+<div class="dfc-tabset">
+  <nz-tabset [nzSelectedIndex]="selectedIndex">
+    <nz-tab nzTitle="RFI良率預測">
+      <app-yr-forecast></app-yr-forecast>
+    </nz-tab>
+  </nz-tabset>
+</div>
+
+

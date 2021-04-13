@@ -1,0 +1,49 @@
+<div style="margin: 0px 10px 5px 10px" *ngIf="enableUse">
+  <button nz-button [nzType]="'primary'" nzShape="circle" (click)="addProcess()">
+    <i nz-icon type="plus" theme="outline"></i>
+  </button>
+</div>
+<nz-table #nzTable [nzData]="data" nzShowPagination="false" (ngModelChange)=null [nzPageSize]="500">
+  <thead>
+    <tr>
+      <th>List</th>
+      <th>{{ 'mrr.nudd-craft' | translate }}</th>
+      <th *ngIf="SQMLeaderUse">{{ 'mrr.mrr-action' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let d of data;let i=index">
+      <td>{{i+1}}</td>
+      <td>{{d.name}}</td>
+      <td *ngIf="SQMLeaderUse">
+        <div>
+          <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(d)"></i>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+<div>
+  <nz-modal nzWidth="400px" [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()" [nzTitle]="modalTitle"
+    [nzContent]="modalContent" [nzFooter]="modalFooter">
+    <ng-template #modalTitle>
+      {{ 'mrr.nudd-addCraft' | translate }}
+    </ng-template>
+    <ng-template #modalContent>
+      <div class="input">
+        <span>{{ 'mrr.mrr-product' | translate }}</span>
+        <input nz-input="" placeholder="" [disabled]="true" [(ngModel)]="formData.product"
+          class="ng-pristine ng-valid ant-input ng-touched int">
+      </div>
+      <div class="input">
+        <span>{{ 'mrr.nudd-craft' | translate }}</span>
+        <input [(ngModel)]="processName" placeholder="Enter" class="ng-pristine ng-valid ant-input ng-touched int">
+      </div>
+    </ng-template>
+    <ng-template #modalFooter>
+      <button nz-button [nzType]="'primary'" style="margin-top: 16px" [nzLoading]="uploading" (click)="save()">
+        {{ 'mrr.mrr-save' | translate }}
+      </button>
+    </ng-template>
+  </nz-modal>
+</div>

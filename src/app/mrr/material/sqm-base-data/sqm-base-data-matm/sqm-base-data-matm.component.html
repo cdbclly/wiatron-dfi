@@ -1,0 +1,265 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="plant cannot be empty">
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear formControlName="plant"
+        (ngModelChange)="plantChange($event)">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant" [nzLabel]="plant"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Project Name</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzShowSearch nzAllowClear formControlName="projectName" nzMode="multiple"
+        (ngModelChange)="projectNameChange($event)" [nzFilterOption]="filterOption"  (nzOnSearch)="search($event)">
+        <ng-container *ngFor="let proName of projectNameArr">
+          <nz-option [nzValue]="proName" [nzLabel]="proName"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Project Code</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzShowSearch nzAllowClear formControlName="projectCode" nzMode="multiple">
+        <ng-container *ngFor="let proCode of projectCodeArr">
+          <nz-option [nzValue]="proCode" [nzLabel]="proCode"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isSearchLoading"
+        [disabled]="!validateForm.valid || !hasProject">{{ 'mrr.mrr-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+  <span style="font-size: 16px; font-weight: bold; margin-top: 100px;">{{ 'mrr.vendor-sop' | translate }}
+    <a><i class="anticon anticon-download" (click)="downSqmSop()" style="font-size: 16px;"></i></a></span>
+</form>
+
+<!-- table -->
+<nz-table class="table" #nzTable [nzData]="showData" nzBordered [nzPageSize]=5 [nzHideOnSinglePage]=true
+  (nzPageIndexChange)="firstPageIndexChange($event)">
+  <thead>
+    <tr>
+      <th nzShowExpand width="7%">{{ 'mrr.vendor-extension' | translate }}</th>
+      <th>Project Code</th>
+      <th>Project Name</th>
+      <th>{{ 'mrr.mrr-product' | translate }}</th>
+      <th>PLM {{ 'mrr.mrr-status' | translate }}</th>
+      <th>NUDD {{ 'mrr.mrr-sign-off' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="nzTable.data">
+      <tr>
+        <td nzShowExpand [(nzExpand)]="data.expand" (nzExpandChange)="nzExpandChange(data)"
+          [nzShowExpand]="data.displayExpand1"></td>
+        <td>{{ data.projectCode}}</td>
+        <td>{{ data.projectName }}</td>
+        <td>{{ data.productType }}</td>
+        <td>{{ data.PLMStatus }}</td>
+        <td>{{data.nudd}}</td>
+      </tr>
+      <!-- 第二層 -->
+      <tr [nzExpand]="data.expand">
+        <td></td>
+        <td colspan="5">
+          <nz-table #editRowTable nzBordered [nzData]="data.listData" [nzPageSize]=5 [nzHideOnSinglePage]=true
+            (nzPageIndexChange)="secondPageIndexChange($event)">
+            <thead>
+              <tr>
+                <th width="8%">
+                  <button class="addButton" nz-button nzType="primary" nzShape="circle" (click)="addOne(data)">
+                    <i class="anticon anticon-plus"></i>
+                  </button>
+                </th>
+                <th nzShowExpand width="8%">{{ 'mrr.vendor-extension' | translate }}</th>
+                <th width="7%">{{ 'mrr.vendor-isUse' | translate }}</th>
+                <th width="6%">{{ 'mrr.vendor-skip' | translate }}</th>
+                <th width="8%">{{ 'mrr.mrr-partNumber' | translate }}</th>
+                <th width="8%">{{ 'mrr.vendor-isInvalid' | translate }}</th>
+                <th width="8%">{{ 'mrr.vendor-source' | translate }}</th>
+                <th width="8%">{{ 'mrr.vendor-product-name' | translate }}</th>
+                <th width="8%">{{ 'mrr.vendor-number' | translate }}</th>
+                <th style="width: 150px;">
+                  {{ 'mrr.vendor-createdBy' | translate }}<br />{{ 'mrr.vendor-updatedBy' | translate }}</th>
+                <th width="7%">{{ 'mrr.mrr-action' | translate }}</th>
+              </tr>
+            </thead>
+  <tbody>
+    <ng-template ngFor let-data1 [ngForOf]="editRowTable.data">
+      <tr>
+        <td></td>
+        <td nzShowExpand [(nzExpand)]="data1.expand" (nzExpandChange)="nzExpandChange2(data,data1)"
+          [nzShowExpand]="data1.displayExpand2"></td>
+        <td style="color: red; width: 150px;">{{ data1.used }}</td>
+        <td>
+          <ng-container *ngIf="!editCache[data1.id].edit, else selectPassTP1">
+            {{ data1.pass }}
+          </ng-container>
+          <ng-template #selectPassTP1>
+            <nz-select class="passSelect" [(ngModel)]="editCache[data1.id].data.pass" nzAllowClear
+              (ngModelChange)="selectPassChange($event)">
+              <ng-container *ngFor="let ps of passArr">
+                <nz-option [nzValue]="ps" [nzLabel]="ps"></nz-option>
+              </ng-container>
+            </nz-select>
+          </ng-template>
+        </td>
+        <td>
+          {{ data1.partNumberId }}
+        </td>
+        <td [ngStyle]="{'background': data1.partNumberValid === ('mrr.vendor-invalid' | translate) ? 'red': null}">
+          {{data1.partNumberValid}}
+        </td>
+        <td>{{ data1.source }}</td>
+        <td>
+          {{ data1.gendesc }}
+        </td>
+        <td>{{data1.manLength}}</td>
+        <td>{{data1.partNumberCreateBy}}<br />{{data1.partNumberUpdateBy}}</td>
+        <td>
+          <ng-container *ngIf="!editCache[data1.id].edit; else saveTpl">
+            <button class="editButton" (click)="startEdit(data,data1)" *ngIf="!data1.isEditDisabled">
+              <i class="anticon anticon-edit"
+                [ngStyle]="{'color':data1.isEditDisabled === true? '#B2B2B2' : '#474747'}"></i></button>
+          </ng-container>
+          <ng-template #saveTpl>
+            <a (click)="saveEdit(data, data1)"><i class="anticon anticon-save"></i></a>&nbsp;&nbsp;&nbsp;
+            <a (click)="cancelEdit(data, data1)"><i class="anticon anticon-close-circle"></i></a>
+          </ng-template>
+        </td>
+      </tr>
+      <!-- 第三層 -->
+      <tr [nzExpand]="data1.expand">
+        <td></td>
+        <td colspan="10">
+          <nz-table #editRowTable1 [nzData]="data1.listData" [nzPageSize]=5 [nzHideOnSinglePage]=true>
+            <thead>
+              <tr>
+                <th>
+                  <button class="addButton"  nz-button nzType="primary"  nzShape="circle" (click)="addOne2(data1)">
+                    <i class="anticon anticon-plus"></i>
+                  </button>
+                </th>
+                <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+                <th>{{ 'mrr.vendor-fail-describe' | translate }}</th>
+                <th>{{ 'mrr.vendor-approve' | translate }}</th>
+                <th style="width: 150px;">
+                  {{ 'mrr.vendor-createdBy' | translate }}<br />{{ 'mrr.vendor-updatedBy' | translate }}</th>
+                <th>{{ 'mrr.mrr-action' | translate }}</th>
+              </tr>
+            </thead>
+  <tbody>
+    <tr *ngFor="let data2 of editRowTable1.data">
+      <td></td>
+      <td [ngStyle]="{'background':data2.approveValidation === ('mrr.vendor-fail' | translate) ? 'red' : null}">
+         {{ data2.manufacturerId }}
+      </td>
+      <td>
+        <ng-container *ngIf="!editCache2[data2.partNumberVendorId].edit, else inputFailDescTP4">
+            {{ data2.failDesc }}
+        </ng-container>
+         <ng-template #inputFailDescTP4>
+          <input nz-input [(ngModel)]="editCache2[data2.partNumberVendorId].data.failDesc" [disabled]="isSelectfailDesc"
+            (ngModelChange)="selectFailChange(data2,$event)" />
+        </ng-template>
+      </td>
+      <td>
+        <ng-container *ngIf="!editCache2[data2.partNumberVendorId].edit, else selectApproveTP">
+           {{ data2.approveValidation }}
+        </ng-container>
+        <ng-template #selectApproveTP> 
+          <nz-select class="approveSelect" [(ngModel)]="editCache2[data2.partNumberVendorId].data.approveValidation"
+            [disabled]="isSelectApprove">
+            <ng-container *ngFor="let a of approveValidationArr">
+              <nz-option [nzValue]="a" [nzLabel]="a"></nz-option>
+            </ng-container>
+          </nz-select>
+        </ng-template>
+      </td>
+      <td>{{data2.vendorCreateBy}}<br />{{data2.vendorUpdateBy}}</td>
+      <td>
+        <ng-container *ngIf="!editCache2[data2.partNumberVendorId].edit, else saveTpl">
+          <button class="editButton" (click)="startEdit2(data1,data2)" *ngIf="!data2.isEditDisabled">
+            <i class="anticon anticon-edit"
+              [ngStyle]="{'color':data2.isEditDisabled === true? '#B2B2B2' : '#474747'}"></i>
+          </button>
+        </ng-container>
+         <ng-template #saveTpl>
+          <a (click)="saveEdit2(data1,data2)"><i class="anticon anticon-save"></i></a>&nbsp;&nbsp;&nbsp;
+          <a (click)="cancelEdit2(data1,data2)"><i class="anticon anticon-close-circle"></i></a>             
+           </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+</td>
+</tr>
+  </ng-template>
+</tbody>
+</nz-table>
+</td>
+</tr>
+</ng-template>
+</tbody>
+</nz-table>
+
+<!-- 新增料號 -->
+<nz-modal class="addModel" [(nzVisible)]="addOneFlag" [nzContent]="modalContent"
+  [nzTitle]="'mrr.vendor-newModelPartNo' | translate" [nzMaskClosable]=false nzClosable=false
+  [nzFooter]="nzModalFooter">
+  <ng-template #modalContent>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'mrr.mrr-partNumber' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="addPartNo"
+        (ngModelChange)="partNoChange($event)" [nzNotFoundContent]="transNotice.boom">
+        <ng-container *ngFor="let pn of selectPartNoArr">
+          <nz-option [nzValue]="pn" [nzLabel]="pn"></nz-option>
+        </ng-container>
+      </nz-select>
+      <div *ngIf="displayUsed" style="color: red; font-weight: normal;" [(ngModel)]="isUsed" ngDefaultControl>
+        {{isUsed}}{{ 'mrr.vendor-use' | translate }}</div>
+    </label>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'mrr.mrr-vendor' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="addManufacture"
+        (ngModelChange)="Change($event)">
+        <ng-container *ngFor="let pn of selectManufacturerArr">
+          <nz-option [nzValue]="pn.id" [nzLabel]="pn.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label>
+  </ng-template>
+  <ng-template #nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">{{ 'mrr.mrr-cancel' | translate }}</button>
+    <button nz-button nzType="primary" (click)="handleOk()"
+      [nzLoading]="isConfirmLoading">{{ 'mrr.mrr-confirm' | translate }}</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 同一料號下新增廠商 -->
+<nz-modal class="addMufModel" [(nzVisible)]="addOneFlag2" [nzContent]="modalContent2"
+  [nzTitle]="'mrr.vendor-addVendor' | translate" [nzMaskClosable]=false nzClosable=false [nzFooter]="nzModalFooter2">
+  <ng-template #modalContent2>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'mrr.mrr-vendor' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="addManufacture"
+        (ngModelChange)="Change($event)">
+        <ng-container *ngFor="let pn of selectManufacturerArr2">
+          <nz-option [nzValue]="pn.id" [nzLabel]="pn.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label>
+  </ng-template>
+  <ng-template #nzModalFooter2>
+    <button nz-button nzType="default" (click)="handleCancel2()">{{ 'mrr.mrr-cancel' | translate }}</button>
+    <button nz-button nzType="primary" (click)="handleOk2()"
+      [nzLoading]="isConfirmLoading2">{{ 'mrr.mrr-confirm' | translate }}</button>
+  </ng-template>
+</nz-modal>

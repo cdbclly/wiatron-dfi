@@ -1,0 +1,102 @@
+.body {
+  margin: 0 1%;
+  width: 100%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+}
+
+.fakeInput {
+  padding-top: 3px;
+}
+
+.upload {
+  input {
+    display: none;
+  }
+}
+
+div.fakeInput {
+  margin-left: 10px;
+  display: inline-block;
+  width: 210px;
+  color: #505050;
+  background-color: white;
+  border-radius: 3px 0px 0px 3px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 150%;
+  border: #cccccc solid 1px;
+  text-align: left;
+  height: 32px;
+  cursor: pointer;
+
+  span {
+    padding-left: 10px;
+    vertical-align: sub;
+    color: #999;
+  }
+}
+
+.dfc-btn-download {
+  margin-left: 12px;
+  height: 100%;
+  width: 36px;
+  float: right;
+}
+
+td {
+  border: 1px white solid;
+}
+
+th {
+  border: 1px white solid;
+}
+
+.bottom {
+  margin-bottom: 10px;
+}
+
+.input{
+  margin: 0 auto;
+  margin-bottom: 10px;
+  width: 235px;
+}
+
+.input span{
+  display: inline-block;
+  margin-right: 10px;
+  width: 75px;
+}
+
+.int{
+  display: inline-block;
+  width: 150px;
+}
+
+.side {
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.bottom2 {
+  margin-bottom: 0%;
+}
+
+.field {
+  display: inline-block;
+  margin-right: 45px;
+  width: 210;
+}
+
+.field span {
+  display: inline-block;
+  width: 50px;
+}
+.select {
+  width: 210px;
+  margin-left: 30px;
+  margin-bottom: 10px;
+}

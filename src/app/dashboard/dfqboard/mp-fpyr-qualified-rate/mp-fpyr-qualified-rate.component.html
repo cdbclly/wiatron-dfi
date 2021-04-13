@@ -1,0 +1,26 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" class="mask" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>PCBA<br>{{ 'dashboard.complianceRate' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of pcbaOptions">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onChartEvent($event)"></app-pie-chart>
+      </div>
+    </div>
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>FA<br>{{ 'dashboard.complianceRate' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of faOptions">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onChartEvent($event)"></app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>

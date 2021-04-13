@@ -1,0 +1,121 @@
+<div class="dfc-all" #DfqRewardSign>
+  <div class="header-tooltip">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>{{'military-order.military-order'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'military-order.reward-sign'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">DFQ {{'mrr.mrr-sign-off'|translate}}</span>
+  </div>
+  <div class="dfc-sign">
+    <table class="tableall">
+      <tr>
+        <td class="td-title">Dept Code</td>
+        <td class="td-context">{{ applicationData.deptCode }}</td>
+        <td class="td-title">Dept Name</td>
+        <td class="td-context">{{ applicationData.deptName }}</td>
+        <td class="td-title">Applicant</td>
+        <td class="td-context">{{ applicationData.applicant }}</td>
+        <td class="td-title">Apply Date</td>
+        <td class="td-context">{{ applicationData.applyDate }}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="body-top">
+    <div class="table">
+      <table *ngIf="show">
+        <tr class="row1">
+          <td colspan="7">DFQ {{'military-order.yield-reward-punishment-rule'|translate}}</td>
+          <td>{{ version }}</td>
+        </tr>
+        <tr class="row2">
+          <td colspan="2"><span>Month</span></td>
+          <td colspan="4"><span>Mass Production 1 Month</span></td>
+          <td rowspan="2"><span>Remark</span></td>
+        </tr>
+        <tr class="row3">
+          <td colspan="2"><span>Week</span></td>
+          <td class="week">week1</td>
+          <td class="week">week2</td>
+          <td class="week">week3</td>
+          <td class="week">week4</td>
+        </tr>
+        <tr class="row4">
+          <td colspan="2" class="goal"><span>Goal</span></td>
+          <td>
+            <span>{{ rule.week1.Goal }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week2.Goal }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week3.Goal }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week4.Goal }}</span>
+          </td>
+          <td rowspan="4">
+            {{'military-order.special-reason-substandard'|translate}}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="actual"><span>Actual</span></td>
+          <td>
+            <span>{{ rule.week1.Actual }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week2.Actual }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week3.Actual }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week4.Actual }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="BZ"><span>{{'military-order.standard'|translate}}</span></td>
+          <td>
+            <span class="JL">{{'military-order.standard-reward'|translate}}</span><br />
+            <span>{{'military-order.stage-standard-notice'|translate}}</span>
+          </td>
+          <td>
+            <span>{{ rule.week1.rewards }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week2.rewards }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week3.rewards }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week4.rewards }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span class="CF">{{'military-order.not-standard-punishment'|translate}}</span><br />
+            <span>{{'military-order.stage-not-standard-notice'|translate}}</span>
+          </td>
+          <td>
+            <span>{{ rule.week1.punishment }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week2.punishment }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week3.punishment }}</span>
+          </td>
+          <td>
+            <span>{{ rule.week4.punishment }}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div>
+    <app-dfc-sign-history [dfcSignData]="data" [dfcSignHitoryParam]="dfcSignHitoryParam"
+      (approveClick)="approveClick($event)"></app-dfc-sign-history>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="query-row">
+  <div class="field1">
+    <span class="span-width1">
+      <span style="color: red;">*</span>
+      <span style="margin:0">Site</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_site']" (ngModelChange)="getOptions('site')">
+      <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1">
+    <span class="span-width1">
+      <span style="color: red;">*</span>
+      <span style="margin:0">{{'imq-plant' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_plant']" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" class="query-btn" (click)="query()" [disabled]="queryButton">Query</button>
+  </div>
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

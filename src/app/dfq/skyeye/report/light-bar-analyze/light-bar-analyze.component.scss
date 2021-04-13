@@ -1,0 +1,60 @@
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+  a {
+    i {
+      padding-left: 1%;
+      cursor: pointer;
+    }
+  }
+}
+span {
+  font-size: 14px;
+}
+.query-row {
+  margin-bottom: 15px;
+  width: 100%;
+  .field {
+    display: inline-block;
+    width: 20%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+      font-size: 13px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+nz-select {
+  width: 60%;
+}
+
+.line-chart{
+  height: 20vw;
+  width: 100%;
+  margin-top: 2vw;
+}
+
+.sport-chart{
+  height: 20vw;
+  width: 100%;
+}
+
+.setInput {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  // margin-right: 5%;
+  margin-top: 2vw;
+  background: rgba(255,255,255,0.7);
+}

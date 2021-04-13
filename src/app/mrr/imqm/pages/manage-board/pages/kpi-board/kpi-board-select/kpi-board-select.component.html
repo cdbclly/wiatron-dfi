@@ -1,0 +1,19 @@
+<div class="query-row">
+    <div class="field1">
+        <span class="span-width1">
+            <span style="color: red;">*</span>
+            <span>{{'imq-plant' | translate}}</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_factory">
+            <nz-option *ngFor="let factory of factoryGroup" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+        </nz-select>
+    </div>
+    <div class="field"  style="width: 40%;">
+        <span style="width: 14%;display: inline-block;">{{'imq-date' | translate}}</span>
+        <nz-month-picker [(ngModel)]="date_from"></nz-month-picker>
+        ~
+        <nz-month-picker style="margin-left:10px" [(ngModel)]="date_to" ></nz-month-picker>
+    </div>
+    <button nz-button nzType="primary" style="border-radius:6px" (click)="query()">Query</button>
+  </div>
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

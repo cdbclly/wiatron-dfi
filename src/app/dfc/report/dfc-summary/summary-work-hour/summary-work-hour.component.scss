@@ -1,0 +1,64 @@
+.workHour-selects {
+  .select-first {
+    padding: 5px 0;
+  }
+
+  .select-second {
+    div {
+      padding: 5px 0;
+    }
+
+    .second-down {
+      display: flex;
+      align-items: center;
+
+      .second-left {
+        width: 50%;
+      }
+
+      .second-right {
+        display: flex;
+        justify-content: space-around;
+        width: 50%;
+
+        button {
+          height: 32px;
+          line-height: 32px;
+        }
+      }
+    }
+  }
+}
+
+.workHour-table {
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+
+.dfc-query {
+  margin-top: 10px;
+  width: 100%;
+  overflow: hidden;
+
+  div {
+    min-height: 42px;
+    display: block;
+    float: left;
+  }
+
+  .dfc-query-btn {
+    margin-top: 10px;
+    margin-right: 10px;
+
+    button {
+      margin-left: 10px;
+
+    }
+  }
+}

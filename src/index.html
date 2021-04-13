@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>DFi數位化平台</title>
+  <base href="/">
+  <script>
+    (function() {
+      const host = ['localhost:4200', 'dfiqas.wistron.com', 'dfi.wks.wistron.com.cn'];
+      if (host.includes(location.host)) {
+        // DFi環境
+        window['_app_base'] = '/';
+      } else {
+        window['_app_base'] = '/dfiui/';
+      }
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <script src="http://famf230.wks.wistron.com.cn/ESQuery/browserMqtt.js"></script>
+  <script src="http://famf230.wks.wistron.com.cn/ESQuery/invoke.js"></script>
+  <app-root></app-root>
+</body>
+
+</html>

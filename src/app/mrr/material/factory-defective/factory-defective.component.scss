@@ -1,0 +1,53 @@
+$centerHeight: calc(100vh - 95px);
+
+.mrr-material-all {
+  height: $centerHeight;
+  width: 100%;
+}
+
+.factoryDefective-table {
+  margin-top: 10px;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.field {
+  margin-bottom: 16px;
+
+  div {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+
+  }
+
+  input {
+    width: 200px;
+  }
+
+  nz-select {
+    width: 200px;
+  }
+}
+
+.nudd-table {
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+
+  nz-select {
+    width: 200px;
+  }
+}

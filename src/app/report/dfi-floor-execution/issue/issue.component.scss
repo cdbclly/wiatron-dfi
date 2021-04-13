@@ -1,0 +1,100 @@
+.issue-table {
+  margin-top: 20px;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+.no-operate {
+  color: red;
+}
+nz-modal {
+  nz-form-label {
+    width: 15%;
+    margin-left: 35px;
+  }
+  .ant-col-offset-4 {
+    margin-left: 0;
+  }
+  nz-form-control {
+    display: inline-block;
+    width: 70%;
+    app-search-user {
+      width: 90%;
+      display: inline-block;
+    }
+    i {
+      padding-left: 15px;
+    }
+  }
+}
+.dfc-btn {
+  margin: 10px 0px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-left {
+    height: 100%;
+
+    button {
+      margin-right: 10px;
+    }
+  }
+}
+
+.field {
+  margin-bottom: 16px;
+
+  .field-span {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+
+  }
+
+  input {
+    width: 60%;
+  }
+
+  nz-select {
+    width: 60%;
+  }
+
+  textarea {
+    width: 60%;
+  }
+}
+
+.input-search {
+  width: 60%;
+  display: inline-block;
+}
+
+.popover-cell {
+  max-width: 400px;
+  max-height:80px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color:darkgray;
+  }
+}
+
+.nowrap-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 140px;
+}

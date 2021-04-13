@@ -1,0 +1,59 @@
+<div class="dfc-sign">
+  <div class="section">
+    <div echarts class="chart" [options]="option1" (chartClick)="onChartEvent($event, '未啟動')"></div>
+  </div>
+  <div class="section">
+    <div echarts class="chart" [options]="option2" (chartClick)="onChartEvent($event, '簽核中')"></div>
+  </div>
+  <div class="section">
+    <div echarts class="chart" [options]="option3" (chartClick)="onChartEvent($event, '已簽核')"></div>
+  </div>
+</div>
+<div class="dfc-approve-table">
+  <nz-table #dfcMilitaryQueryTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzScroll]="nzScroll"
+    [nzPageSize]="10" [nzWidthConfig]="nzWidthConfig">
+    <thead>
+      <tr>
+        <th>{{'mrr.nudd-code'|translate}}</th>
+        <th>{{'mrr.mrr-plant'|translate}}</th>
+        <th>{{'mrr.mrr-customer'|translate}}</th>
+        <th>{{'mrr.mrr-product'|translate}}</th>
+        <th>Project Code</th>
+        <th>Project Name</th>
+        <th>{{'military-order.sign-status'|translate}}</th>
+        <th>{{'military-order.sign-status-describe'|translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of dfcMilitaryQueryTable.data">
+        <td>
+          <button nz-button *ngIf="data.statusCode === '-1'" nzType="primary"
+            (click)="startUp(data)">{{'military-order.start'|translate}}</button>
+          <a *ngIf="data.statusCode !== '-1'" style="text-decoration:underline"
+            (click)="startUp(data)">{{data.code}}</a>
+        </td>
+        <td>{{data.plantName}}</td>
+        <td>{{data.customer}}</td>
+        <td>{{data.modelType}}</td>
+        <td>{{data.proCode}}</td>
+        <td>{{data.proName}}</td>
+        <td>{{data.status}}</td>
+        <td>
+          <p *ngFor="let desc of data.desc">{{desc}}</p>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <!-- 點擊啟動軍令狀 頁面顯示 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="modalWidth" [(nzVisible)]="isSendSignVisible"
+    [nzTitle]="'military-order.military-order' | translate" (nzOnCancel)="cancelSendSign()"
+    [nzFooter]="modalEditSaveFooter">
+    <div class="dfc-send">
+      <app-military-order-sign-approve [queryValue]="queryValue" [tabelHeight]="tabelHeight">
+      </app-military-order-sign-approve>
+    </div>
+    <ng-template #modalEditSaveFooter>
+      <button nz-button nzType="default" (click)="cancelSendSign()">Cancel</button>
+    </ng-template>
+  </nz-modal>
+</div>

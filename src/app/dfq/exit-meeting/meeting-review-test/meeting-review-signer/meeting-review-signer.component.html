@@ -1,0 +1,269 @@
+<ng-template #loading><span>
+    <nz-spin></nz-spin>
+  </span></ng-template>
+<!--CFE-->
+<div class="query-row" *ngIf="DFILeader&&showEdit">
+  <button nz-button [nzType]="'primary'" style="float: left;" nzShape="circle" title="修改签核人员" (click)="edit()">
+    <i class="edit" nz-icon type="edit" theme="outline"></i>
+  </button>&nbsp;
+  <button nz-button [nzType]="'primary'" style="float: left;" nzShape="circle" title="保存" [nzLoading]="saveLoading"
+    (click)="save()">
+    <i class="save" nz-icon type="save" theme="outline"></i>
+  </button>
+  <br>
+</div>
+<div class="query-row">
+  <div class="field2">
+    <span>CFE</span>
+    <div *ngIf="canEdit" style=" display:inline-block;">
+      <div class="search" *ngIf="cfe.user; else loading">
+        <app-search-user [disabled]="cfe.comment!==''&&cfe.comment!==null" (selectedUserData)="changeCfe($event)"
+          [picId]="cfe.user">
+        </app-search-user>
+      </div>
+    </div>
+    <div *ngIf="!canEdit" style=" display:inline-block;">
+      <div id="row1" *ngIf="cfe.user | userEnname | async ; else loading">
+        {{ cfe.user | userEnname | async }} <br />
+      </div>
+    </div>
+  </div>
+  <div class="field4">
+    <span>Judge</span>&nbsp;
+    <nz-radio-group [(ngModel)]="cfe.judge" [nzDisabled]="!cfe.enable" (ngModelChange)="setCurrentRole(cfe)">
+      <label nz-radio [nzValue]="1" [nzDisabled]="!cfe.enable">Agree</label>
+      <label nz-radio [nzValue]="0" [nzDisabled]="!cfe.enable">Disagree</label>
+    </nz-radio-group>
+  </div>
+  <div class="field6">
+    <span>Comments</span>
+    <textarea [placeholder]="judgeStatus < 4 ? '對於工廠工時/良率/費用產生的影響進行描述，請至少輸入20字':'對於工廠工時/良率/費用產生的影響進行描述'" nz-input
+      id="comments" (ngModelChange)="setCurrentRole(cfe)" [(ngModel)]="cfe.comment" [disabled]="!cfe.enable"></textarea>
+  </div>
+</div>
+<nz-divider></nz-divider>
+<!--PM Head-->
+<div *ngIf="!isPass">
+  <div class="query-row">
+    <div class="field2">
+      <span>PM Head</span>
+      <div *ngIf="canEdit" style=" display:inline-block;">
+        <div class="search" *ngIf="pmHead.user; else loading">
+          <app-search-user [disabled]="pmHead.comment!==''&&pmHead.comment!==null" (selectedUserData)="changePM($event)"
+            [picId]="pmHead.user">
+          </app-search-user>
+        </div>
+      </div>
+      <div *ngIf="!canEdit" style=" display:inline-block;">
+        <div id="row1" *ngIf="pmHead.user | userEnname | async ; else loading">
+          {{ pmHead.user | userEnname | async }} <br />
+        </div>
+      </div>
+    </div>
+    <div class="field3">
+      <span>Comments</span>
+      <textarea [placeholder]="judgeStatus < 4 ? '請針對機種相關狀況進行描述，請至少輸入20字':'請針對機種相關狀況進行描述'" nz-input id="comments"
+        (ngModelChange)="setCurrentRole(pmHead)" [(ngModel)]="pmHead.comment" [disabled]="!pmHead.enable"></textarea>
+    </div>
+  </div>
+  <!--BU QM Head-->
+  <div class="query-row" *ngIf="buQmHead.user">
+    <div class="field2">
+      <span>BU QM Head</span>
+      <div *ngIf="canEdit" style=" display:inline-block;">
+        <div class="search" *ngIf="buQmHead.user; else loading">
+          <app-search-user [disabled]="buQmHead.comment!==''&&buQmHead.comment!==null"
+            (selectedUserData)="changebuQmHead($event)" [picId]="buQmHead.user">
+          </app-search-user>
+        </div>
+      </div>
+      <div *ngIf="!canEdit" style=" display:inline-block;">
+        <div id="row1" *ngIf="buQmHead.user | userEnname | async ; loading">
+          {{ buQmHead.user | userEnname | async }}<br />
+        </div>
+      </div>
+    </div>
+    <div class="field3">
+      <span>Comments</span>
+      <textarea [placeholder]="judgeStatus < 4 ? '請針對機種相關狀況進行描述，請至少輸入20字':'請針對機種相關狀況進行描述'" nz-input id="comments"
+        (ngModelChange)="setCurrentRole(buQmHead)" [(ngModel)]="buQmHead.comment"
+        [disabled]="!buQmHead.enable"></textarea>
+    </div>
+  </div>
+  <!--BU Head *ngIf="buHead.user"-->
+  <div class="query-row" *ngIf="buHead.user">
+    <div class="field2">
+      <span>BU Head</span>
+      <div *ngIf="canEdit" style=" display:inline-block;">
+        <div class="search" *ngIf="buHead.user; else loading">
+          <app-search-user [disabled]="buHead.judge!==null&&buHead.judge!==undefined"
+            (selectedUserData)="changebuHead($event)" [picId]="buHead.user">
+          </app-search-user>
+        </div>
+      </div>
+      <div *ngIf="!canEdit" style=" display:inline-block;">
+        <div id="row1" *ngIf="buHead.user | userEnname | async ; else loading">
+          {{ buHead.user | userEnname | async }}<br />
+        </div>
+      </div>
+    </div>
+    <div class="field4">
+      <span>Judge</span>&nbsp;
+      <nz-radio-group [(ngModel)]="buHead.judge" (ngModelChange)="setCurrentRole(buHead)" [nzDisabled]="!buHead.enable">
+        <label nz-radio [nzValue]="1" [nzDisabled]="!buHead.enable">Waive</label>
+        <label nz-radio [nzValue]="0" [nzDisabled]="!buHead.enable">Not Waive</label>
+      </nz-radio-group>
+    </div>
+    <div class="field5">
+      <span>Comments</span>
+      <textarea nz-input id="comments" (ngModelChange)="setCurrentRole(buHead)" [(ngModel)]="buHead.comment"
+        [disabled]="!buHead.enable"></textarea>
+    </div>
+  </div>
+  <!--BG QM Head  *ngIf="bgQmHead.user"-->
+  <div class="query-row">
+    <div class="field2">
+      <span>BG QM Head</span>
+      <div *ngIf="canEdit" style=" display:inline-block;">
+        <div class="search" *ngIf="bgQmHead.user; else loading">
+          <app-search-user [disabled]="bgQmHead.judge!==null&&bgQmHead.judge!==undefined"
+            (selectedUserData)="changebgQmHead($event)" [picId]="bgQmHead.user">
+          </app-search-user>
+        </div>
+      </div>
+      <div *ngIf="!canEdit" style=" display:inline-block;">
+        <div id="row1" *ngIf="bgQmHead.user | userEnname | async ; else loading">
+          {{ bgQmHead.user | userEnname | async }}<br />
+        </div>
+      </div>
+    </div>
+    <div class="field4">
+      <span>Judge</span>&nbsp;
+      <nz-radio-group (ngModelChange)="setCurrentRole(bgQmHead)" [(ngModel)]="bgQmHead.judge"
+        [nzDisabled]="!bgQmHead.enable">
+        <label nz-radio [nzValue]="1" [nzDisabled]="!bgQmHead.enable">Waive</label>
+        <label nz-radio [nzValue]="0" [nzDisabled]="!bgQmHead.enable">Not Waive</label>
+      </nz-radio-group>
+    </div>
+    <div class="field5">
+      <span>Comments</span>
+      <textarea nz-input id="comments" (ngModelChange)="setCurrentRole(bgQmHead)" [(ngModel)]="bgQmHead.comment"
+        [disabled]="!bgQmHead.enable"></textarea>
+    </div>
+  </div>
+  <!--Plant Manager *ngIf="plant.user"-->
+  <div class="query-row">
+    <div class="field2">
+      <span>Plant Manager</span>
+      <div *ngIf="canEdit" style=" display:inline-block;">
+        <div class="search" *ngIf="plant.user; else loading">
+          <app-search-user [disabled]="plant.judge!==null&&plant.judge!==undefined"
+            (selectedUserData)="changeplant($event)" [picId]="plant.user">
+          </app-search-user>
+        </div>
+      </div>
+      <div *ngIf="!canEdit" style=" display:inline-block;">
+        <div id="row1" *ngIf="plant.user | userEnname | async ; else loading">
+          {{ plant.user | userEnname | async }} <br />
+        </div>
+      </div>
+    </div>
+    <div class="field4">
+      <span>Judge</span>&nbsp;
+      <nz-radio-group [(ngModel)]="plant.judge" (ngModelChange)="setCurrentRole(plant)" [nzDisabled]="!plant.enable">
+        <label nz-radio [nzValue]="1" [nzDisabled]="!plant.enable">Waive</label>
+        <label nz-radio [nzValue]="0" [nzDisabled]="!plant.enable">Not Waive</label>
+      </nz-radio-group>
+    </div>
+    <div class="field5">
+      <span>Comments</span>
+      <textarea nz-input id="comments" (ngModelChange)="setCurrentRole(plant)" [(ngModel)]="plant.comment"
+        [disabled]="!plant.enable"></textarea>
+    </div>
+    <nz-divider></nz-divider>
+  </div>
+</div>
+<!--Judge -->
+<div>
+  &nbsp;<span class="content">Judge History</span>
+  <div style="margin: 5px 5px;">
+    <nz-table #rowSelectionTable [nzData]="meetingResults" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th class="history">Signing Time</th>
+          <th class="history">Signing Result</th>
+          <th class="history">Signer</th>
+          <th class="history">Exit Meeting Judgement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of rowSelectionTable.data,let j=index">
+          <td>{{data.updatedDate | dateLocaleString }}</td>
+          <td>{{data.signStatus | signStatus}}</td>
+          <td><a (click)="openSignerHistoryModal(data.workflowId)">Detail</a></td>
+          <td><a (click)="openExitMeetingJudgement(data.id)">{{data.status | judgeStatus}}</a></td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<br>
+<div style="display: flex;justify-content: center;" *ngIf="showSendButton"><button (click)="submitSend()" nz-button
+    nzType="primary"
+    [disabled]="!(plant.enable || pmHead.enable || buQmHead.enable || buHead.enable || bgQmHead.enable || cfe.enable)">送出</button>
+</div>
+
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1500" [(nzVisible)]="historyExitMeetingJudgement.show"
+  nzTitle="紅黃綠燈報表" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <nz-table #basicTable2 [nzData]="historyExitMeetingJudgement.data" [nzScroll]="{x:'160%'}" [nzPageSize]="4">
+    <thead>
+      <tr>
+        <th nzLeft="0%" style="width: 3%;" class="history">SEQ</th>
+        <th class="history">Check Function Role</th>
+        <th class="history">Check Function PIC</th>
+        <th class="history">Process</th>
+        <th class="history">Item Description</th>
+        <th class="history">Check Point</th>
+        <th class="history">Judgment</th>
+        <th class="history">Take Action Role</th>
+        <th class="history">Take Action PIC</th>
+        <th class="history">Problem Description</th>
+        <th class="history">Action</th>
+        <th class="history">Targe Date</th>
+        <th class="history">Actual Date</th>
+        <th nzRight="0%" style="width: 2%;" class="history">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable2.data,let k=index">
+        <td nzLeft="0%">{{data.SEQ}}</td>
+        <td>{{data.CHECKFUNCTIONROLE}}</td>
+        <td>{{data.CHECKFUNCTIONPIC}}</td>
+        <td>{{data.PROCESS}}</td>
+        <td>{{data.ITEMDESC}}</td>
+        <td>{{data.CHECKPOINT}}</td>
+        <td>{{data.JUDGMENT}}</td>
+        <td>{{data.TAKEACTIONROLE}}</td>
+        <td>{{data.TAKEACTIONPIC}}</td>
+        <td>{{data.PROBLEMDESC}}</td>
+        <td>{{data.ACTION}}</td>
+        <td>{{data.TARGETDATE}}</td>
+        <td>{{data.ACTUALDATE}}</td>
+        <td nzRight="0%" [ngStyle]="{ 'background-color' : (data.JUDGMENT ===1 ? 'rgb(6, 238, 26)':
+        ( data.JUDGMENT ===2 ? 'rgb(248, 252, 55)' : ( data.JUDGMENT ===3 ? 'rgba(212, 48, 48, 1)' : '#b9b6b6')))}">
+          <nz-radio-group [ngModel]="data.JUDGMENT" disabled="true">
+            <label nz-radio [nzValue]=1>G</label>
+            <label nz-radio [nzValue]=2>Y</label>
+            <label nz-radio [nzValue]=3>R</label>
+            <label nz-radio [nzValue]=4>NA</label>
+          </nz-radio-group>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>
+<app-signer-history [isEditSaveVisible]="signerHistory.show" [title]="'Signer History'" [modalFooter]="modalFooter"
+  (handleCancel)="handleCancel()" [signings]="signerHistory.data"></app-signer-history>
+<ng-template #modalFooter>
+  <button nz-button nzType="primary" (click)="handleCancel()">Back</button>
+</ng-template>

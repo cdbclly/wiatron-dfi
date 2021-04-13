@@ -1,0 +1,53 @@
+<button nz-button nzType="primary" *ngIf="rawData['size'].length" style="border-radius: 6px;margin-left: 96%; height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal('title')"><i nz-icon type="download" theme="outline"></i></button>
+    <nz-table
+    #groupingTable
+    [nzData]="rawData['size'][0]['detail']"
+    nzBordered
+    nzPageSize = "10"
+    [(nzPageIndex)]="currentIndex"
+    nzSize="middle"
+    [nzScroll]="scrollConfig"
+        >
+        <thead>
+          <tr>
+            <th rowspan="2" nzWidth="100px" nzLeft="0px">{{"imq-snCount" | translate}}: {{rawData['size'][0]['detail'].length}}</th>
+            <th colspan="2"  *ngFor="let item of rawData['size']" style="width:120px">
+                {{item['name']}}
+              </th>
+            </tr>
+          <tr>
+              <th *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+              <th *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item | number: '1.0-2'}</th>
+          </tr>
+          <tr>
+            <th nzLeft="0px" >{{"imq-spcChart"| translate}}</th>
+            <th colspan="2" *ngFor="let item of rawData['size']"   style="text-align: center; width:120px"><i style="color: white;font-size: 16px;" (click)="showChart(item)" class="anticon anticon-line-chart"></i></th>
+          </tr>
+          <tr>
+              <th nzLeft="0px" style="font-weight: 300;text-align: center;">CPK</th>
+              <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300; width:120px;" [ngClass]=" item['cpk'] <= judgeData ? 'redColor':''" >{{item['cpk'] | number: '1.2-2'}}</th>
+            </tr>
+            <!-- 新增 machineID -->
+            <tr>
+              <th nzLeft="0px" style="font-weight: 300;text-align: center;">MachineID</th>
+              <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300; width:120px;" >{{item['testMachineId']}}</th>
+            </tr>
+
+            <tr>
+                <th nzLeft="0px" style="background-color: white; color: black;font-weight: 300;text-align: center;">{{"imq-spcViolation" | translate}}</th>
+                <th colspan="2" *ngFor="let item of rawData['size']" style="background-color: white; font-weight: 300;width:120px;color: red;">{{item['spcRule'] | spcRule : lang}}</th>
+                <th colspan="2" *ngFor="let item of rawData['deformation']" style="background-color: white; font-weight: 300;width:120px;color: red;">{{item['spcRule'] | spcRule : lang}}</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of groupingTable.data; let i=index">
+            <td nzLeft="0px" nzWidth="100px">{{item['unitSerialNumber']}}</td>
+            <td colspan="2"  *ngFor="let maxItem of rawData['size']" style="width:120px">{{maxItem['detail'][i + (currentIndex -1) * 10]['testData'] | number: '1.2-2'}}</td>
+            <td colspan="2" *ngFor="let maxItem of rawData['deformation']" style="width:120px">{{maxItem['detail'][i + (currentIndex -1) * 10]['testData'] | number: '1.2-2'}}</td>
+          </tr>
+        </tbody>
+</nz-table>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <div *ngIf="isVisible" echarts [options]="chartX" class="chartX"></div>
+  <div *ngIf="isVisible" echarts [options]="chartR" class="chartX"></div>
+</nz-modal>

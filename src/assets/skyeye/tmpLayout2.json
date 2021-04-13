@@ -1,0 +1,38 @@
+[
+  {
+    "plant": "F232",
+    "line": "AS9",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZC":"ZC1"}, {"ZD": "ZD1"},{"TH": "TH1"}, {"ZE":"ZE1"}, {"ZE1":"ZE1"}]
+  },
+  {
+    "plant": "F232",
+    "line": "H2P",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZE":"ZE1"}]
+  },
+  {
+    "plant": "F232",
+    "line": "H9Q",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZC":"ZC1"}, {"ZD": "ZD1"},{"TH": "TH1"}, {"ZE":"ZE1"}, {"ZF":"ZF1"}, {"Z1": "ZD1"},{"T1": "TH1"}, {"Z2":"ZE1"}, {"Z3":"ZF1"}]
+  },
+  {
+    "plant": "F232",
+    "line": "H11",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZC":"ZC1"}, {"ZD": "ZD1"}]
+  },
+  {
+    "plant": "F232",
+    "line": "HPA",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZC":"ZC1"}, {"ZD": "ZD1"}]
+  },
+  {
+    "plant": "F232",
+    "line": "HPB",
+    "section": "DIP",
+    "stage": [{"ZA": "ZA1"}, {"ZB": "ZB1"}, {"ZC":"ZC1"}, {"ZD": "ZD1"}]
+  }
+]

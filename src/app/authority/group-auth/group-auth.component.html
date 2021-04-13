@@ -1,0 +1,95 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{'dashboard.authority-maintain'|translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'authority-maintain.page-group-permission-maintenance'|translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<h2>{{'authority-maintain.page-group-permission-maintenance'|translate}}</h2>
+<div class="query">
+  <span>{{'imq-mt-group'|translate}}</span>
+  <nz-select [(ngModel)]="currentGroup" (ngModelChange)="groupChange()">
+    <nz-option *ngFor="let group of groupList" [nzLabel]="group.Describtion" [nzValue]="group.GroupID"></nz-option>
+  </nz-select>
+</div>
+<nz-divider></nz-divider>
+<button nz-button [nzType]="'primary'" title="add" nzShape="circle" (click)="operateAdd()">
+  <i class="anticon anticon-plus"></i>
+</button>
+<button class="iconbtn" nz-button [nzType]="'primary'" title="edit" nzShape="circle" (click)="onEdit()">
+  <i class="anticon anticon-edit"></i>
+</button>
+
+<div class="tableContainer">
+  <nz-table #basicTable nzBordered [nzShowPagination]="false" [nzData]="dataSet" [nzPageSize]="999">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{{'imq-mt-pageGroup'|translate}}</th>
+        <th>{{'authority-maintain.authority-use'|translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data, let i = index">
+        <td class="no">{{i+1}}</td>
+        <td class="pageGroup">{{data.pageGroup}}</td>
+        <td class="auth">
+          <label nz-checkbox [(ngModel)]="groupAuth[data.fiels].access" [nzDisabled]="isDisabledButton">
+            {{'authority-maintain.allow-reading'|translate}}
+          </label>
+          <label nz-checkbox [(ngModel)]="groupAuth[data.fiels].insert" [nzDisabled]="isDisabledButton">
+            {{'authority-maintain.new-item'|translate}}
+          </label>
+          <label nz-checkbox [(ngModel)]="groupAuth[data.fiels].delete" [nzDisabled]="isDisabledButton">
+            {{'authority-maintain.remove-permission'|translate}}
+          </label>
+          <label nz-checkbox [(ngModel)]="groupAuth[data.fiels].update" [nzDisabled]="isDisabledButton">
+            {{'authority-maintain.allow-modification'|translate}}
+          </label>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 新增 -->
+<nz-modal [nzWidth]="800" nzWrapClassName="vertical-center-modal" [(nzVisible)]="isAddDataVisible"
+  nzMaskClosable="false" nzTitle={{modalTitle}} (nzOnCancel)="handleAddCancel()" [nzFooter]="modalAddFooter">
+  <div class="field">
+    <div>{{'imq-mt-groupName'|translate}}</div><input nz-input [(ngModel)]="saveGroupName">
+    <button nz-button nzType="primary" (click)="select()"><i nz-icon type="check-square"
+        theme="fill"></i>{{'imq-selectAll'|translate}}</button>
+  </div>
+  <div class="new-table">
+    <nz-table #modalTable nzBordered [nzShowPagination]="false" [nzData]="dataSet" [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>{{'imq-mt-pageGroup'|translate}}</th>
+          <th>{{'authority-maintain.authority-use'|translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of modalTable.data, let i = index">
+          <td class="no">{{i+1}}</td>
+          <td class="pageGroup">{{data.pageGroup}}</td>
+          <td class="auth">
+            <label nz-checkbox [(ngModel)]="saveGroupAuth[data.fiels].access">
+              {{'authority-maintain.allow-reading'|translate}}
+            </label>
+            <label nz-checkbox [(ngModel)]="saveGroupAuth[data.fiels].insert">
+              {{'imq-mt-createItem'|translate}}
+            </label>
+            <label nz-checkbox [(ngModel)]="saveGroupAuth[data.fiels].delete">
+              {{'authority-maintain.remove-permission'|translate}}
+            </label>
+            <label nz-checkbox [(ngModel)]="saveGroupAuth[data.fiels].update">
+              {{'authority-maintain.allow-modification'|translate}}
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <ng-template #modalAddFooter>
+    <button nz-button nzType="default" (click)="handleAddCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleAddSave()" [disabled]="!saveGroupName">Save</button>
+  </ng-template>
+</nz-modal>

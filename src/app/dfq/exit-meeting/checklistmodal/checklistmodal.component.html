@@ -1,0 +1,53 @@
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1500" [(nzVisible)]="isEditSaveVisible3" nzTitle="紅黃綠燈報表"
+  [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()" [nzClosable]="false">
+  <nz-table #basicTable3 [nzData]="checkListsData" [nzScroll]="{x:'160%'}" [nzPageSize]="4">
+    <thead>
+      <tr>
+        <th nzLeft="0%" style="width: 3%;" id="signerth" class="history">SEQ</th>
+        <th id="signerth" class="history">Check Function Role</th>
+        <th id="signerth" class="history">Check Function PIC</th>
+        <th id="signerth" class="history">Process</th>
+        <th id="signerth" class="history">Item Description</th>
+        <th id="signerth" class="history">Check Point</th>
+        <th id="signerth" class="history">Judgment</th>
+        <th id="signerth" class="history">Take Action Role</th>
+        <th id="signerth" class="history">Take Action PIC</th>
+        <th id="signerth" class="history">Problem Description</th>
+        <th id="signerth" class="history">Action</th>
+        <th id="signerth" class="history">Targe Date</th>
+        <th id="signerth" class="history">Actual Date</th>
+        <th nzRight="0%" style="width: 2%;" id="signerth" class="history">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable3.data,let j=index">
+        <td nzLeft="0%" id="signertd">{{data.SEQ}}</td>
+        <td id="signertd">{{data.CHECKFUNCTIONROLE}}</td>
+        <td id="signertd">{{data.CHECKFUNCTIONPIC}}</td>
+        <td id="signertd">{{data.PROCESS}}</td>
+        <td id="signertd">{{data.ITEMDESC}}</td>
+        <td id="signertd">{{data.CHECKPOINT}}</td>
+        <td id="signertd">{{data.JUDGMENT}}</td>
+        <td id="signertd">{{data.TAKEACTIONROLE}}</td>
+        <td id="signertd">{{data.TAKEACTIONPIC}}</td>
+        <td id="signertd">{{data.PROBLEMDESC}}</td>
+        <td id="signertd">{{data.ACTION}}</td>
+        <td id="signertd">{{ data.TARGETDATE | datetime }}</td>
+        <td id="signertd">{{ data.ACTUALDATE | datetime }}</td>
+        <td nzRight="0%" [ngStyle]="{ 'background-color' : (data.JUDGMENT ===1 ? 'rgb(6, 238, 26)':
+        ( data.JUDGMENT ===2 ? 'rgb(248, 252, 55)' : ( data.JUDGMENT ===3 ? 'rgba(212, 48, 48, 1)' : '#b9b6b6')))}">
+          <nz-radio-group [(ngModel)]="data.JUDGMENT" disabled="true">
+            <label nz-radio [nzValue]=1>G</label>
+            <label nz-radio [nzValue]=2>Y</label>
+            <label nz-radio [nzValue]=3>R</label>
+            <label nz-radio [nzValue]=4>NA</label>
+          </nz-radio-group>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>
+
+<ng-template #modalFooter>
+  <button nz-button nzType="primary" (click)="handleOk()">Back</button>
+</ng-template>

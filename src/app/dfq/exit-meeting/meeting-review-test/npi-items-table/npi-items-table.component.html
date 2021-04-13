@@ -1,0 +1,94 @@
+<div style="float:right; margin: 0 5px;">
+  <span>Status:</span>&nbsp;
+  <div class="orange-circle" style="display: inline-block;"></div>Ongoing&nbsp;
+  <div class="red-circle" style="display: inline-block;"></div>Open&nbsp;
+  <div class="green-circle" style="display: inline-block;"></div>Closed&nbsp;
+  <div class="gray-circle" style="display: inline-block;"></div>NA
+</div>
+<div style="font-size: 20px;min-height: 0px;margin: 0 5px;">{{ 'dfq.ex-review-completion' | translate }}</div>
+<div class="function" *ngIf="functionStatus.length>0; else elseTmpl">
+  <table>
+    <tr>
+      <td id="dark">By Function</td>
+      <td id="dark" *ngFor="let item of functionStatus">{{ item.name }}</td>
+    </tr>
+    <tr>
+      <td id="light">Status</td>
+      <td id="light" *ngFor="let item of functionStatus, let i=index">
+        <div id="color" [class]="item.color" style="display: inline-block;"></div>&nbsp;
+        {{ item.count }}/{{ item.total }}
+      </td>
+    </tr>
+  </table>
+</div>
+<ng-template #elseTmpl>no data!</ng-template>
+<br>
+<span style="font-size: 20px;min-height: 0px;margin: 0 5px;">{{ 'dfq.ex-review-Determine' | translate }} & {{ 'dfq.ex-review-judgment' | translate }}</span>
+<div class="content2">
+  <div style="width:33.3%">
+    <table>
+      <thead>
+        <tr>
+          <th width="420" height="40" colspan="4" style="text-align:center">Overall</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.overall.closed)">
+            <span class="green-circle" style="display: inline-block;"></span>
+            {{overallClosed}}
+          </td>
+          <td width="116" height="40" style="text-align:center"
+            (click)="showItemsData(checklistStatus.overall.ongoing)">
+            <span class="orange-circle" style="display: inline-block;"></span>
+            {{overallOngoing}}
+          </td>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.overall.open)">
+            <span class="red-circle" style="display: inline-block;"></span>
+            {{overallOpen}}
+          </td>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.overall.na)">
+            <span class="gray-circle" style="display: inline-block;"></span>
+            {{overallNa}}
+          </td>
+        </tr>
+        <tr>
+          <td width="420" height="40" colspan="4" style="text-align:center">
+            {{overallClosed + overallOngoing + overallOpen + overallNa}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>&nbsp;
+  <div style="width:33.3%">
+    <table>
+      <thead>
+        <tr>
+          <th width="420" height="40" colspan="3" style="text-align:center">MustDo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.mustDo.closed)">
+            <span class="green-circle" style="display: inline-block;"></span>
+            {{mustDoClosed}}
+          </td>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.mustDo.ongoing)">
+            <span class="orange-circle" style="display: inline-block;"></span>
+            {{mustDoOngoing}}
+          </td>
+          <td width="116" height="40" style="text-align:center" (click)="showItemsData(checklistStatus.mustDo.open)">
+            <span class="red-circle" style="display: inline-block;"></span>
+            {{mustDoOpen}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>&nbsp;
+  <div style="width:33.3%">
+    <app-judgement-component [plantId]="plantId" [judgeStatus]="judgeStatus"></app-judgement-component>
+  </div>
+</div>
+<br>
+<app-checklistmodal [checkListsData]="checklistmodal.checkListsData"
+  [isEditSaveVisible3]="checklistmodal.showCheckListsData" (isVisible)="closeItemsData($event)"></app-checklistmodal>

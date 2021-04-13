@@ -1,0 +1,199 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Bug Report</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  Bug Report
+</div>
+<div class="query-row">
+  <div class="field1" style="width: 45%;">
+    <span style="text-align: center;margin-right: 10px;margin-left:20px;">
+      <span style="color: red;margin-right: 10px;">*</span>
+      <span>日期</span>
+    </span>
+    <!-- <span style="width: 17%;text-align: center;">日期</span> -->
+    <!-- <nz-range-picker style="width:70%;margin-left: 10px;" [nzFormat]="dateFormat" [(ngModel)]="datefroms" (ngModelChange)="getOptions($event, 'cur_date')"></nz-range-picker> -->
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateInputFrom"
+      (ngModelChange)="getOptions($event, 'dateFrom')"></nz-date-picker>
+    ~
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateInputTo"
+      (ngModelChange)="getOptions($event, 'dateTo')"></nz-date-picker>
+  </div>
+  <span *ngIf="cur_site && cur_plant.length > 0" [ngStyle]="{'cursor': filterData === null ? 'no-drop': 'pointer'}"
+    style="font-size: 20px;"><i class="anticon anticon-download" (click)="downloadFile()"></i></span>
+</div>
+<div class="query-row">
+  <div class="field1">
+    <span style="text-align: center;margin-right: 10px;margin-left:20px;">
+      <span style="color: red;margin-right: 10px;">*</span>
+      <span>廠別</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_site')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('plant', $event)">
+    <span style="width: 26%;text-align: center;">
+      <span style="color: red; margin-right: 10px;
+          text-align: center;">*</span>
+      <span>廠區</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_plant" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_plant')">
+      <nz-option *ngFor="let plant of objectKeys(plantGroup)" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('issue', $event)">
+    <span style="width: 30%;text-align: center;">
+      <span style="margin-right: 10px;">問題</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_issue" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_issue')">
+      <nz-option *ngFor="let issue of objectKeys(issueGroup)" [nzLabel]="issue | issue" [nzValue]="issue"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('model', $event)">
+    <span style="width: 30%;text-align: center;">
+      <span style="margin-right: 10px;">機種</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_model" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_model')">
+      <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+</div>
+<div class="query-row">
+  <div class="field1" (click)="changeStatus('line', $event)">
+    <span style="text-align: right;margin-right: 10px;margin-left: 37px;">
+      <span>線別</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_line" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_line')">
+      <nz-option *ngFor="let line of objectKeys(lineGroup)" [nzLabel]="line" [nzValue]="line"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('function', $event)">
+    <span style="width: 26%;text-align: center;">
+      <span>部門</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_fun" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_fun')">
+      <nz-option *ngFor="let fun of objectKeys(funGroup)" [nzLabel]="fun" [nzValue]="fun"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('station', $event)">
+    <span style=" width: 30%;text-align: center;">
+      <span>站別</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_station" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_station')">
+      <nz-option *ngFor="let station of objectKeys(stationGroup)" [nzLabel]="station" [nzValue]="station"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="changeStatus('pic', $event)">
+    <span style=" width: 30%;text-align: center;">
+      <span>責任人</span>
+    </span>
+    <nz-select nzShowSearch nzMode="multiple" nzAllowClear [(ngModel)]="cur_pic" [nzDisabled]="isSelectValid"
+      (ngModelChange)="getOptions($event, 'cur_pic')">
+      <nz-option *ngFor="let pic of objectKeys(picGroup)" [nzLabel]="pic" [nzValue]="pic"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<div class="content" *ngIf="cur_site && cur_plant.length > 0">
+  <div class="chart-box">
+    <!-- <div class="title">Status</div> -->
+    <div class="report_box" echarts [options]="status_char" (chartClick)="showDetail('status', $event)"></div>
+  </div>
+  <div class="chart-box">
+    <!-- <div class="title">PIC</div> -->
+    <div class="report_box" echarts [options]="pic_char" (chartClick)="showDetail('pic', $event)"></div>
+  </div>
+  <div class="chart-box">
+    <!-- <div class="title">Type</div> -->
+    <div class="report_box" echarts [options]="type_char" (chartClick)="showDetail('type', $event)"></div>
+  </div>
+</div>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzWidth]="alertTableW" (nzOnCancel)="handleCancel()"
+  [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <div class="box-table">
+    <nz-table #nzData nzBordered nzShowQuickJumper [nzData]="alertInfoArr" [nzPageSize]="5" [(nzPageIndex)]="curPage"
+      [nzWidthConfig]="tableW">
+      <thead>
+        <tr style="text-align: center;font-size: 10px;">
+          <th>No</th>
+          <th>線別</th>
+          <th>機種</th>
+          <th>站別</th>
+          <th>報警信息</th>
+          <th>治具編號</th>
+          <th>根本原因</th>
+          <th>Action</th>
+          <th>輔助決策</th>
+          <th>狀態</th>
+          <th>報警時間</th>
+          <th>處理時間</th>
+          <th>部門</th>
+          <th>PIC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of nzData.data;  let i = index;">
+          <td style="font-size: 10px;">{{(curPage - 1) * 5 + i + 1}}</td>
+          <td style="font-size: 10px;">{{item['lineId']}}</td>
+          <td style="font-size: 10px;">{{item['modelId']}}</td>
+          <td style="font-size: 10px;">{{item['stationId']}}</td>
+          <td style="font-size: 10px;">{{item['warningInfo']}}</td>
+          <td style="font-size: 10px;">{{item['equipNo']}}</td>
+          <td style="font-size: 10px;">{{item['picReasonDesc']}}</td>
+          <td style="font-size: 10px;">{{item['action']}}</td>
+          <td style="font-size: 10px;">{{item['decision']}}</td>
+          <td style="font-size: 10px;">{{item['status']}}</td>
+          <td style="font-size: 10px;">{{item['occurTime']}}</td>
+          <td style="font-size: 10px;">{{item['handleTime']}}</td>
+          <td style="font-size: 10px;">{{item['dept']}}</td>
+          <td style="font-size: 10px;">{{item['pic']}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <!-- <table cellspacing="0" cellpadding="0">
+              <thead>
+                  <th>No</th>
+                  <th>Line</th>
+                  <th>Model</th>
+                  <th>Station</th>
+                  <th>WarningInfo</th>
+                  <th>治具編號</th>
+                  <th>Root cause</th>
+                  <th>Action</th>
+                  <th>輔助決策</th>
+                  <th>issue Status</th>
+                  <th>相應時長</th>
+                  <th>處理時長</th>
+                  <th>部門</th>
+                  <th>PIC</th>
+              </thead>
+              <tr *ngFor="let item of alertInfoArr; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{item['lineId']}}</td>
+                <td>{{item['modelId']}}</td>
+                <td>{{item['stationId']}}</td>
+                <td>{{item['warningInfo']}}</td>
+                <td>{{item['equipNo']}}</td>
+                <td>{{item['rootInfo']}}</td>
+                <td>{{item['action']}}</td>
+                <td>{{item['comment']}}</td>
+                <td>{{item['status']}}</td>
+                <td>{{item['occurTime']}}</td>
+                <td>{{item['handleTime']}}</td>
+                <td>{{item['dept']}}</td>
+                <td>{{item['pic']}}</td>
+              </tr>
+            </table> -->
+  </div>
+</nz-modal>

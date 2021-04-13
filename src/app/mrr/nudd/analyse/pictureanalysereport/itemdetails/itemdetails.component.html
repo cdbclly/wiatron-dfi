@@ -1,0 +1,23 @@
+<nz-modal nzWidth="800" [(nzVisible)]="isVisibleDetails" [nzClosable]="false" (nzOnCancel)="handleCancel()"
+  [nzFooter]="null" nzTitle="">
+  <nz-table #nzTable id="report" [nzData]="itemDetailsData" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th rowspan="2">Item</th>
+        <th rowspan="2">Side</th>
+        <th rowspan="2">Point</th>
+        <th rowspan="2">Value</th>
+        <th rowspan="2">Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+        <td>{{data.designItemName}}</td>
+        <td>{{data.sideName}}</td>
+        <td>{{data.pointName}}</td>
+        <td>{{data.value}}</td>
+        <td>{{data.riskLevel}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

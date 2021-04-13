@@ -1,0 +1,54 @@
+<div class="dfc-all" #DFCTargetSignDetail>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a (click)="goBack()">{{'dfc.target-working-hours-approval-query'|translate}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.target-working-hours-approval'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'dfc.target-working-hours-approval'|translate}}</span>
+  </div>
+  <div class="dfc-sign">
+    <table class="tableall">
+      <tr>
+        <td class="td-title">{{'dfc.dfc-site'|translate}}</td>
+        <td class="td-context">{{applicationData.plant}}</td>
+        <td class="td-title">{{'dfc.dfc-customer'|translate}}</td>
+        <td class="td-context">{{applicationData.customer}}</td>
+        <td class="td-title">{{'dfq.dfq-product'|translate}}</td>
+        <td class="td-context">{{applicationData.modelType}}</td>
+        <td class="td-title">Project</td>
+        <td class="td-context">
+          Name({{applicationData.proName}})
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Code({{applicationData.proCode}})
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Model Name({{applicationData.modelName}})
+        </td>
+      </tr>
+      <tr>
+        <td class="td-title">{{'dfc.department-code'|translate}}</td>
+        <td class="td-context">{{applicationData.deptCode}}</td>
+        <td class="td-title">{{'dfc.department-name'|translate}}</td>
+        <td class="td-context">{{applicationData.deptName}}</td>
+        <td class="td-title">{{'dfq.rfi-sign-sender'|translate}}</td>
+        <td class="td-context">{{applicationData.applicant}}</td>
+        <td class="td-title">{{'dfc.signing-data'|translate}}</td>
+        <td class="td-context">{{applicationData.applyDate}}</td>
+      </tr>
+      <tr *ngIf="revokeFlag">
+        <td colspan='8'>
+          <button nz-button nzType="primary" (click)="revoke()">{{'dfc.withdraw'|translate}}</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="dfc-echart">
+    <div echarts (chartClick)="onChartEvent($event)" class="dfc-chart-first" [options]="option"></div>
+  </div>
+  <div>
+    <app-dfc-sign-history [dfcSignData]="signData" [dfcSignHitoryParam]="dfcSignHitoryParam" [tableHeight]="tableHeight"
+      (approveClick)="approveClick($event)"></app-dfc-sign-history>
+  </div>
+</div>

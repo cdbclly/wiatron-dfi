@@ -1,0 +1,21 @@
+<div class="dfc-all" #DFCWorkReachingReport>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'report.dfc-model-reach-report' | translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'report.dfc-model-reach-report' | translate}}</span>
+  </div>
+  <div class="dfc-tabset">
+    <nz-tabset [nzSelectedIndex]="selectedIndex">
+      <nz-tab [nzTitle]="'dashboard.rfqWorkhourForecast' | translate">
+        <app-workhour-forecast [forecastParam]="workhourParam" [nzScrollY]="dfcWorkReachingHeight">
+        </app-workhour-forecast>
+      </nz-tab>
+      <nz-tab [nzTitle]="'dashboard.rfqWorkhourTracking' | translate">
+        <app-workhour-tracking [trackParam]="workhourParam" [nzScrollY]="dfcWorkReachingHeight"></app-workhour-tracking>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

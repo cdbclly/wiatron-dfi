@@ -1,0 +1,65 @@
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1200" [(nzVisible)]="isVisible" (nzOnCancel)="cancelPop()"
+  [nzTitle]="reportPopTitle" [nzContent]="reportPopContent" [nzFooter]="reportPopFooter">
+  <ng-template #reportPopTitle>
+    <span [ngClass]="rewards.status">{{title[rewards.status]}}</span>
+  </ng-template>
+  <div class="dfc-report-content" #reportPopContent>
+    <div class="dfc-kpi-reward">
+      <p>
+        {{rewards.proName}} {{'report.model-at' | translate}}<span
+          [ngClass]="rewards.status">{{rewards.cFlow}}</span>{{'report.stage-actual-model' | translate}}
+        <span *ngIf="rewards.flag === 0">MOH:${{rewards.actual|number:'0.2'}}
+          {{'report.and-model' | translate}}MOH:${{rewards.target|number:'0.2'}}
+        </span>
+        <span *ngIf="rewards.flag === 1">{{'dashboard.workhour' | translate}}{{rewards.actual|number:'0.2'}}s
+          {{'report.and-target-workhour' | translate}}{{rewards.target|number:'0.2'}}s
+        </span>
+        {{'report.compare-as-reward-punish' | translate}}
+        <span *ngIf="rewards.status === 'green'">{{'report.has-reach' | translate}}</span>
+        <span *ngIf="rewards.status === 'red'">{{'mrr.material-fail' | translate}}</span>
+        。
+      </p>
+      <p>
+        {{rewards.cFlow}} {{'mrr.mrr-stage' | translate}}
+        <span *ngIf="rewards.status === 'green'">
+          {{'report.reach-reward' | translate}}
+        </span>
+        <span *ngIf="rewards.status === 'red'">
+          {{'mrr.material-fail' | translate}} {{rewards.level}} {{'report.punish-as-follows' | translate}}
+        </span>
+      </p>
+      <p *ngFor="let list of rewards.content">{{list}}</p>
+      <p>
+        <span *ngIf="rewards.status === 'green'">{{'report.reward' | translate}}</span>
+        <span *ngIf="rewards.status === 'red'">{{'report.punish' | translate}}</span>
+        {{'report.list-as-follows' | translate}}
+      </p>
+    </div>
+    <div class="dfc-kpi-member">
+      <table>
+        <tr>
+          <td>{{'mrr.mrr-site' | translate}}</td>
+          <td>{{'mrr.mrr-plant' | translate}}</td>
+          <td>{{'report.dfc-userId' | translate}}</td>
+          <td>{{'report.dfc-chinese-name' | translate}}</td>
+          <td>{{'report.dfc-english-name' | translate}}</td>
+          <td>{{'report.dfc-email' | translate}}</td>
+          <td>{{'base-data.role' | translate }}</td>
+        </tr>
+        <tr *ngFor="let member of rewards.members">
+          <td>{{member['Site']}}</td>
+          <td>{{(member['Plant'] | site: {type: 'plant'})}}</td>
+          <td>{{member['EmpID']}}</td>
+          <td>{{member['Name']}}</td>
+          <td>{{member['EName']}}</td>
+          <td>{{member['Email']}}</td>
+          <td>{{member['Role']}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <ng-template #reportPopFooter>
+    <button nz-button nzType="default" (click)="viewRule()">{{'report.reward-rule' | translate}}</button>
+    <button nz-button nzType="default" (click)="military()">{{'military-order.military-order' | translate}}</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,3 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <app-forms-vender-thrift-list [seriesData]="tableData" ></app-forms-vender-thrift-list>
+</nz-modal>

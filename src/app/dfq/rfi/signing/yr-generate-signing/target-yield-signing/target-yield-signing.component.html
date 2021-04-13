@@ -1,0 +1,73 @@
+<div class="divALL">
+  <div class="div1">
+    <table class="tableall">
+      <tr>
+        <td class="td-title">{{ 'dfq.dfq-plant' | translate }}</td>
+        <td class="td-context">{{data.site}}-{{data.plant}}</td>
+        <td class="td-title">{{ 'dfq.dfq-customer' | translate }}</td>
+        <td class="td-context">{{data.customer}}</td>
+        <td class="td-title">{{ 'dfq.dfq-product' | translate }}</td>
+        <td class="td-context">{{data.product}}</td>
+        <td class="td-title">Project Code</td>
+        <td class="td-context">{{data.project}}</td>
+      </tr>
+      <tr>
+        <td class="td-title">{{ 'dfq.rfi-sign-sender' | translate }}</td>
+        <td class="td-context">{{createBy | userEnname | async}}</td>
+        <td class="td-title">{{ 'dfq.rfi-signing-time' | translate }}</td>
+        <td class="td-context">{{createOn | datetime}}</td>
+      </tr>
+    </table>
+    <nz-divider></nz-divider>
+  </div>
+
+  <div class="div2">
+    <div class="echarts-cls" *ngIf="showEcharts"  echarts [options]="targetYrOptions"  (chartClick)="getEchart()"  >
+    </div>
+
+    <div class="div3">
+      <div class="table-cls">
+        <nz-table nzBordered [nzData]="workflowSign" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th>{{ 'dfq.dfq-role' | translate }}</th>
+              <th>{{ 'dfq.dfq-signer' | translate }}</th>
+              <th>{{ 'dfq.rfi-signing-timer' | translate }}</th>
+              <th>{{ 'dfq.dfq-sign-status' | translate }}</th>
+              <th>{{ 'dfq.dfq-conclusion' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of  workflowSign">
+              <td> {{ data.role }}</td>
+              <td>
+                <ng-container>
+                  {{data.userId | userEnname | async}}
+                </ng-container>
+              </td>
+              <td>
+                {{data.updateOn ? (data.updateOn | datetime): '' }}
+              </td>
+              <td>
+                <span
+                  *ngIf="data.id!==current">{{data.isAgree==0 ? 'Reject' : ( data.isAgree== 1 ? 'Approve' :'')}}</span>
+                <nz-select *ngIf="data.id===current" style="width:120px"
+                  [disabled]="data.userId!==userId || data.id!==current" [(ngModel)]="data.isAgree">
+                  <nz-option nzValue="1" nzLabel="Approve"></nz-option>
+                  <nz-option nzValue="0" nzLabel="Reject"></nz-option>
+                </nz-select>
+              </td>
+              <td>
+                <textarea nz-input id="comments" [(ngModel)]="data.comment"
+                  [disabled]="data.userId!==userId  || data.id!==current"></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <button [disabled]="hasSigned" class="btn-cls" nz-button nzType="primary" (click)="signing()"
+          [nzLoading]="isLoading">
+          {{ 'dfq.dfq-sign-off' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>

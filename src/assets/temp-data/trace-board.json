@@ -1,0 +1,201 @@
+{
+  "tendency": {
+    "yr": [0.90, 0.92, 0.95, 0.91, 0.96, 0.92, 0.94],
+    "dayShiftYr": [0.91, 0.92, 0.94, 0.90, 0.92, 0.93, 0.93],
+    "nightShiftYr": [0.90, 0.92, 0.91, 0.92, 0.94, 0.95, 0.96],
+    "target": [0.98, 0.98, 0.98, 0.98, 0.98, 0.98, 0.98],
+    "dataX": ["2019/6/1", "2019/6/2", "2019/6/3", "2019/6/4", "2019/6/5", "2019/6/6", "2019/6/7"]
+  },
+  "materialYR": {
+    "yr": [0.87, 0.88, 0.89, 0.92, 0.90, 0.94, 0.94, 0.95, 0.95, 0.95],
+    "target": [0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95],
+    "dataX": ["料號1", "料號2", "料號3", "料號4", "料號5", "料號6", "料號7", "料號8", "料號9", "料號10"]
+  },
+  "analyzeYr": {
+    "outlook": 17,
+    "size": 15,
+    "deformate": 20
+  },
+  "materialDr": {
+    "dr": [0.0036, 0.0036, 0.0035, 0.0034, 0.0034, 0.0031, 0.0032, 0.001, 0.001, 0.001],
+    "target": [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001],
+    "dataX": ["料號1", "料號2", "料號3", "料號4", "料號5", "料號6", "料號7", "料號8", "料號9", "料號10"]
+  },
+
+  "materialNGData": [
+    {
+      "name": "機種1",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種2",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 2,
+        "open": 2
+      }
+    },
+    {
+      "name": "機種3",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種4",
+      "detail":
+      {
+        "close": 0,
+        "onGoing": 2,
+        "open": 2
+      }
+    },
+    {
+      "name": "機種5",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種6",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 0,
+        "open": 1
+      }
+    },
+    {
+      "name": "機種7",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種8",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 0,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種9",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 2,
+        "open": 3
+      }
+    },
+    {
+      "name": "機種10",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 1
+      }
+    }
+  ],
+
+  "alertOpenSubDetail": [
+    {
+      "modelName": "機種1",
+      "number": "TCP111111",
+      "status": "open"
+    },
+    {
+      "modelName": "機種2",
+      "number": "TCP222222",
+      "status": "open"
+    },
+    {
+      "modelName": "機種3",
+      "number": "TCP333333",
+      "status": "open"
+    },
+    {
+      "modelName": "機種4",
+      "number": "TCP444444",
+      "status": "open"
+    },
+    {
+      "modelName": "機種5",
+      "number": "TCP55555",
+      "status": "open"
+    }
+  ],
+
+  "alertOnGoingSubDetail": [
+    {
+      "modelName": "機種1",
+      "number": "TCP111111",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種2",
+      "number": "TCP222222",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種3",
+      "number": "TCP333333",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種4",
+      "number": "TCP444444",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種5",
+      "number": "TCP55555",
+      "status": "onGoing"
+    }
+  ],
+
+  "alertCloseSubDetail": [
+    {
+      "modelName": "機種1",
+      "number": "TCP111111",
+      "status": "close"
+    },
+    {
+      "modelName": "機種2",
+      "number": "TCP222222",
+      "status": "close"
+    },
+    {
+      "modelName": "機種3",
+      "number": "TCP333333",
+      "status": "close"
+    },
+    {
+      "modelName": "機種4",
+      "number": "TCP444444",
+      "status": "close"
+    },
+    {
+      "modelName": "機種5",
+      "number": "TCP55555",
+      "status": "close"
+    }
+  ]
+}

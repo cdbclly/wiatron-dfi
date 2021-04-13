@@ -1,0 +1,37 @@
+<nz-modal *ngIf="isVisiblePic" [(nzVisible)]="modalShow" [nzWidth]="1000" (nzOnCancel)="handleCancel()"
+  [nzFooter]="null" [nzTitle]="title">
+  <!-- <div>
+    <button  nz-button [nzType]="'primary'"  nzShape="circle"  (click)="save()" class="editbut">
+      <i class="anticon anticon-save"></i>
+    </button>
+  </div> -->
+  <div>
+    <nz-table nzBordered="true" #nzTable id="report" [nzData]="factorTypes" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th nzLeft="0%">{{ 'dfq.dfq-project' | translate }}</th>
+          <th>{{ 'dfq.rfi-factor' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr *ngFor="let data of nzTable.data, let i=index">
+      </tr> -->
+        <tr *ngFor="let factorType of factorTypes">
+          <td>{{factorType.name}}</td>
+          <td>
+            <nz-select style="width: 300px;" nzShowSearch [(ngModel)]="factorType.factorId" (ngModelChange)="Change()">
+              <ng-container *ngFor="let item of factorType.factors">
+                <nz-option [nzValue]="item.id" [nzLabel]="item.name">
+                </nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <br>
+    <div style="text-align: center">
+      <button nz-button [nzSize]="'normal'" [nzLoading]="!isCompleted" nzType="primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</nz-modal>

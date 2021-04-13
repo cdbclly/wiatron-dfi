@@ -1,0 +1,157 @@
+.body {
+  margin: 0 1%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+#yrReport {
+  td {
+    text-align: center;
+  }
+
+  th {
+    text-align: center;
+  }
+}
+
+.search-cls {
+  display: inline;
+  font-weight: 400;
+
+  i {
+    vertical-align: bottom;
+  }
+}
+
+.search-box {
+  padding: 8px;
+}
+
+.search-box input {
+  width: 188px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.search-box button {
+  width: 90px;
+}
+
+.search-button {
+  margin-right: 8px;
+}
+
+
+.dfc-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-left {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin-right: 30px;
+  }
+
+  .dfc-btn-center {
+    // float: left;
+    display: flex;
+    align-items: center;
+
+    // justify-content: center;
+    span {
+      font-size: 14px;
+      font-weight: normal;
+      color: rgba(80, 80, 80, 1);
+    }
+
+    div {
+      margin-left: 10px;
+      margin-right: 5px;
+    }
+  }
+
+  .dfc-btn-right {
+    position: absolute;
+    right: 0;
+    // float: right;
+    // width: 340px;
+    // height: 100%;
+    // display: flex;
+    // align-items: center;
+
+    .dfc-btn-upload {
+      height: 100%;
+      width: 242px;
+      display: inline-block;
+    }
+
+    .dfc-btn-download {
+      margin-left: 12px;
+      height: 100%;
+      width: 150px;
+      display: inline-block;
+    }
+
+    .dfc-btn-email {
+      margin-left: 12px;
+      height: 100%;
+      width: 36px;
+      display: inline-block;
+    }
+
+    label.upload {
+      margin: 0;
+    }
+
+    .upload {
+      input {
+        display: none;
+      }
+
+      i {
+        vertical-align: bottom;
+      }
+    }
+
+    div.fakeInput {
+      margin-left: 10px;
+      display: inline-block;
+      width: 200px;
+      color: #505050;
+      background-color: white;
+      border-radius: 3px 0px 0px 3px;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 150%;
+      border: #cccccc solid 1px;
+      text-align: left;
+      height: 32px;
+      cursor: pointer;
+
+      span {
+        padding-left: 10px;
+        vertical-align: sub;
+        color: #999;
+      }
+    }
+
+    .ant-btn.upload {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  .spin {
+    position: fixed;
+    top: 100px;
+    left: 49%;
+  }
+}

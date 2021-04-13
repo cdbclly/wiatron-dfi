@@ -1,0 +1,22 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>組裝複測率</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<div class="content">
+  <span nz-popover nzTitle="計算公式" nzContent="Retest Rate=(SN測試總次數-SN總個數)/SN總個數
+  備註: SN不包含維護回流機台
+">
+    組裝複測率</span>
+  <a *ngIf="cur_plant"
+    href="http://dmc.{{cur_site | lowercase}}.wistron.com.cn/EC/?Plant={{cur_plant}}&eventId={{project | event : 'toEvent'}}&evt_dt={{cur_date}}"
+    target="_blank"><i class="anticon anticon-link" nzTitle="Link DMC" nzPlacement="top" nz-tooltip></i></a>
+</div>
+
+<app-select-options (queryOption)="queryOp($event)" [cur_site]="cur_site" [cur_plant]="cur_plant"
+  [cur_section]="cur_section" [cur_line]="cur_line" [cur_mdname]="cur_mdname" [project]="project"
+  [cur_model]="cur_model" [cur_item]="cur_item" [cur_MachineModel]="cur_MachineModel"></app-select-options>
+
+<app-assembly-defec-chart #assemblyChart></app-assembly-defec-chart>

@@ -1,0 +1,225 @@
+<div class="dfc-wh">
+  <div class='title'>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-performance-tracking'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.DFC-data-verification'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'dfc.DFC-data-verification'|translate}}</span>
+  </div>
+  <div class="dfc-query">
+    <div *ngFor="let key of typeObjectKeys(querySelected); let i=index;">
+      <app-dfc-query-input *ngIf="(i < 5)" [queryStyle]="querySelected[key].style"
+        [(queryValue)]="querySelected[key].value" [querySelect]="querySelected[key].select"
+        (queryValueChange)="querySelected[key].change$.next(querySelected[key].value)"
+        (searchSelectChange)="querySelected[key].select.searchChange$.next($event)">
+      </app-dfc-query-input>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <app-dfc-query-input [queryStyle]="querySelected.proName.style" [(queryValue)]="querySelected.proName.value"
+      [querySelect]="querySelected.proName.select"
+      (queryValueChange)="querySelected.proName.change$.next(querySelected.proName.value)"
+      (searchSelectChange)="querySelected.proName.select.searchChange$.next($event)">
+    </app-dfc-query-input>
+
+    <app-dfc-query-input [queryStyle]="querySelected.proCode.style" [(queryValue)]="querySelected.proCode.value"
+      [querySelect]="querySelected.proCode.select"
+      (queryValueChange)="querySelected.proCode.change$.next(querySelected.proCode.value)"
+      (searchSelectChange)="querySelected.proCode.select.searchChange$.next($event)">
+    </app-dfc-query-input>
+
+    <app-dfc-query-input [queryStyle]="querySelected.modelName.style" [(queryValue)]="querySelected.modelName.value"
+      [querySelect]="querySelected.modelName.select"
+      (queryValueChange)="querySelected.modelName.change$.next(querySelected.modelName.value)"
+      (searchSelectChange)="querySelected.modelName.select.searchChange$.next($event)">
+    </app-dfc-query-input>
+  </div>
+  <div style="clear: both;"></div>
+  <div style="width: 400px;float: left;">
+    <app-dfc-query-input [queryStyle]="querySelected.cFlow.style" [(queryValue)]="querySelected.cFlow.value"
+      [querySelect]="querySelected.cFlow.select"
+      (queryValueChange)="querySelected.cFlow.change$.next(querySelected.cFlow.value)"
+      (searchSelectChange)="querySelected.cFlow.select.searchChange$.next($event)">
+    </app-dfc-query-input>
+  </div>
+  <div style="float: left;margin-top: 10px;">
+    <button nz-button nzType="primary" [nzLoading]="isQueryLoading"
+      (click)="query()">{{'dfq.dfq-query'|translate}}</button>
+  </div>
+  <div style="clear: both;"></div>
+  <div class="dfc-line"></div>
+  <div class="dfc-table" *ngIf=showTable>
+    <div class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+    <nz-table nzBordered [nzWidthConfig]="widthConfig" [nzScroll]="scrollConfig" #rowDatas [nzData]="result"
+      [nzTotal]="result.length" [nzShowQuickJumper]=true [nzPageSize]="10" id="downdata">
+      <thead>
+        <tr>
+          <th rowspan="2">{{'dfq.dfq-plant'|translate}}</th>
+          <th rowspan="2">{{'dfq.dfq-customer'|translate}}</th>
+          <th rowspan="2">{{'dfq.dfq-product'|translate}}</th>
+          <th rowspan="2">Project Code</th>
+          <th rowspan="2">Project Name</th>
+          <th rowspan="2">{{'dfq.dfq-cflow'|translate}}</th>
+          <th rowspan="2">{{'dfi-monthly-meeting.month'|translate}}</th>
+          <th colspan="4">MOH(USD)</th>
+          <th colspan="4">Working Hours(S)</th>
+          <th rowspan="2">{{'dfc.verify-compliance'|translate}}</th>
+          <th rowspan="2" nzRight="0px">Action</th>
+        </tr>
+        <tr>
+          <th>{{'report.dfc-factory-actual'|translate}}</th>
+          <th>{{'report.dfc-cur-design'|translate}}</th>
+          <th>Gap(%)</th>
+          <th>Gap{{'mrr.nudd-analysis'|translate}}</th>
+          <th>{{'report.dfc-factory-actual'|translate}}</th>
+          <th>{{'report.dfc-cur-design'|translate}}</th>
+          <th>Gap(%)</th>
+          <th>Gap{{'mrr.nudd-analysis'|translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of rowDatas.data; let i = index;"
+          [ngStyle]="{'background-color': (i % 2 === 0) ? 'rgb(238, 238, 238)' : 'white'}">
+          <td>{{item.StageInfo.Plant}}</td>
+          <td>{{item.StageInfo.Customer}}</td>
+          <td>{{item.StageInfo.ModelType}}</td>
+          <td>{{item.StageInfo.ProjectCode}}</td>
+          <td>{{item.StageInfo.ProjectName}}</td>
+          <td>{{item.StageInfo.Stage}}</td>
+          <td>
+            <span *ngIf="showClassTag['MOH' + i]">
+              {{item.Month}}
+            </span>
+            <select [(ngModel)]="item.Month" *ngIf="!showClassTag['MOH' + i]" class="month-sty">
+              <option value="1">1{{'military-order.month'|translate}}</option>
+              <option value="2">2{{'military-order.month'|translate}}</option>
+              <option value="3">3{{'military-order.month'|translate}}</option>
+              <option value="4">4{{'military-order.month'|translate}}</option>
+              <option value="5">5{{'military-order.month'|translate}}</option>
+              <option value="6">6{{'military-order.month'|translate}}</option>
+              <option value="7">7{{'military-order.month'|translate}}</option>
+              <option value="8">8{{'military-order.month'|translate}}</option>
+              <option value="9">9{{'military-order.month'|translate}}</option>
+              <option value="10">10{{'military-order.month'|translate}}</option>
+              <option value="11">11{{'military-order.month'|translate}}</option>
+              <option value="12">12{{'military-order.month'|translate}}</option>
+            </select>
+          </td>
+          <td>
+            <span *ngIf="showClassTag['MOH' + i]">
+              {{item.FactoryActualMOH}}
+            </span>
+            <input nz-input *ngIf="!showClassTag['MOH' + i]" (blur)="actualTimeBlur(item.StageID)" type="number"
+              step=0.01 style="width: 70px;text-align: left;
+                height:30px;margin-left: 0px;" [(ngModel)]="item.FactoryActualMOH" class="actual-sty"
+              onkeypress="return(/[0-9\.]/.test(String.fromCharCode(event.keyCode)))">
+          </td>
+          <td>
+            <div>
+              <span *ngIf="item.StageMOH">
+                {{item.StageMOH}}
+              </span>
+              <span *ngIf="item.StageMOHError" class="moh-sty">
+                {{item.StageMOHError}}
+              </span>
+            </div>
+          </td>
+          <td>{{item.standard.MOHRatio}}</td>
+          <td [ngStyle]="{'pointer-events': showClassTag['MOH' + i] ? 'none' : 'all',
+            'background-color': showClassTag['MOH' + i]? '': 'rgba(255, 0, 0, 0.1)'}"
+            (click)="isShowMOHModal(item.StageID)">
+            <div class="gap-keyin">
+              <span *ngFor="let gapItem of item.MOHGaps; let i = index">
+                Gap-{{i + 1}}:{{gapItem.DifferenceValue}}s；{{gapItem.Reason}}；{{gapItem.Countermeasure}}.
+              </span>
+              <nz-modal [(nzVisible)]="item.isMOHVisible" nzTitle="Gap Analysis" nzMaskClosable=false
+                nzCancelText="Cancel" nzOkText="Confirm" nzWidth="430px" (nzOnCancel)="isShowMOHModal(item.StageID)"
+                (nzOnOk)="confirmMOH(item.StageID)">
+                <button nz-button [nzType]="'primary'" class="add-item" title="add" nzShape="circle"
+                  (click)="addMOHItem(item.StageID)">
+                  <i class="anticon anticon-plus"></i>
+                </button>
+                <div class="level-content">
+                  <div *ngFor="let data of MOHModalDatas[item.StageID]; let i = index"
+                    style="margin-left: 20px;font-size: 14px;">
+                    Gap-{{i + 1}}:{{'dfc.difference-value'|translate}}&nbsp;&nbsp;<input nz-input
+                      [(ngModel)]="data.DifferenceValue" type="number"
+                      onkeypress="return(/[0-9\.]/.test(String.fromCharCode(event.keyCode)))" class="dfc-gap-analysis"
+                      id="MOH{{i}}" step=0.01>&nbsp;s<br /><br />
+                    Gap-{{i + 1}}:{{'dfi-monthly-meeting.reason'|translate}}&nbsp;&nbsp;<input nz-input nzSize="default"
+                      [(ngModel)]="data.Reason" style="width: 230px;" /><br /><br />
+                    Gap-{{i + 1}}:{{'imq-action'|translate}}&nbsp;&nbsp;<input nz-input nzSize="default"
+                      [(ngModel)]="data.Countermeasure" style="width: 230px;" /><br /><br />
+                    <hr>
+                  </div>
+                </div>
+              </nz-modal>
+            </div>
+          </td>
+          <td>
+            <span *ngIf="showClassTag['WH' + i]">
+              {{item.FactoryActualOperationTime}}
+            </span>
+            <input nz-input *ngIf="!showClassTag['WH' + i]" (blur)="actualTimeBlur(item.StageID)" type="number"
+              onkeypress="return(/[0-9\.]/.test(String.fromCharCode(event.keyCode)))" step=0.01 style="  width: 70px;
+              text-align: left; height:30px;margin-left: 0px;" [(ngModel)]="item.FactoryActualOperationTime"
+              class="actual-sty">
+          </td>
+          <td>{{item.totalStageOperationTime}}</td>
+          <td>{{item.standard.workHourRadio}}</td>
+          <td [ngStyle]="{'pointer-events': showClassTag['WH' + i] ? 'none' : 'all',
+              'background-color': showClassTag['WH' + i]? '': 'rgba(255, 0, 0, 0.1)'}"
+            (click)="isShowWorkHourModal(item.StageID)">
+            <div class="gap-keyin">
+              <span *ngFor="let operationTimeItem of item.OperationTimeGaps; let i = index">
+                Gap-{{i + 1}}:{{operationTimeItem.DifferenceValue}}s；{{operationTimeItem.Reason}}；{{operationTimeItem.Countermeasure}}.
+              </span>
+              <nz-modal [(nzVisible)]="item.isWorkHourVisible" nzTitle="Gap Analysis" nzMaskClosable=false
+                nzCancelText="Cancel" nzOkText="Confirm" nzWidth="430px"
+                (nzOnCancel)="isShowWorkHourModal(item.StageID)" (nzOnOk)="confirmWorkHour(item.StageID)">
+                <button nz-button [nzType]="'primary'" class="add-item" title="add" nzShape="circle"
+                  (click)="addWorkHourItem(item.StageID)">
+                  <i class="anticon anticon-plus"></i>
+                </button>
+                <div class="level-content">
+                  <div *ngFor="let data of workHourModalDatas[item.StageID]; let i = index"
+                    style="margin-left: 20px;font-size: 14px;">
+                    Gap-{{i + 1}}:{{'dfc.difference-value'|translate}}&nbsp;&nbsp;<input nz-input
+                      [(ngModel)]="data.DifferenceValue" type="number" step=0.01 class="dfc-gap-analysis" id="WH{{i}}"
+                      onkeypress="return(/[0-9\.]/.test(String.fromCharCode(event.keyCode)))">&nbsp;s<br /><br />
+                    Gap-{{i + 1}}:{{'dfi-monthly-meeting.reason'|translate}}&nbsp;&nbsp;<input nz-input nzSize="default"
+                      [(ngModel)]="data.Reason" style="width: 230px;" /><br /><br />
+                    Gap-{{i + 1}}:{{'imq-action'|translate}}&nbsp;&nbsp;<input nz-input nzSize="default"
+                      [(ngModel)]="data.Countermeasure" style="width: 230px;" /><br /><br />
+                    <hr>
+                  </div>
+                </div>
+              </nz-modal>
+            </div>
+          </td>
+          <td>
+            <div class="green-circle" *ngIf="item.standard.isReached"></div>
+            <div class="red-circle" *ngIf="!item.standard.isReached"></div>
+          </td>
+          <td nzRight="0px" style="background-color: rgb(238, 238, 238)">
+            <i nz-icon type="edit" nzTheme="outline" *ngIf="!isEditable['edit' + i]"
+              (click)="editableStatus(i, item.StageID)"></i>
+
+            <i nz-icon type="save" *ngIf="isEditable['edit' + i]" (click)="save(item.StageID, 'save' + i, 'edit' + i)"
+              [ngStyle]="{'cursor': !saveTag['save' + i] ? 'pointer' : 'not-allowed', 'color': !saveTag['save' + i]? 'black' : 'rgba(0,0,0,0.1)' }">
+            </i>&nbsp;&nbsp;
+            <i nz-icon type="close-circle" nzTheme="outline" *ngIf="isEditable['edit' + i]" style="cursor: pointer;"
+              (click)="editableStatus(i, item.StageID)"></i>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

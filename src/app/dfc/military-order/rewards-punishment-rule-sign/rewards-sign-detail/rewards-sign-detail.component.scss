@@ -1,0 +1,88 @@
+.tooltip-header {
+  margin-bottom: 12px;
+}
+
+.body-top {
+
+  .table {
+    max-height: calc(100vh - 240px);
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    overflow-x: auto;
+    font-size: 14px;
+
+    table {
+      width: 100%;
+      margin: auto;
+
+      .row1 {
+        background-color: antiquewhite;
+
+        td {
+          height: 50px;
+          line-height: 50px;
+          font-size: 30px;
+          text-align: center;
+          border: 1px solid black;
+        }
+      }
+
+      .font-color {
+        color: blue;
+      }
+
+      td {
+        border: 1px solid black;
+        text-align: center;
+        line-height: 25px;
+      }
+    }
+  }
+}
+
+.dfc-sign {
+  width: 100%;
+  margin-top: 32px;
+  margin-bottom: 20px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+
+  table {
+    width: 100%;
+
+    td {
+      border: 1px solid #505050;
+    }
+
+  }
+}
+
+
+.td-title {
+  text-align: center;
+  color: white;
+  font-size: 13px;
+  font-family: '黑體';
+  background-color: rgb(51, 51, 51);
+  border: 1px solid white;
+
+}
+
+.td-context {
+  font-size: 12px;
+  background-color: white;
+  border: 1px solid white;
+}
+
+.tableall tr {
+
+  border: #505050 solid 1px;
+
+}
+
+.bold {
+  font-weight: bold;
+}

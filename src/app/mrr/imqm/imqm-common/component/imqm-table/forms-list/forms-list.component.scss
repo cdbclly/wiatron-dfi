@@ -1,0 +1,39 @@
+button {
+  margin-right: 20px;
+}
+.resultDecoration {
+  border-color: lightslategray;
+  background-color: white;
+  color: black;width:15%;
+  text-decoration-line: line-through;
+}
+.resultNoneDecoration {
+  color: black;
+  background-color: white;
+  width:15%;
+  border-color: lightslategray;
+}
+.spot-open{
+  height: 15px;
+  width: 15px;
+  background-color: red;
+  border-radius: 8px;
+  display: inline-block;
+  margin-right: 5px;
+}
+.spot-close{
+  height: 15px;
+  width: 15px;
+  background-color: green;
+  border-radius: 8px;
+  display: inline-block;
+  margin-right: 5px;
+}
+.spot-onGoing{
+  height: 15px;
+  width: 15px;
+  background-color: yellow;
+  border-radius: 8px;
+  display: inline-block;
+  margin-right: 5px;
+}

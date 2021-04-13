@@ -1,0 +1,64 @@
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1200" [(nzVisible)]="isVisible" (nzOnCancel)="cancelPop()"
+  [nzTitle]="reportPopTitle" [nzContent]="reportPopContent" [nzFooter]="reportPopFooter">
+  <ng-template #reportPopTitle>
+    <span>{{title}}</span>
+  </ng-template>
+  <div class="dfc-report-content" #reportPopContent>
+    <table>
+      <tr>
+        <td colspan="2"><span class="bold">Stage</span></td>
+        <td *ngFor="let stage of rule.Stage"><span class="bold">{{stage}}</span></td>
+        <td><span>Remark</span></td>
+      </tr>
+      <tr>
+        <td colspan="2"><span class="bold">Goal</span></td>
+        <td [attr.colspan]="rule.Stage.length"><span>{{actual['target']|number:'0.2-2'}}</span></td>
+        <td rowspan="7">
+          <span>1. {{'military-order.workhour-calculate-Logic-standard'|translate}}</span><br>
+          <span>2. {{'military-order.special-reason-substandard'|translate}}</span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><span class="bold">Actual</span></td>
+        <td *ngFor="let stage of rule.Stage"><span> {{actual['actual'][stage]|number:'0.2-2'}}</span></td>
+      </tr>
+      <tr>
+        <td><span class="bold">{{'military-order.standard'|translate}}</span></td>
+        <td><span class="bold">{{'military-order.standard-condition'|translate}}</span></td>
+        <td *ngFor="let stage of rule.Stage"><span>{{rule.Standard[stage]['Reward'][0]}}</span></td>
+
+      </tr>
+      <tr>
+        <td rowspan="4"><span class="bold">{{'military-order.reward-punishment'|translate}}</span></td>
+        <td>
+          <span class="bold">{{'military-order.standard-reward'|translate}}</span><br>
+          <span>{{'military-order.stage-standard-notice'|translate}}</span>
+        </td>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Reward.slice(1)">{{list}}</span><br>
+        </td>
+      </tr>
+      <tr>
+        <td rowspan="3">
+          <span class="bold">{{'military-order.not-standard-punishment'|translate}}</span><br>
+          <span>{{'military-order.stage-not-standard-notice'|translate}}</span>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv1">{{list}}</span><br>
+        </td>
+      </tr>
+      <tr>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv2">{{list}}</span><br>
+        </td>
+      </tr>
+      <tr>
+        <td *ngFor="let stage of rule.Stage">
+          <span *ngFor="let list of rule.Standard[stage].Punish.Lv2">{{list}}</span><br>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <ng-template #reportPopFooter>
+    <button nz-button nzType="primary" (click)="backPop()">Back</button>
+  </ng-template>
+</nz-modal>

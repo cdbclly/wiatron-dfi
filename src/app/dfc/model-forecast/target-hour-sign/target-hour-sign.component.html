@@ -1,0 +1,104 @@
+<div class="dfc-all" #DFCTargetSign>
+  <div *ngIf="page === 0">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.target-working-hours-approval-query'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'dfc.target-working-hours-approval-query'|translate}}</span>
+    </div>
+    <div class="dfc-query">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="queryValue.plant"
+          [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.bu" [(queryValue)]="queryValue.bu" [querySelect]="querySelect.bu"
+          (searchSelectChange)="buSearch($event)" (queryValueChange)="changeBU()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="queryValue.custom"
+          [querySelect]="querySelect.custom" (queryValueChange)="changeCustomAndModelType()"
+          (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="queryValue.modelType"
+          [querySelect]="querySelect.modelType" (queryValueChange)="changeCustomAndModelType()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="queryValue.proName"
+          [querySelect]="querySelect.proName" (searchSelectChange)="querySelect.proName.searchChange$.next($event)"
+          (queryValueChange)="proNameChange($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="queryValue.proCode"
+          [querySelect]="querySelect.proCode"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.model" [(queryValue)]="queryValue.model"
+          [querySelect]="querySelect.model" (searchSelectChange)="querySelect.model.searchChange$.next($event)">
+        </app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.signStage" [(queryValue)]="queryValue.signStage"
+          [querySelect]="querySelect.signStage"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.searchUser" [(queryValue)]="queryValue.searchUser"
+          [querySelect]="querySelect.searchUser"
+          (searchSelectChange)="querySelect.searchUser.searchChange$.next($event)"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button [nzSize]="'small'" nzType="primary" (click)="query()">{{'dfq.dfq-query'|translate}}</button>
+      </div>
+    </div>
+    <div class="dfc-line"></div>
+    <div class="dfc-table">
+      <nz-table #dfcStandardSignTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+        [nzScroll]="nzScroll" [nzPageSize]="10">
+        <thead>
+          <tr>
+            <th>{{'dfq.dfq-plant'|translate}}</th>
+            <th>BU</th>
+            <th>{{'dfq.dfq-customer'|translate}}</th>
+            <th>{{'dfq.dfq-product'|translate}}</th>
+            <th>Project Code</th>
+            <th>Project Name</th>
+            <th>Model Name</th>
+            <th>C{{'dfq.dfq-stage'|translate}}</th>
+            <th>{{'mrr.nudd-process'|translate}}</th>
+            <th>{{'dfq.rfi-sign-sender'|translate}}</th>
+            <th>{{'military-order.sign-status'|translate}}</th>
+            <th>{{'military-order.sign-status-describe'|translate}}</th>
+            <th nzRight="0px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dfcStandardSignTable.data">
+            <td>{{data.plant}}</td>
+            <td>{{data.bu}}</td>
+            <td>{{data.customer}}</td>
+            <td>{{data.modelType}}</td>
+            <td>{{data.proCode}}</td>
+            <td>{{data.proName}}</td>
+            <td>{{data.modelName}}</td>
+            <td>{{data.cFlow}}</td>
+            <td><a style="text-decoration:underline"
+                (click)="onClickProcess(data.signID, data.formNo, data.stageID, data.proNameID, data.processCode, data.process )">{{data.process}}</a>
+            </td>
+            <td>{{data.sender}}</td>
+            <td>{{data.status}}</td>
+            <td>{{data.comment}}</td>
+            <td nzRight="0px">
+              <button nz-button *ngIf="data.revokeFlag" nzType="primary"
+                (click)="revoke(data.signID)">{{ 'dfc.withdraw' | translate }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <app-target-hour-sign-child *ngIf="page === 1" (pageroute)="pageroute($event)" [Processroute]="Processroute">
+  </app-target-hour-sign-child>
+</div>

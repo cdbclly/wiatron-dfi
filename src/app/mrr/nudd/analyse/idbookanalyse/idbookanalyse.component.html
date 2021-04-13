@@ -1,0 +1,55 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>NUDD {{ 'mrr.nudd-risk-evaluate' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-idBook-analysis' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<div class="content">
+  {{ 'mrr.nudd-idBook-analysis' | translate }}
+</div>
+<app-queryform (formFlag)="onForm($event)" (formParam)="onFormParam($event)" [typeShow]="false" [queryShow]="queryShow">
+</app-queryform>
+<div *ngIf="formFlag && parts.length !== 0">
+  <div>
+    {{ 'mrr.nudd-idBookUpload' | translate }}
+  </div>
+  <br>
+  <div class="query-row" *ngFor="let part of parts;let i = index">
+    <div *ngIf="part.productId == formParam['product']">
+      <div class="field1">
+        <span>{{ 'mrr.mrr-part' | translate }}</span>
+        <div id="row1">{{part.name}}</div>
+      </div>
+      <div class="field">
+        <span>{{ 'mrr.nudd-craft' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="form[i].process" (ngModelChange)="getMaterial(i)">
+          <nz-option *ngFor="let process of processes" [nzLabel]="process['name']" [nzValue]="process"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field">
+        <span>{{ 'mrr.nudd-material' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="form[i].material" (ngModelChange)="getOperations(i)"
+          [nzDisabled]="!form[i].materialFlag">
+          <nz-option *ngFor="let material of formList[i].materials" [nzLabel]="material.desc" [nzValue]="material">
+          </nz-option>
+        </nz-select>
+      </div>
+      <div class="field2">
+        <span>{{ 'mrr.nudd-process' | translate }}</span>
+        <nz-select style="width:85%;" nzMode="multiple" [(ngModel)]="form[i].operation"
+          [nzDisabled]="!form[i].operationFlag" (ngModelChange)="touchAnalyse = false">
+          <nz-option *ngFor="let operation of formList[i].operations" [nzLabel]="operation.name" [nzValue]="operation">
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div style="text-align: center">
+    <button nz-button nzType="primary" style="border-radius:6px" (click)="analyse()"
+      [disabled]="false">{{ 'mrr.nudd-analysis' | translate }}</button>
+  </div>
+  <br>
+</div>
+<app-idresult *ngIf="touchAnalyse && formFlag" [rdId]="rdId" [url]="url" [projectName]="projectName" [site]="site"
+  [form]="form"></app-idresult>

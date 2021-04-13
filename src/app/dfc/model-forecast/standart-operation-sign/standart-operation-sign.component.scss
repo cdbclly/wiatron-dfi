@@ -1,0 +1,75 @@
+$centerHeight: calc(100vh - 95px);
+.dfc-all{
+	height: $centerHeight;
+	width: 100%;
+}
+
+// .dfc-query{
+// 	margin-top:17px;
+//   width: 100%;
+// 	height: 32px;
+// 	display: flex;
+//   align-items: center;
+// 	span{
+// 		font-size:14px;
+// 		font-weight: normal;
+// 	}
+//   .dfc-query-4mol{
+//       width: calc(100% - 83px);
+//       display: flex;
+//       align-items: center;
+//       // div{
+//       //     width: 25%;
+//       // }
+//   }
+//   .dfc-query-btn{
+//       width: 83px;
+//       button{
+//           margin-left: 10px;
+//           width: 73px;
+//       }
+//   }
+// }
+
+.dfc-query{
+	margin-top:10px;
+  width: 100%;
+  overflow: hidden;
+  div{
+    height: 42px;
+    display: block;
+    float: left;
+  }
+  .dfc-query-btn{
+    margin-top:10px;
+    margin-right: 10px;
+    width: 73px;
+    button{
+        width: 73px;
+    }
+  }
+}
+
+
+.dfc-line{
+	margin-top: 19px;
+	color: rgba(80, 80, 80, 1);
+	background-color: rgba(212, 212, 212, 1);
+	width: 100%;
+	height: 1px;
+}
+
+.dfc-table{
+	margin-top:9px;
+	width: 100%;
+    // height: calc(100vh - 261px);
+    // overflow-x: auto;
+	input{
+		height: 20px;
+		text-align: right;
+		// width: 80%;/
+	}
+    span{
+        color: red;
+    }
+}

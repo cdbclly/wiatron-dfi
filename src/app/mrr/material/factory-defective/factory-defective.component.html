@@ -1,0 +1,132 @@
+<div class="mrr-material-all" *ngIf="page === 0">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-factory-select' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.material-factory-select' | translate }}</span>
+  </div>
+  <div style="margin-top: 20px;">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-partNumber' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="selectPartNumber"
+            (ngModelChange)="partNumberChange$.next($event)" (nzOnSearch)="partNumberSearch$.next($event)">
+            <ng-container *ngFor="let list of partNumbers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 140px" nzShowSearch formControlName="selectManufacturer"
+            (ngModelChange)="manufacturerChange$.next($event)">
+            <ng-container *ngFor="let list of manufacturers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" nzShowSearch formControlName="selectPlant"
+            (ngModelChange)="plantChange$.next($event)">
+            <ng-container *ngFor="let plant of plants">
+              <nz-option [nzValue]="plant.Value" [nzLabel]="plant.Value"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Code</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="selectProjectCode"
+            (ngModelChange)="projectCodeChange$.next($event)" (nzOnSearch)="projectCodeSearch$.next($event)">
+            <ng-container *ngFor="let list of projectCodes">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Name</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="selectProjectName"
+            (ngModelChange)="projectNameChange$.next($event)" (nzOnSearch)="projectNameSearch$.next($event)">
+            <ng-container *ngFor="let list of projectNames">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-part' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzShowSearch formControlName="selectPart"
+            (ngModelChange)="partChange$.next($event)">
+            <ng-container *ngFor="let list of parts">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.name"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-manufacture-date' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-range-picker formControlName="rangePicker" [nzStyle]='{"width": "240px"}'></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading"
+            [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="center-line"></div>
+  <div class="factoryDefective-table">
+    <nz-table #basicTable nzBordered nzShowQuickJumper [nzData]="factoryDefectData" [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.material-manufacture-date' | translate }}</th>
+          <th>{{ 'mrr.mrr-plant' | translate }}</th>
+          <th>{{ 'mrr.mrr-partNumber' | translate }}</th>
+          <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th>Project Code</th>
+          <th>Project Name</th>
+          <th>{{ 'mrr.material-input' | translate }}</th>
+          <th>{{ 'mrr.material-poor-amount' | translate }}</th>
+          <th>{{ 'mrr.mrr-yieldRate' | translate }}</th>
+          <th>{{ 'mrr.material-fa-badPart' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data; let i = index">
+          <td>{{ data.manufactureDate | date: 'yyyy/MM/dd' }}</td>
+          <td>{{ !data.plantId ? '' : data.plantId | site: {type: 'plant'} }}</td>
+          <td>{{ data.materialId }}</td>
+          <td>{{ data.manufacturer }}</td>
+          <td>{{ data.modelFamily }}</td>
+          <td>{{ data.model }}</td>
+          <td>{{ data.inputQty }}</td>
+          <td>{{ data.defectQty }}</td>
+          <td [ngStyle]="{'backgroundColor': data.defectQty? 'red' : ''}"><a
+              [ngStyle]="{'color': data.defectQty? '#ccc': ''}"
+              (click)="toTopIssue(data)">{{ (Mathround(data.yieldRate * 10000) /100) + '%' }}</a>
+          </td>
+          <td>{{ data.part }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<app-factory-defective-issue *ngIf="page === 1" (pageRoute)="pageRoute($event)" [defectIssue]="defectIssue">
+</app-factory-defective-issue>

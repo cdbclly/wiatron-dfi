@@ -1,0 +1,34 @@
+<div class="tit" *ngIf="!bg">
+  <i nz-icon type="link" theme="outline"></i>
+  <a href="javascript:void(0)"
+    [routerLink]="['/dashboard/report/issue/廠商資料管理']">{{ 'dashboard.manufacturer' | translate }}</a>
+</div>
+<div class="tit" *ngIf="bg">{{ 'dashboard.manufacturer' | translate }}</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>KPI:{{ 'dashboard.vendorInformation' | translate }}<br>
+            {{ 'dashboard.reachRatio' | translate }}</span><br><br>
+          <span style="color: #3C8DBC;">SQM<a style="color: #3C8DBC;"><i class="anticon anticon-download"
+                (click)="downSqmSop()"></i></a></span>&nbsp;&nbsp;&nbsp;
+          <span style="color: #3C8DBC;">{{ 'dashboard.vendor' | translate }}<a style="color: #3C8DBC;"><i
+                class="anticon anticon-download" (click)="downMufSop()"></i></a></span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of bgChartOptionsMufr" nz-tooltip [nzTitle]="titleTemplate"
+        (mouseenter)="onMouseEnter(options)">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="linkMufr($event)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>
+<ng-template #titleTemplate>
+  <div>
+    <div>{{ 'dashboard.executionModel' | translate }}: {{executePro}}</div>
+    <div>{{ 'dashboard.closeModel' | translate }}: {{closedPro}}</div>
+  </div>
+</ng-template>

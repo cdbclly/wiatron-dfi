@@ -1,0 +1,44 @@
+<div class="query-row">
+  <div class="field1">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span style="margin-right: 5px">{{ 'mrr.nudd-craft' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="process">
+      <nz-option *ngFor="let process of processes" [nzLabel]="process.name" [nzValue]="process"></nz-option>
+    </nz-select>
+    <button nz-button nzType="primary" style="border-radius:6px;" (click)="query()"
+      [nzLoading]="isLoading && !(operationLoad || materialLoad)">{{ 'mrr.mrr-query' | translate }}</button>
+  </div>
+</div>
+<div class="mapping-transfer" *ngIf="operationLoad && materialLoad">
+  <div class="transfer">
+    <nz-transfer [nzDataSource]="operationList" nzShowSearch
+      [nzTitles]="['Unassociated Operation','Associated Operation']"
+      [nzListStyle]="{'width.px': 250, 'height.px': 400, 'background-color': 'white'}" [nzRender]="render"
+      [nzOperations]="['Add to', 'delete']" [nzFooter]="footer" (nzChange)="changeOperation($event)">
+      <ng-template #render let-item>
+        {{ item.title }}
+      </ng-template>
+      <ng-template #footer let-direction>
+        <button nz-button (click)="reloadOperation()" [nzSize]="'small'"
+          style="float: right; margin: 5px;">Reload</button>
+      </ng-template>
+    </nz-transfer>
+  </div>
+  <div class="transfer">
+    <nz-transfer [nzDataSource]="materialList" nzShowSearch [nzTitles]="['Unassociated Material','Associated Material']"
+      [nzListStyle]="{'width.px': 250, 'height.px': 400, 'background-color': 'white'}" [nzRender]="render2"
+      [nzOperations]="['Add to', 'delete']" [nzFooter]="footer2" (nzChange)="changeMaterial($event)">
+      <ng-template #render2 let-item>
+        {{ item.title }}
+      </ng-template>
+      <ng-template #footer2 let-direction>
+        <button nz-button (click)="reloadMaterial()" [nzSize]="'small'"
+          style="float: right; margin: 5px;">Reload</button>
+      </ng-template>
+    </nz-transfer>
+  </div>
+  <div style="margin-top: 10px" *ngIf="enableUse">
+    <button nz-button nzType="primary" style="border-radius:6px;" (click)="save()"
+      [disabled]="!saveFlag">{{ 'mrr.mrr-save' | translate }}</button>
+  </div>
+</div>

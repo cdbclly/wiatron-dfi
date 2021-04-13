@@ -1,0 +1,721 @@
+<aside class="main-sidebar">
+  <section class="sidebar" style="height: auto;">
+    <ul nz-menu nzMode="inline" nzInlineIndent=20 [nzTheme]="'dark'" class="menu-cls">
+      <li nz-menu-item>
+        <span title>
+          <i nz-icon type="pie-chart" theme="outline"></i>
+          <span [routerLink]="['/dashboard/board']">Dashboard</span>
+        </span>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span title class="sp-1" nzTitle="Permission Maintenance" nzPlacement="top"  nz-tooltipb> <i
+            class="icon anticon anticon-key"></i>
+          <span>{{ 'dashboard.authority-maintain' | translate }}</span></span>
+        <ul class="sp-4">
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.UserMangement.access"
+            nzTitle="User Authority Maintenance" nzPlacement="right"  nz-tooltip>
+            <a class="link" [routerLink]="['/dashboard/admin/user-auth']">
+              {{'imq-menu-usrAuthMaintenance'|translate}}</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.UserMangement.access"
+            nzTitle="Group Authority Maintenance" nzPlacement="right"  nz-tooltip>
+            <a class="link" [routerLink]="['/dashboard/admin/group-auth']">
+              {{'imq-menu-groupMaintaince'|translate}}
+            </a></li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.DfiMember.access">
+            <a class="link" [routerLink]="['/dashboard/admin/member-auth']">
+              DFi User Team</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Product standard document maintenance"
+            nzPlacement="right" nz-tooltip>
+            <a class="link" [routerLink]="['/dashboard/admin/mrr-doc-auth']">
+              {{'authority-maintain.product-standard-document-maintenance'|translate}}</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span title class="sp-1"><img class="icon" src="/assets/img/basedata.svg" alt="icon">
+          <span>Base Data</span></span>
+        <ul class="sp-4 ">
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.ModelProfiles.access"
+            nzTitle="New model information maintenance" nzPlacement="right"  nz-tooltip>
+            <a class="link" [routerLink]="['/dashboard/dfc/newmodel-maintain']">
+              {{'base-data.new-model-information-maintenance' | translate }}</a></li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Sign-off maintenance" nzPlacement="right"
+             nz-tooltip>
+            <a class="link" [routerLink]="['/dashboard/basedata/sign-maintain']">
+              {{'base-data.sign-off-maintenance' | translate }}</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active">
+            <a class="link" nzTitle="Form maintenance" nzPlacement="right"  nz-tooltip
+              [routerLink]="['/dashboard/basedata/form-maintain']">
+              {{'base-data.form-maintenance' | translate }}</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active">
+            <a class="link" nzTitle="Conversion table by product" nzPlacement="right"  nz-tooltip
+              [routerLink]="['/dashboard/basedata/productType-mapping']">
+              {{'base-data.conversion-table-by-product' | translate }}
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="showDFC && !isExt">
+        <span title class="sp-1"><img class="icon" src="/assets/img/dfc.svg" alt="icon">
+          <span>DFC System</span></span>
+        <ul class="sp-4 ">
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.MOHCondition.access">
+            <a class="link" nzTitle="MOH parameter data maintenance" nzPlacement="right" nz-tooltip
+              [routerLink]="['/dashboard/dfc/moh-parameter']">
+              {{'authority-maintain.MOH-parameter-data-maintenance'|translate}}</a></li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.MOHAddition.access">
+            <a class="link" nzTitle="MOH model differences maintenance" nzPlacement="right" nz-tooltip
+              [routerLink]="['/dashboard/dfc/moh-modelname']">
+              {{'authority-maintain.MOH-model-differences-maintenance'|translate}}</a></li>
+          <li nz-submenu *ngIf="showDFCTime">
+            <span title class="sp-1"><span>{{'dfc.forecast.model-time-forecast'|translate}}</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.StandardOperation.access">
+                <a class="link" nzTitle="Maintenance of working hours standard documents" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/standart-document']">
+                  {{'dfc.forecast.maintenance-of-working-hours-standard-documents'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.StandardOperationSign.access">
+                <a class="link" nzTitle="Work hours standard document approval" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/standart-operation-sign']">
+                  {{'dfc.workhours-standard-document'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.ModelOperation.access">
+                <a class="link" nzTitle="Model working hours data maintenance" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/workhour-maintain']">
+                  {{'authority-maintain.model-time-data-maintenance'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.TargetOperation.access">
+                <a class="link" nzTitle="Target working hours generation" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/target-hours']">
+                  {{'authority-maintain.target-time-generation'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.TargetOperationSign.access">
+                <a class="link" nzTitle="Target work time generation sign-off" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/target-hour-sign']">
+                  {{'authority-maintain.target-work-time-generation-sign-off'|translate}}</a></li>
+            </ul>
+          </li>
+          <li nz-submenu *ngIf="showDFCEffect">
+            <span title class="sp-1" nzTitle="Model performance tracking" nzPlacement="top" nz-tooltip>
+              <span> {{'dfc.model-performance-tracking'|translate}}</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.WorkhourReview.access">
+                <a class="link" nzTitle="Working hours improvement review" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/workhour-review']">
+                  {{'authority-maintain.working-hours-improvement-review'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.WorkhourQuery.access">
+                <a class="link" [routerLink]="['/dashboard/dfc/workhour-query']">
+                  {{'authority-maintain.working-hours-query'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.WorkhourGap.access">
+                <a class="link" nzTitle="Comparison of working hours" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/workhour-gap']">
+                  <i class="sp-2"></i>{{'authority-maintain.comparison-of-working-hours'|translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.WorkhourGap.access">
+                <a class="link" nzTitle="DFC data verification" nzPlacement="right" nz-tooltip
+                  [routerLink]="['/dashboard/dfc/workhour-validation']">
+                  <i class="sp-2"></i>{{'dfc.DFC-data-verification'|translate}}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span title class="sp-1"><img class="icon" src="/assets/img/dfq.svg" alt="icon">
+          <span>DFQ System</span></span>
+        <ul class="sp-4 ">
+          <li nz-submenu>
+            <span title class="sp-1">
+              <span>C4/C5 Exit Meeting</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active"  nzPlacement="right"  nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/exit-meeting/meeting-review']">
+                  Review</a></li>
+            </ul>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active"  nzPlacement="right"  nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/exit-meeting/summary']">
+                  Report</a></li>
+            </ul>
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1">
+              <span nzTitle="RFI New model yield forecast"  nzPlacement="top" nz-tooltip>
+                {{ 'dfq.rfi-new-model-yield-forecast' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-submenu>
+                <span title class="sp-1"><span>{{ 'dfq.rfi-data-maintain' | translate }}</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Maintain the yield factor template"
+                     nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/maintain/yr-factor-maintain']">
+                      {{ 'dfq.rfi-yrfactor-maintain' | translate }}</a></li>
+                  <li nz-submenu>
+                    <span title class="sp-1"><span nzTitle="Institutional material maintenance"  nzPlacement="top"
+                        nz-tooltip>
+                        {{ 'dfq.rfi-institutional-material-maintenance' | translate }}</span></span>
+                    <ul class="sp-4 ">
+                      <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Materials Mapping"
+                        nzPlacement="right"  nz-tooltip><a class="link"
+                          [routerLink]="['/dashboard/rfi/maintain/material-mapping']">
+                          {{ 'dfq.dfq-material' | translate }} Mapping</a></li>
+                      <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Model maintenance"
+                        nzPlacement="right"  nz-tooltip><a class="link"
+                          [routerLink]="['/dashboard/rfi/maintain/model-maintain']">
+                          {{ 'dfq.rfi-model-maintenance' | translate }}</a></li>
+                      <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Material factor maintenance"
+                        nzPlacement="right"  nz-tooltip><a class="link"
+                          [routerLink]="['/dashboard/rfi/maintain/material-yr-maintain']">
+                          {{ 'dfq.rfi-material-factor-maintenance' | translate }}</a></li>
+                    </ul>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="MB Material yield maintenance"
+                    nzPlacement="right" nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/maintain/mboard-maintain']">
+                      MB {{'dfq.rfi-material-yield-maintenance' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="New material yield rate maintenance"
+                    nzPlacement="right" nz-tooltip> <a class="link"
+                      [routerLink]="['/dashboard/rfi/maintain/newmaterial-yr-maintain']">
+                      {{'dfq.rfi-new-material-yield-ate-maintenance' | translate }}</a></li>
+                </ul>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Target yield generation"
+                 nzPlacement="right" nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/rfi/yr-generate']">{{'dfq.rfi-target-yield-generation' | translate }}</a>
+              </li>
+              <li nz-submenu>
+                <span title class="sp-1"><span>RFI {{'dfq.dfq-sign-off' | translate }}</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Sign-off of material yield"
+                    nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/signing/base-data-signing']">
+                      {{'dfq.rfi-material-yied-sign' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Target yield generation Sign-off"
+                     nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/signing/yr-generate-signing']">
+                      {{'dfq.rfi-target-yield-generation' | translate }}{{'dfq.dfq-sign-off' | translate }} </a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1"><span nzTitle="MP yield early warning and tracking system"  nzPlacement="top"
+                nz-tooltip>
+                {{'dfq.mp-warning-tracking-system' | translate }}</span></span>
+            <ul class="sp-4">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Yield information maintenance"
+                 nzPlacement="right"  nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/dfq/mp/pc-schedule']">{{'dfq.mp-yield-information-maintenance' | translate }}</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Yield rate warning and tracking"
+                 nzPlacement="right"  nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/dfq/mp/yr-tracking']">{{'dfq.mp-warning-tracking' | translate }}</a></li>
+            </ul>
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1"><span>SkyEye品質監控管理系統</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/skyeye/skanban']">品質監控管理看板</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nz-tooltip='Smart Factory Management Kanban'><a
+                  class="link" [routerLink]="['/dashboard/skyeye/SmartFactoryKanban']">Smart Factory Mana...</a>
+              </li>
+              <li nz-submenu>
+                <span title class="sp-1"><span>品質監控資料維護</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"  nzPlacement="right"  nz-tooltip><a
+                      style="font-size: 14px;" class="link" [routerLink]="['/dashboard/skyeye/testMaintain']">測試版本維護</a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="螺絲機參數維護"  nzPlacement="right"
+                     nz-tooltip><a style="font-size: 14px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/WcqlsjMaintain']">螺絲機參數維護</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="測試/組裝指標參數維護"  nzPlacement="right"
+                     nz-tooltip><a style="font-size: 15px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/maintain']">測試/組裝指標參數維護</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="生產過程參數維護(SPC)"  nzPlacement="right"
+                     nz-tooltip><a style="font-size: 15px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/Spcparameter']">生產過程參數維護(SPC)</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="生產過程參數維護(LightBar)"
+                     nzPlacement="right"  nz-tooltip><a style="font-size: 15px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/LightBarFill']">生產過程參數維護(LightBar)</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="推送人員名單維護(Spec偏移管理)"
+                     nzPlacement="right"  nz-tooltip><a style="font-size: 14px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/SpecMemberList']">推送人員名單維護(Spec偏移管理)</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Smart Factory Parameter Maintenance"
+                     nzPlacement="right"  nz-tooltip><a style="font-size: 14px;" class="link"
+                      [routerLink]="['/dashboard/skyeye/SmartFactory']">Smart Factory Parameter Maintenance</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu (nzOpenChange)="getImqmAuth()">
+        <span class="sp-1" title><img class="icon" src="./assets/img/mrr.svg" alt="icon"><span>MRR System</span></span>
+        <ul class="sp-4 ">
+          <li nz-submenu *ngIf="!isExt">
+            <span title class="sp-1" nzTitle="NUDD Automatic Evaluation System" nzPlacement="top"
+              nz-tooltip><span>{{ 'mrr.nudd-title' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-submenu>
+                <span title class="sp-1" nzTitle="Evaluation Data Maintenance" nzPlacement="top"
+                  nz-tooltip><span>{{ 'mrr.nudd-maintain' | translate }}</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="2D/3D Risk Maintenance"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/nudd/crimaintain']">
+                      {{ 'mrr.nudd-2d3d' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="ID Book Maintenance"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/nudd/idbookmaintain']">
+                      {{ 'mrr.nudd-idBook' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/nudd/nuddupload']">
+                      {{ 'mrr.nudd-design-upload' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" p><a class="link"
+                      [routerLink]="['/dashboard/nudd/pictureupload']">
+                      {{ 'mrr.nudd-3d-upload' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/nudd/llupload']">
+                      {{ 'mrr.nudd-ll-upload' | translate }}</a></li>
+                </ul>
+              </li>
+              <li nz-submenu>
+                <span title class="sp-1" nzTitle="NUDD Risk Assessment" nzPlacement="right" nz-tooltip><span>NUDD
+                    {{ 'mrr.nudd-risk-evaluate' | translate }}</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="2D/3D Risk Assessment"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/nudd/pictureanalyse']">
+                      2D/3D {{ 'mrr.nudd-risk-evaluate' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="2D/3D Risk Assessment Report"
+                    nzPlacement="right" nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/nudd/pictureanalysereport']">
+                      2D/3D {{ 'mrr.nudd-evaluate-report' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/nudd/idbookanalyse']">
+                      {{ 'mrr.nudd-idBook-analysis' | translate }}</a></li>
+                </ul>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="NUDD Supervisor Approves"
+                nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/nudd/nuddsigning']">
+                  {{ 'mrr.nudd-sign' | translate }}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/nudd/nuddreport']">
+                  NUDD Report</a></li>
+            </ul>
+          </li>
+          <li nz-submenu *ngIf="!isExt">
+            <span class="sp-1" title nzTitle="Product Standard Document Management" nzPlacement="top"
+              nz-tooltip><span>{{ 'mrr.document-title' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-submenu>
+                <span title class="sp-1"><span>{{ 'mrr.document-file-upload' | translate }}</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Common Standard Document"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/mrrDoc/upload']"
+                      [queryParams]="{ docType: 'common'}">
+                      {{ 'mrr.document-common' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Appearance Standard Document"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/mrrDoc/upload']"
+                      [queryParams]="{ docType: 'appearance'}">
+                      {{ 'mrr.document-exterior' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Institutional Standard Document"
+                    nzPlacement="right" nz-tooltip><a class="link" [routerLink]="['/dashboard/mrrDoc/upload']"
+                      [queryParams]="{ docType: 'institutional'}">
+                      {{ 'mrr.document-mechanism' | translate }}</a></li>
+                </ul>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/mrrDoc/view']">{{ 'mrr.document-file-view' | translate }}</a></li>
+            </ul>
+          </li>
+          <li *ngIf="!isExt && imqmAccess" nz-submenu>
+            <span title class="sp-1"><span>iMQM</span></span>
+            <ul class="sp-4 ">
+              <li nz-submenu>
+                <span class="sp-1" title><span>{{'imq-menu-realTimeBoard' | translate}}</span></span>
+                <ul class="sp-4 ">
+                  <li *ngIf="showVendorRTKanban" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/real-time-board/factory-user']">
+                      {{'imq-menu-supplier' | translate}}</a></li>
+                  <li *ngIf="showModelRTKanban" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/real-time-board/machine-model']">
+                      {{'imq-menu-model' | translate}}</a></li>
+                </ul>
+              </li>
+              <li *ngIf="showYr" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/imqm/yr-board']">{{'imq-menu-yieldRate' | translate}}</a></li>
+              <li *ngIf="showEarlyWarn" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/imqm/warning-board']">{{'imq-menu-prewarning' | translate}}</a></li>
+              <li *ngIf="showAbnormal" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/imqm/abnormal-board']">{{'imq-menu-overSpec' | translate}}</a></li>
+              <li *ngIf="showTraceBack" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/imqm/trace-board']">{{'imq-menu-tracking' | translate}}</a></li>
+              <li nz-submenu>
+                <span class="sp-1" title><span>{{'imq-menu-magBoard' | translate}}</span></span>
+                <ul>
+                  <li *ngIf="showSummary" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/manage-board/summary']">
+                      {{'imq-menu-summary' | translate}}</a></li>
+                  <li nz-submenu>
+                    <span class="sp-1" title><span>{{'imq-menu-kPIManagement' | translate}}</span></span>
+                    <ul>
+                      <li *ngIf="showKpi" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                          [routerLink]="['/dashboard/imqm/manage-board/kpi-board']">
+                          {{'imq-menu-kPIMagBord' | translate}}</a></li>
+                      <li *ngIf="showAutoTrace" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                          [routerLink]="['/dashboard/imqm/manage-board/auto-track']">
+                          {{'imq-menu-KPIcloseTrace' | translate}}</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <!-- 假数据甄别 -->
+              <li *ngIf="showFalseData" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+              [routerLink]="['/dashboard/imqm/false-data']">{{'imq-menu-falseData' | translate}}</a></li>
+              <li *ngIf="showDownloadData" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/imqm/download-rawdata']">{{'imq-menu-downloadrawdata' | translate}}</a>
+              </li>
+              <li nz-submenu>
+                <span title class="sp-1"><span>{{'imq-menu-maintenance' | translate}}</span></span>
+                <ul class="sp-4 ">
+                  <li *ngIf="showTestItem" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/test-item']">
+                      {{'imq-menu-testManage' | translate}}</a></li>
+                  <li *ngIf="showParMaintain" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/system-param']">
+                      {{'imq-menu-sysParsMaintenance' | translate}}</a></li>
+                  <li *ngIf="showMailMaintain" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/mail-maintain']">
+                      {{'imq-menu-mailAdrMaintenance' | translate}}</a></li>
+                  <li *ngIf="showUserMaintain" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/user-auth']">
+                      {{'imq-menu-usrAuthMaintenance' | translate}}</a></li>
+                  <li *ngIf="showGroupMaintain" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/group-auth']">
+                      {{'imq-menu-groupMaintaince' | translate}}</a></li>
+                  <li *ngIf="showOperationGuide" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/operation-guide']">
+                      {{'imq-menu-operMaintenance' | translate}}</a></li>
+                  <li *ngIf="showFilterData" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/imqm/maintain-board/filter-data']">
+
+                      {{'imq-menu-filterMaintenance' | translate}}</a></li>
+                </ul>
+              </li>
+              <!-- <li nz-menu-item class="sp-2" (click)="openIMQMPdf()"><a class="link">{{'imq-menu-operManual' | translate}}</a></li> -->
+              <li nz-submenu>
+                <span class="sp-1" title><span>{{'imq-menu-operManual' | translate}}</span></span>
+                <ul>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" (click)="openIMQMPdf_wistron()">
+                    <a class="link">{{'imq-menu-wistron-operation' | translate}}</a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" (click)="openIMQMPdf_vendor()">
+                    <a class="link">{{'imq-menu-vendor-operation' | translate}}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li nz-submenu>
+            <span class="sp-1" title nzTitle="Automatic Tracking of Material Yield" nzPlacement="top"
+              nz-tooltip><span>{{ 'mrr.material-title' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Manufacturer-end Yield Query"
+                nzPlacement="top" nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/mrrMaterial/manufaturer']">{{ 'mrr.material-vendor-select' | translate }}</a>
+              </li>
+              <li *ngIf="!isExt" nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/mrrMaterial/iqc']">VQC VLRR/LRR {{ 'mrr.mrr-query' | translate }}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Inquiry About Bad Materials At Factory"
+                nzPlacement="top" nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/mrrMaterial/defective']">{{ 'mrr.material-factory-select' | translate }}</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="SQM Data Maintenance Management"
+                nzPlacement="top" nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/mrrMaterial/basedata']">{{ 'mrr.material-sqm-maintain' | translate }}</a>
+              </li>
+            </ul>
+          </li>
+          <li nz-submenu *ngIf="!isExt">
+            <span class="sp-1" title nzTitle="Vendor Info Management System" nzPlacement="top"
+              nz-tooltip><span>{{ 'mrr.vendor-title' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/mrrMdm/filemaintain']" nzTitle="Document List Management"
+                  nzPlacement="right" nz-tooltip>{{ 'mrr.vendor-fileList-manage' | translate }}</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/mrrMdm/sqmm']" nzTitle="SQM Vendor Data Maintenance" nzPlacement="right"
+                  nz-tooltip>{{ 'mrr.vendor-sqm-vendor-maintain' | translate }}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span class="sp-1" title><img class="icon" src="/assets/img/report.svg" alt="icon"> <span>Report</span></span>
+        <ul class="sp-4 ">
+          <li nz-submenu>
+            <span title class="sp-1"><span>DFC Report</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.KpiReport.access"><a class="link"
+                  [routerLink]="['/dashboard/dfc/dfc-kpi']">
+                  DFC KPI</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.TimeReport.access"><a class="link"
+                  [routerLink]="['/dashboard/dfc/model-workhour']" nzTitle="Model Working Hours Report"
+                  nzPlacement="right" nz-tooltip>
+                  {{'report.dfc-model-workhour-report' | translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.MOHReport.access"><a class="link"
+                  [routerLink]="['/dashboard/dfc/model-moh']">
+                  {{'report.dfc-model-moh-report' | translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.TargetOperationReport.access"><a
+                  class="link" [routerLink]="['/dashboard/dfc/target-report']" nzTitle="Target Working Hours Report"
+                  nzPlacement="right" nz-tooltip>
+                  {{'report.dfc-target-hour-report' | translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.SummaryReport.access"><a class="link"
+                  [routerLink]="['/dashboard/dfc/dfc-summary']">
+                  Summary Report</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.ImproveReport.access"><a class="link"
+                  [routerLink]="['/dashboard/dfc/workhour-report']" nzTitle="Improve Performance Report"
+                  nzPlacement="right" nz-tooltip>
+                  {{'report.dfc-improve-performance-report' | translate}}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/dfc/work-reaching']" nzTitle="Model Achievement Report" nzPlacement="right"
+                  nz-tooltip>
+                  {{'report.dfc-model-reach-report' | translate}}</a></li>
+            </ul>
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1"><span>DFQ Report</span></span>
+            <ul class="sp-4 ">
+              <li nz-submenu>
+                <span title class="sp-1"><span>SkyEye Report</span></span>
+                <ul class="sp-4 ">
+                  <!-- <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/cpkAnalyze']">
+                      CPK穩定性監控 <span *ngIf="abnormal_type === 'cpk'">({{abnormal_num}})</span></a>
+                  </li> -->
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/WcqlsjAnalyze']">
+                      螺絲機監控</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/highSpeedAnalyze']">
+                      高速機監控</a></li>
+                  <li nz-submenu>
+                    <span title class="sp-1"><span>複測率監控</span></span>
+                    <ul class="sp-4 ">
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/retryRateAnalyze']">
+                          測試複測率<span *ngIf="abnormal_type === 'retry'">({{abnormal_num}})</span></a>
+                      </li>
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/assemblyDefecRate']">
+                          組裝複測率<span *ngIf="abnormal_type === 'fixture retry rate'">({{abnormal_num}})</span></a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li nz-submenu>
+                    <span title class="sp-1"><span>穩定性監控</span></span>
+                    <ul class="sp-4 ">
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/cpkAnalyze']">
+                          測試CPK <span *ngIf="abnormal_type === 'cpk'">({{abnormal_num}})</span></a>
+                      </li>
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/cntcpk']">
+                          組裝CPK <span *ngIf="abnormal_type === 'assy fixturecpk'">({{abnormal_num}})</span></a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li nz-submenu>
+                    <span title class="sp-1"><span>績效管理界面</span></span>
+                    <ul class="sp-4 ">
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/issueReport']">
+                          Bug Report</a></li>
+                      <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link" style="font-size: 15px;"
+                          [routerLink]="['/dashboard/skyeye/report/picReport']">
+                          PIC Report</a></li>
+                    </ul>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/yieldAnalyze']">
+                      組裝良率監控 <span *ngIf="abnormal_type === 'yield_rate'">({{abnormal_num}})</span></a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/testTimeAnalyze']">
+                      測試時間監控 <span *ngIf="abnormal_type === 'time'">({{abnormal_num}})</span></a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/historyReport']">
+                      歷史數據查詢 </a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/ateTemperatureReport']">
+                      設備溫度監控(ATE) <span *ngIf="abnormal_type === 'ateTemp'">({{abnormal_num}})</span></a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/SpcAnalyze']">
+                      生產過程監控(SPC)</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="生產偏移管理(Spec)"  nzPlacement="right"
+                    nz-tooltip><a class="link" [routerLink]="['/dashboard/skyeye/report/SpecOffsetManagement']">
+                      生產偏移管理(Spec)</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="光源流明監控(Light Bar)"
+                    nzPlacement="right" nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/skyeye/report/lightBarAnalyze']">
+                      光源流明監控(Light Bar)<span *ngIf="abnormal_type === 'lightBar'">({{abnormal_num}})</span></a>
+                  </li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="測試第一次通過率監控"  nzPlacement="right"
+                    nz-tooltip><a class="link" [routerLink]="['/dashboard/skyeye/report/defectLossAnalyze']">
+                      測試第一次通過率監控 <span *ngIf="abnormal_type === 'defect'">({{abnormal_num}})</span></a>
+                  </li>
+                </ul>
+              </li>
+              <li nz-submenu>
+                <span title class="sp-1"><span>RFI Report</span></span>
+                <ul class="sp-4 ">
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="New Model Yield Rate Report"
+                    nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/report/newmodel-yr-report']">
+                      {{ 'dfq.report-new-model-yield-rate' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Model Design Comparison Report"
+                    nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/report/model-compare-report']">
+                      {{ 'dfq.report-model-design-comparison' | translate }}</a></li>
+                  <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Yield prediction Report"
+                    nzPlacement="right"  nz-tooltip><a class="link"
+                      [routerLink]="['/dashboard/rfi/report/model-chieve-report']">
+                      {{ 'dashboard.yieldPrediction' | translate }} Report</a></li>
+                </ul>
+              </li>
+            </ul>
+            <!-- <ul    >
+                    <li nz-submenu  >
+                      <a><i class="sp-2"> Skyeye報表
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right">
+                        </span>
+                      </a>
+                      <ul    >
+                        <li routerLinkActive="active"><a class="link" [routerLink]="['/dashboard/skyeye/report/cpkAnalyze']">
+                             設備監控及測試穩定性</a></li>
+                        <li routerLinkActive="active"><a class="link"
+                            [routerLink]="['/dashboard/skyeye/report/defectLossAnalyze']">
+                             不良率趨勢</a></li>
+                        <li routerLinkActive="active"><a class="link"
+                            [routerLink]="['/dashboard/skyeye/report/retryRateAnalyze']">
+                             Retry Rate趨勢</a></li>
+                        <li routerLinkActive="active"><a class="link"
+                            [routerLink]="['/dashboard/skyeye/report/testTimeAnalyze']">
+                             測試時間監控</a></li>
+                        <li routerLinkActive="active"><a class="link" [routerLink]="['/dashboard/skyeye/report/issueReport']">
+                             Issue Report</a></li>
+                        <li routerLinkActive="active"><a class="link" [routerLink]="['/dashboard/skyeye/report/picReport']">
+                             PIC Report</a></li>
+                      </ul>
+                    </li> -->
+            <!-- </ul> -->
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1"><span>MRR Report</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="NUDD Risk Assessment Report"
+                nzPlacement="top" nz-tooltip><a class="link"
+                  [routerLink]="['/dashboard/nudd/report/pictureanalysereport']">
+                  NUDD {{ 'mrr.nudd-evaluate-report' | translate }}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Product Standard Document Management"
+                nzPlacement="top" nz-tooltip><a class="link" [routerLink]="['/dashboard/mrrDoc/report']">
+                  {{ 'mrr.document-title' | translate }}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active" nzTitle="Automatic Tracking of Material Yield"
+                nzPlacement="top" nz-tooltip><a class="link" [routerLink]="['/dashboard/mrrMaterial/report']">
+                  {{ 'mrr.material-title' | translate }}</a></li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/mrrMaterial/mrrKpi']">
+                  {{ 'mrr.material-kpi' | translate }}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span class="sp-1" title> <img class="icon" src="/assets/img/military_order.svg" alt="icon">
+          <span>{{ 'dashboard.military-order' | translate }}</span></span>
+        <ul class="sp-4 ">
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.MilitaryOrderQuery.access"><a class="link"
+              [routerLink]="['/dashboard/dfc/military-order/query']">
+              {{ 'military-order.military-query' | translate }}</a></li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.MilitaryOrderSign.access"><a class="link"
+              [routerLink]="['/dashboard/dfc/military-order/sign']">
+              {{ 'military-order.military-sign' | translate }}</a></li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active" *ngIf="auth.RewardQuery.access"
+            nzTitle="Reward and Punishment Rules Query" nzPlacement="top" nz-tooltip><a class="link"
+              [routerLink]="['/dashboard/dfc/rewards-punishment-rule-query']">
+              {{ 'military-order.reward-query' | translate }}</a></li>
+          <li nz-submenu *ngIf="auth.RewardSign.access">
+            <span title class="sp-1" nzTitle="Reward and Punishment Rules and Approval" nzPlacement="top"
+              nz-tooltip><span>{{ 'military-order.reward-sign' | translate }}</span></span>
+            <ul class="sp-4 ">
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/dfc/rewards-sign-detail']">{{ 'military-order.dfc-sign' | translate }}</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active"><a class="link"
+                  [routerLink]="['/dashboard/dfc/dfq-rewards-punishment-sign']">{{ 'military-order.dfq-sign' | translate }}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu *ngIf="!isExt">
+        <span class="sp-1" title> <img class="icon" src="/assets/img/report.svg" alt="icon">
+          <span>{{ 'dashboard.dfi-monthly-meeting' | translate }}</span></span>
+        <ul class="sp-4">
+          <li nz-menu-item class="sp-2" routerLinkActive="active">
+            <a class="link"
+              [routerLink]="['/dashboard/report/meeting-minutes']">{{ 'dfi-monthly-meeting.meetingRecord' | translate }}</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="">
+            <a class="link" [routerLink]="['/dashboard/report/project-summary'] ">Digital Platform Summary</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="">
+            <a class="link"
+              [routerLink]="['/dashboard/report/project-status']">{{ 'dfi-monthly-meeting.projectStatus' | translate }}</a>
+          </li>
+          <li nz-menu-item class="sp-2" routerLinkActive="active">
+            <a class="link"
+              [routerLink]="['/dashboard/report/benefit']">{{ 'dfi-monthly-meeting.benefit' | translate }}</a>
+          </li>
+          <li nz-submenu>
+            <span title class="sp-1"><span>{{ 'dfi-monthly-meeting.landingExecution' | translate }}</span></span>
+            <ul class="sp-4">
+              <li nz-menu-item class="sp-2" routerLinkActive="active">
+                <a class="link" [routerLink]="['/dashboard/report/dfc-execution']">DFC</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active">
+                <a class="link" [routerLink]="['/dashboard/report/dfq-execution']">DFQ</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active">
+                <a class="link" [routerLink]="['/dashboard/report/mrr-execution']">MRR</a>
+              </li>
+              <li nz-menu-item class="sp-2" routerLinkActive="active">
+                <a class="link"
+                  [routerLink]="['/dashboard/report/issue']">{{ 'dfi-monthly-meeting.issue' | translate }}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li nz-menu-item *ngIf="!isExt">
+        <span title>
+          <i class="anticon anticon-team"></i>
+          <span [routerLink]="['/contact-us']">{{ 'dfi-monthly-meeting.contactUs' | translate }}</span>
+        </span>
+      </li>
+      <li nz-menu-item *ngIf="!isExt">
+        <span title nzTitle="Problem Reporting Process" nzPlacement="right" nz-tooltip>
+          <i class="anticon anticon-contacts"></i>
+          <span [routerLink]="['/report-problem-process']">{{ 'dfi-monthly-meeting.reflect-issue' | translate }}</span>
+        </span>
+      </li>
+    </ul>
+    <span
+      style="color: #969696; font-size: 5px; position: absolute;left:5px;bottom: 0px">{{env}}<br>{{ 'dfi-monthly-meeting.versionNo' | translate }}：
+      {{buildTime}}
+    </span>
+  </section>
+</aside>

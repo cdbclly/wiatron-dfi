@@ -1,0 +1,229 @@
+body {
+  margin: 0 8px;
+  width: 100%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+.content1 {
+  vertical-align: middle;
+}
+
+.row3 {
+  position: relative;
+  left: 2.4%;
+  width: 92%;
+}
+
+span {
+  font-size: 14px;
+}
+
+.chart {
+  height: 220px;
+  margin: 0 auto;
+  width: 380px;
+}
+
+.table1 {
+  width: 100%;
+  border: 1px white;
+}
+
+#title {
+  background-color: rgb(51, 51, 51);
+  color: white;
+  text-align: center;
+}
+
+#titlefix{
+  background-color: rgb(51, 51, 51);
+  color: white;
+  text-align: center;
+  width: 10%;
+}
+
+#titlefix2{
+  background-color: rgb(51, 51, 51);
+  color: white;
+  text-align: center;
+  width: 6%;
+}
+
+#white {
+  text-align: center;
+  background-color: white;
+  color: black;
+  border: 1px solid rgba(216, 216, 216, 0.3285714285714286);
+  font-weight: normal;
+}
+
+.query-row {
+  margin-bottom: 15px;
+  // min-width: 1330px;
+
+  .field1 {
+    display: inline-block;
+
+    span {
+      width: 105px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field2 {
+    display: inline-block;
+
+    span {
+      width: 120px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field {
+    display: inline-block;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field3 {
+    display: inline-block;
+
+    span {
+      width: 375px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field5 {
+    display: inline-block;
+
+    span {
+      width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field4 {
+    display: inline-block;
+
+    span {
+      width: 50px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field6 {
+    display: inline-block;
+    margin-right: 15px;
+
+    span {
+      width: 20px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+
+nz-select {
+  width: 180px;
+  margin-right: 15px;
+}
+
+[nz-input] {
+  width: 240px;
+  margin-right: 15px;
+}
+
+#row {
+  width: 202px;
+  margin-right: 15px;
+}
+
+#fail {
+  color: black;
+  border: 1px solid rgba(216, 216, 216, 0.3285714285714286);
+  font-weight: normal;
+  background-color: rgba(212, 48, 48, 1);
+}
+
+#pass {
+  color: white;
+  font-weight: bold;
+  border: 1px solid white;
+  height: 48px;
+  width: 64px;
+  text-align: center;
+  background-color: rgba(1, 169, 157, 1);
+}
+
+.red {
+  background-color: rgba(212, 48, 48, 1);
+}
+
+.green {
+  background-color: rgba(1, 169, 157, 1);
+}
+
+#signerth {
+  border: 0.5px solid #d8d8d8;
+}
+
+#signertd {
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  color: black;
+  font-weight: normal;
+  border: hidden;
+}
+
+td {
+  // background-color: rgba(117, 117, 117, 1);
+  color: white;
+  font-weight: bold;
+  border: 1px solid white;
+  height: 48px;
+  width: 64px;
+  // text-align: center;
+}
+
+#listtd {
+  color: black;
+  font-weight: normal;
+  border: 1px solid white;
+  height: 48px;
+  width: 64px;
+}
+
+#gray {
+  background-color: rgba(117, 117, 117, 1);
+  text-align: center;
+}

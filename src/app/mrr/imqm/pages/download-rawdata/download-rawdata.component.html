@@ -1,0 +1,49 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-downloadrawdata' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select [subject]="subject" [onlyShowRequired]="require" [specialStar] = "isShow" (queryOps)="query($event)"></app-imqm-select>
+
+
+<div *ngIf="newRawData['tableContent']">
+  <button nz-button nzType="primary"  style="border-radius: 6px; height: 25px;font-size: 12px; margin-bottom: 10px; margin-left: 96%;" (click)="downloadTotal('title')"><i nz-icon type="download" theme="outline"></i></button>
+  <nz-table  nzBordered nzSize="middle"
+  #groupingTable
+  [(nzPageIndex)]="currentIndex"
+    [nzScroll]="scrollConfig"
+    [nzData]="newRawData['tableContent']"
+    >
+    <thead>
+      <tr>
+        <th [attr.rowspan]="3" nzWidth="80px" nzLeft="0px">{{'imq-snNumber' | translate}}</th>
+        <th [attr.rowspan]="3" nzWidth="120px" nzLeft="80px" style="text-align: center;">{{'imq-yr-date' | translate}}</th>
+        <th [attr.rowspan]="3" nzWidth="70px" nzLeft="200px">{{'imq-inspectResult' | translate}}</th>
+
+        <th [attr.colspan]="2" *ngFor="let item of newRawData['testItem']" style="width:120px">
+          {{item}}
+        </th>
+      </tr>
+      <tr>
+        <th *ngFor="let item of upperAndLower" style="text-align: center;">{{item | number: '1.0-2'}}</th>
+      </tr>
+      <tr>
+        <th [attr.colspan]="2" *ngFor="let item of newRawData['machineId']" style="text-align: center;">{{item}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable.data; let i=index">
+        <td nzLeft="0px">{{item[0]}}</td>
+        <td nzLeft="80px">
+          {{item[1]}}</td>
+        <td nzLeft="200px">{{item[2]}}</td>
+        <!-- <td [attr.colspan]="2" *ngFor="let maxItem of tableContent[i + (currentIndex -1) * 10]"
+          [ngStyle]="{color: item[2] === true ? 'black' : 'red'}" style="width:120px; text-align: center;">
+          {{maxItem}}</td> -->
+          <td [attr.colspan]="2" *ngFor="let maxItem of tableContent[i + (currentIndex -1) * 10]; let j=index"
+          [ngStyle]="{color: maxItem | color : newRawData['upperLower'][j]}" style="width:120px; text-align: center;">
+          {{maxItem}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

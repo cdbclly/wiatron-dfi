@@ -1,0 +1,41 @@
+<nz-modal [(nzVisible)]="addModelVisible" nzOkText="Ok" nzCancelText="Cancel"  nzTitle="Model" (nzOnCancel)="cancel()"
+  (nzOnOk)="addOrUpdateModel()" [nzFooter]="modalFooter">
+  <div style="text-align: center;">
+    <nz-radio-group [(ngModel)]="editModel.type" [nzDisabled]="editModel.modelId || editModel.groupModelId">
+      <label nz-radio [nzValue]="1">Model</label>
+      <label nz-radio [nzValue]="2">Group Model</label>
+    </nz-radio-group>
+  </div>
+  <ng-container [ngSwitch]="editModel.type">
+    <div class="flex">
+      <div>
+        <span>Model Name</span>
+        <span>:</span>
+      </div>
+      <input nz-input [(ngModel)]="editModel.modelName">
+    </div>
+    <div *ngSwitchCase="1">
+      <div class="flex">
+        <div>
+          <span>FCST(K/Month)</span>
+          <span>:</span>
+        </div>
+        <input nz-input [(ngModel)]="editModel.FCST">
+      </div>
+    </div>
+    <div class="flex">
+      <div>
+        <span>{{'base-data.military-order-signing' | translate }}</span>
+        <span>:</span>
+      </div>
+      <label nz-checkbox [(ngModel)]="editModel.isMilitary"></label>
+    </div>
+  </ng-container>
+  <ng-template #modalFooter>
+    <p *ngIf="showError" style="color:red">Please enter a number for FCST</p>
+    <button nz-button nzType="default" (click)="cancel()">cancel</button>
+    <button nz-button nzType="primary" (click)="addOrUpdateModel()">
+      {{ (editModel.modelId || editModel.groupModelId)?'Modify':'Add' }}
+    </button>
+  </ng-template>
+</nz-modal>

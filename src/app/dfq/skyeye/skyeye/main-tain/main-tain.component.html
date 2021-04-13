@@ -1,0 +1,428 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye品質監控管理系統</nz-breadcrumb-item>
+  <nz-breadcrumb-item>品質監控資料維護</nz-breadcrumb-item>
+  <nz-breadcrumb-item>測試/組裝指標參數維護</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  測試/組裝指標參數維護
+</div>
+<div class="query-row">
+  <div class="field1">
+    <span style="width: 29%;">
+      <span style="color: red;">*</span>
+      <span>Site</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="getOptList('plant')">
+    <span style="width: 28%;">
+      <span style="color: red">*</span>
+      <span>Plant</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="getOptList('project')">
+    <span style="margin-left: 12%;">類別</span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="project" (ngModelChange)="getOptions('stage')">
+      <nz-option *ngFor="let project_item of objectKeys(projectGroup)" [nzLabel]="project_item"
+        [nzValue]="project_item"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="getOptList('stage')">
+    <span>Stage</span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_stage"
+      (ngModelChange)="getOptions('model')">
+      <nz-option *ngFor="let stage of objectKeys(stageGroup)" [nzLabel]="stage" [nzValue]="stage"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" (click)="getOptList('model')">
+    <span>Model</span>
+    <nz-select style="width: 75%;" nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_model"
+      (ngModelChange)="getOptions('query')">
+      <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<div *ngIf="role['insert'] === true" style="float: left;margin-right: 10px;">
+  <button nz-button [nzType]="'primary'" title="新增" nzShape="circle" (click)="showModal()" style="margin-bottom: 15px;">
+    <i class="anticon anticon-plus"></i>
+  </button>
+</div>
+<button nz-button [nzType]="'primary'" title="上传模板下载" nzShape="circle" (click)="downloadTemp()"
+  style="margin-bottom: 15px; margin-right: 10px;">
+  <i nz-icon type="file-excel" theme="outline"></i>
+</button>
+<button nz-button [nzType]="'primary'" *ngIf="ckpiInfos && ckpiInfos.length > 0" title="下载" nzShape="circle"
+  (click)="downloadData()" style="margin-bottom: 15px;">
+  <i nz-icon type="download" theme="outline"></i>
+</button>
+<div class="btn-upload" *ngIf="role['insert'] === true">
+  <label class="upload">
+    <input id="upload" type="file" (change)="handleFileInput($event.target)">
+    <div class="fakeInput">
+      <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+      <span *ngIf="!uploadFileName">選擇Excel檔案</span>
+    </div>
+  </label>
+
+  <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+    title="上傳" (click)="uploadPre()">
+    <i class="anticon anticon-upload"></i>
+  </label>
+</div>
+<div class="upload-progress" [hidden]="showProgress">
+  <nz-progress [nzPercent]="progressBar" nzSize="small" [nzStatus]="proStatus"></nz-progress>
+</div>
+<div>
+  <nz-table #nzData nzBordered nzShowQuickJumper [nzData]="ckpiInfos" [nzPageSize]="10" [nzWidthConfig]="THwidth"
+    [(nzPageIndex)]="curPage" [nzScroll]="nzScroll">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th>編號</th>
+        <th>廠別</th>
+        <th>類別</th>
+        <th>站別</th>
+        <th>機種</th>
+        <th>架構</th>
+        <th>取樣數量</th>
+        <th>上限值</th>
+        <th>下限值</th>
+        <th>測試項目</th>
+        <th>子測試項目</th>
+        <th>维护人</th>
+        <th>修改日期</th>
+        <th>初始日期</th>
+        <th nzRight="40px">Action</th>
+        <th nzRight="0px">log</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzData.data;  let i = index;" style="font-size: 12px;">
+        <td>{{(curPage - 1) * 10 + i + 1}}</td>
+        <td>
+          {{data.plantId}}
+        </td>
+        <td>
+          {{data.name}}
+        </td>
+        <td>
+          <!-- <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['stageId']">
+          </ng-container> -->
+          <ng-container>
+            {{data.stageId}}
+          </ng-container>
+        </td>
+        <td>
+          <!-- <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['modelId']">
+          </ng-container> -->
+          <ng-container>
+            {{data.modelId}}
+          </ng-container>
+        </td>
+
+        <td *ngIf="data.name === 'rf cpk' || data.name === 'retry rate'" class="model">
+          <span style="
+                text-overflow: -o-ellipsis-lastline;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+            "
+            title = {{data.upn}}
+            >
+            <!-- (mouseover)='show(i)' (mouseleave)='hidden()' -->
+            <ng-container>
+              {{data.upn}}
+            </ng-container>
+          </span>
+          <!-- <ng-container *ngIf="editMap.get(data['groupId'])">
+            <textarea type="text" nz-input [(ngModel)]="editItem['upn']"></textarea>
+          </ng-container> -->
+          <div class="showInfo" *ngIf="mousekey === i ? isShow:''">
+            {{data.upn}}
+            <!-- <div class="icon"></div> -->
+          </div>
+        </td>
+
+        <td *ngIf="data.name !== 'rf cpk' && data.name !== 'retry rate'">
+          {{data.upn}}
+        </td>
+
+        <td *ngIf="data.name === 'assy fixturecpk'">
+          <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['pcs']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['groupId'])">
+            {{data.pcs}}
+          </ng-container>
+        </td>
+
+        <td *ngIf="data.name !== 'assy fixturecpk'">
+          {{data.pcs}}
+        </td>
+        <!-- 上限值 -->
+        <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">
+          <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['upperCpk']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['groupId'])">
+            {{data.upperCpk}}
+          </ng-container>
+        </td>
+        <!-- 下限值 -->
+        <td *ngIf="data.name === 'rf cpk'|| data.name === 'assy fixturecpk'">
+          <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['lowerCpk']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['groupId'])">
+            {{data.lowerCpk}}
+          </ng-container>
+        </td>
+        <!-- 非 rf cpk和fa cpk对应的上下限 -->
+        <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">
+          <!-- <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['threshold1']">
+          </ng-container> -->
+          <ng-container>
+            {{data.threshold1}}
+          </ng-container>
+        </td>
+
+        <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">
+          <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['threshold1']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['groupId'])">
+            {{data.threshold1}}
+          </ng-container>
+        </td>
+
+        <td  *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">
+          <!-- <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['threshold2']">
+          </ng-container> -->
+          <ng-container>
+            {{data.threshold2}}
+          </ng-container>
+        </td>
+
+        <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">
+          <ng-container *ngIf="editMap.get(data['groupId'])">
+            <input type="text" nz-input [(ngModel)]="editItem['threshold2']">
+          </ng-container>
+          <ng-container *ngIf="!editMap.get(data['groupId'])">
+            {{data.threshold2}}
+          </ng-container>
+        </td>
+
+        <td *ngIf="data.name !== 'rf cpk'&& data.name !== 'assy fixturecpk'">
+          {{data.upperCpk}}
+        </td>
+        <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">
+          {{data.lowerCpk}}
+        </td>
+        <td>{{data.updatedUser}}</td>
+        <td>{{data.updatedTime | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td>{{data.createdTime | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td *ngIf="role['update'] === true && !editMap.get(data['groupId'])&&!disableedit">
+          <span style="float: left;
+          padding-right: 8px;" (click)="editRow(data)"><i class="anticon anticon-edit"></i></span>
+          <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+          <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="delRow(data.groupId)">
+            <a nz-popconfirm><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+          </nz-popconfirm>
+          <!-- <span style="padding-left: 8px;cursor: pointer;" (click)="delRow(data.id)"><i class="anticon anticon-delete"></i></span> -->
+        </td>
+        <td *ngIf="role['update'] !== true">
+          暫無權限
+        </td>
+        <td *ngIf="role['update'] === true && editMap.get(data['groupId'])">
+          <span style="float: left;
+            padding-right: 8px;" (click)="saveRow(editItem, data)"><i class="anticon anticon-save"></i></span>
+          <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+          <span style="padding-left: 8px;cursor: pointer;"><i class="anticon anticon-rollback"
+              (click)="cancelEdit(data)" style="margin-left: 10px;"></i></span>
+        </td>
+        <td *ngIf="role['update'] !== true && !editMap.get(data['groupId'])&&disableedit">
+          <span style="float: left;
+                padding-right: 8px;cursor: no-drop"><i class="anticon anticon-edit"></i></span>
+          <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+          <span style="padding-left: 8px;cursor: no-drop"><i class="anticon anticon-delete"
+              style="margin-left: 10px;"></i></span>
+        </td>
+        <td>
+          <span>
+            <i nz-icon type="search" theme="outline" (click)="showLog(data.groupId)"></i>
+          </span>
+        </td>
+
+      </tr>
+    </tbody>
+    <!-- </div> -->
+  </nz-table>
+
+  <!-- log弹出框 -->
+  <nz-modal [(nzVisible)]="isVisible_log" nzTitle="log詳細" nzClosable="false" [nzFooter]="footer" nzWidth="85%"
+    (nzOnCancel)="handleCancel_log()" (nzOnOk)="handleOk_log()">
+    <nz-table #nzDatalog nzBordered nzShowQuickJumper [nzData]="logInfos" [nzPageSize]="10" [nzWidthConfig]="THwidth"
+      [(nzPageIndex)]="curPagelog" [nzScroll]="{ x:'1000px'}">
+      <thead>
+        <tr style="font-size: 12px;">
+          <th>編號</th>
+          <th>廠別</th>
+          <th>類別</th>
+          <th>站別</th>
+          <th>機種</th>
+          <th>架構</th>
+          <th>取樣數量</th>
+          <th>上限值</th>
+          <th>下限值</th>
+          <th>測試項目</th>
+          <th>子測試項目</th>
+          <th>维护人</th>
+          <th>修改日期</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzDatalog.data;  let k = index;" style="font-size: 12px;">
+          <td>{{(curPagelog - 1) * 10 + k + 1}}</td>
+          <td>{{data.plantId}}</td>
+          <td>{{data.name}}</td>
+          <td>{{data.stageId}}</td>
+          <td>{{data.modelId}}</td>
+          <td>{{data.upn}}</td>
+          <td>{{data.pcs}}</td>
+
+          <!-- <td>{{data.upperCpk}}</td>
+          <td>{{data.lowerCpk}}</td>
+          <td>{{data.threshold1}}</td>
+          <td>{{data.threshold2}}</td> -->
+          <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">{{data.threshold1}}</td>
+          <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">{{data.threshold2}}</td>
+          <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">{{data.upperCpk}}</td>
+          <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">{{data.lowerCpk}}</td>
+
+          <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">{{data.threshold1}}</td>
+          <td *ngIf="data.name === 'rf cpk' || data.name === 'assy fixturecpk'">{{data.threshold2}}</td>
+          <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">{{data.upperCpk}}</td>
+          <td *ngIf="data.name !== 'rf cpk' && data.name !== 'assy fixturecpk'">{{data.lowerCpk}}</td>
+
+          <td>{{data.updateUser}}</td>
+          <td>{{data.updateTime}}</td>
+          <td>{{data.actions}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-modal>
+
+
+
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="新增測試項" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <div style="margin-left: 50px;">
+      <div class="query-row">
+        <div class="field1">
+          <span style="display: block;">維護項目</span>
+          <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_project"
+            (ngModelChange)="selectedItem()">
+            <nz-option nzValue="fpyr" nzLabel="fpyr"></nz-option>
+            <nz-option nzValue="retry rate" nzLabel="retry rate"></nz-option>
+            <nz-option nzValue="rf cpk" nzLabel="rf cpk"></nz-option>
+            <nz-option nzValue="yield rate" nzLabel="yield rate"></nz-option>
+            <nz-option nzValue="assy fixturecpk" nzLabel="assy fixturecpk"></nz-option>
+            <nz-option nzValue="fixture retry rate" nzLabel="fixture retry rate"></nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <p><span class="add-span">Site</span>
+        <nz-select style="width: 390px;height: 35px;" nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="add_site"
+          (ngModelChange)="getOptions('addSite')">
+          <nz-option *ngFor="let site of objectKeys(addSiteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+        </nz-select>
+      </p>
+      <p><span class="add-span">{{maintain_list[0]}}</span>
+        <nz-select style="width: 390px;height: 35px;" nzAllowClear nzPlaceHolder="Choose" [(ngModel)]="add_plant"
+          (ngModelChange)="getOptions('addPlant')">
+          <nz-option *ngFor="let plant of objectValue(addPlantGroup)" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+        </nz-select>
+      </p>
+      <p><span class="add-span">{{maintain_list[1]}}</span>
+        <!-- <nz-input-group [nzSuffix]="suffixTemplate1">
+                <input type="text" nz-input class="input-text" style="width: 390px;height: 35px;" [(ngModel)]="model"/>
+              </nz-input-group>
+              <ng-template #suffixTemplate1><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="model"
+                  (click)="model = null" ></i></ng-template> -->
+        <input nz-input [(ngModel)]="model" style="width:390px;" (input)="onInput($event.target?.value, 'model')"
+          [nzAutocomplete]="autoModel" (ngModelChange)="getOptions('addModel')">
+        <nz-autocomplete [nzDataSource]="modelFlteredOptions" #autoModel>
+        </nz-autocomplete>
+      </p>
+      <p><span class="add-span">{{maintain_list[2]}}</span>
+        <!-- <nz-input-group [nzSuffix]="suffixTemplate2">
+                <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="stageCode"/>
+              </nz-input-group>
+              <ng-template #suffixTemplate2><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="stageCode"
+                  (click)="stageCode = null" ></i></ng-template> -->
+        <input nz-input [(ngModel)]="stageCode" style="width:390px;" (input)="onInput($event.target?.value, 'stage')"
+          [nzAutocomplete]="autoStage">
+        <nz-autocomplete [nzDataSource]="stageFlteredOptions" #autoStage>
+        </nz-autocomplete>
+      </p>
+      <p><span class="add-span">{{maintain_list[3]}}</span>
+        <nz-input-group [nzSuffix]="suffixTemplate3">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="setting1" />
+        </nz-input-group>
+        <ng-template #suffixTemplate3><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="setting1" (click)="setting1 = null"></i></ng-template>
+      </p>
+      <p><span class="add-span">{{maintain_list[4]}}</span>
+        <nz-input-group [nzSuffix]="suffixTemplate4">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="setting2" />
+        </nz-input-group>
+        <ng-template #suffixTemplate4><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="setting2" (click)="setting2 = null"></i></ng-template>
+      </p>
+      <p [hidden]="maintain_list.length < 6"><span class="add-span">{{maintain_list[5]}}</span>
+        <nz-input-group [nzSuffix]="suffixTemplate5">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="upperCpk" />
+        </nz-input-group>
+        <ng-template #suffixTemplate5><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="upperCpk" (click)="upperCpk = null"></i></ng-template>
+      </p>
+      <p [hidden]="maintain_list.length < 6"><span class="add-span">{{maintain_list[6]}}</span>
+        <nz-input-group [nzSuffix]="suffixTemplate6">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="lowerCpk" />
+        </nz-input-group>
+        <ng-template #suffixTemplate6><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="lowerCpk" (click)="lowerCpk = null"></i></ng-template>
+      </p>
+
+      <p *ngIf="showSample"><span class="add-span">{{maintain_list[7]}}</span>
+        <nz-input-group [nzSuffix]="suffixTemplate7">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="pcs" />
+        </nz-input-group>
+        <ng-template #suffixTemplate7><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="pcs" (click)="pcs = null"></i></ng-template>
+      </p>
+
+      <p *ngIf="cur_project === 'rf cpk' || cur_project === 'retry rate'"><span class="add-span">架構</span>
+        <nz-input-group [nzSuffix]="suffixTemplate7">
+          <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="upn" />
+        </nz-input-group>
+        <ng-template #suffixTemplate7><i nz-icon nz-tooltip class="ant-input-clear-icon" nzTheme="fill"
+            nzType="close-circle" *ngIf="pcs" (click)="upn = null"></i></ng-template>
+      </p>
+
+    </div>
+  </nz-modal>

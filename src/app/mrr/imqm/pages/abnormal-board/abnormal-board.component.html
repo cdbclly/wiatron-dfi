@@ -1,0 +1,14 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'imq-menu-overSpec' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select [onlyShowRequired]="require" [subject]="subject" (queryOps)="query($event)"></app-imqm-select>
+<!-- overspec 次数 -->
+<div *ngIf="abnormalCountBarData">
+    <app-material-alert-product [options]="abnormalCountBarData" (subDetail)="showSubDetailAlert($event)"></app-material-alert-product>
+</div>
+<!-- 二层table -->
+<app-pop-alert [data]="dataAlert" (dateItem)="showFormDetail($event)"></app-pop-alert>
+<!-- 三层详细数据列表 -->
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>

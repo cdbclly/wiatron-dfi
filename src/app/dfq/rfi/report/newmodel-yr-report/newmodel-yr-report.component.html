@@ -1,0 +1,141 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.report-new-model-yield-rate' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.report-new-model-yield-rate' | translate }}
+</div>
+<div class="query">
+  <div class="dfc-query">
+    <div class="dfc-query-half">
+      <div>
+        <div class="dfc-query-span">
+          <span style="color:red">*</span>
+          <span>{{ 'dfq.dfq-plant' | translate }}</span>
+        </div>
+        <nz-select [(ngModel)]="plantSelectValue" nzShowSearch [nzServerSearch]="true" (ngModelChange)="getModel()">
+          <ng-container *ngFor="let list of listOfPlantSelectOption">
+            <nz-option [nzValue]="(list.siteId+'-'+list.id)" [nzLabel]="(list.siteId+'-'+list.id)"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span2">
+          <span>BU</span>
+        </div>
+        <nz-select [(ngModel)]="buSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true" (ngModelChange)="getModel()">
+          <ng-container *ngFor="let list of listOfBuSelectOption">
+            <nz-option [nzValue]="list.id" [nzLabel]="list.id"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <nz-spin nzSimple [nzSpinning]="loadModel">
+          <div class="dfc-query-span2">
+            <span>{{ 'dfq.dfq-customer' | translate }}</span>
+          </div>
+          <nz-select [(ngModel)]="customerSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true">
+            <ng-container *ngFor="let list of listOfCustomerSelectOption">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-spin>
+      </div>
+      <div>
+        <nz-spin nzSimple [nzSpinning]="loadModel">
+          <div class="dfc-query-span2">
+            <span>{{ 'dfq.dfq-product' | translate }}</span>
+          </div>
+          <nz-select [(ngModel)]="modelTypeSelectValue" nzAllowClear [nzServerSearch]="true" (ngModelChange)="modelChange()">
+            <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-spin>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-full">
+      <div>
+        <nz-spin nzSimple [nzSpinning]="loadModel">
+          <div class="dfc-query-span">
+            <span>RFQ Project Code</span>
+          </div>
+          <nz-select nzMode="multiple" [(ngModel)]="modelFamilySelectValue" nzAllowClear [nzServerSearch]="true" (ngModelChange)="changeModelFamily($event)">
+            <ng-container *ngFor="let list of projectCodes">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-spin>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-full">
+      <div>
+        <div class="dfc-query-span">
+          <span>RFQ Project Name</span>
+        </div>
+        <nz-select [(ngModel)]="modelNameSelectValue" nzMode="multiple" nzAllowClear [nzDisabled]="true"
+          [nzServerSearch]="true">
+          <ng-container *ngFor="let list of modelNameSelectValue">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>&nbsp;
+
+        <button nz-button [nzSize]="'normal'" nzType="primary" [disabled]="loadModel" [nzLoading]="loading" (click)="query()">Query</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nz-divider></nz-divider>
+<div *ngIf="tableShow">
+  <div class="download">
+    <button nz-button [nzType]="'primary'" [nzLoading]="down" title="下載" nzShape="circle" (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+  </div>
+
+  <div class="rfi-table">
+    <nz-table #basicTable nzBordered id="yrReport" [nzData]="showData" nzShowPagination="false" [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th rowspan="2">{{ 'dfq.dfq-customer' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-product' | translate }}</th>
+          <th rowspan="2">RFQ Project Name</th>
+          <th rowspan="2">RFQ Project Code</th>
+          <th rowspan="2">BA Project Name</th>
+          <th rowspan="2">BA Project Code</th>
+          <th colspan="6">{{ 'dfq.dfq-model' | translate }}{{ 'dfq.dfq-yield' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'dfq.dfq-design-yield' | translate }}（%）</th>
+          <th>{{ 'dfq.dfq-improve-yield' | translate }}（%）</th>
+          <th>C2（%）</th>
+          <th>C3（%）</th>
+          <th>C4（%）</th>
+          <th>C5（%）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.customer }}</td>
+          <td>{{ data.product }}</td>
+          <td>{{ data.model }}</td>
+          <td>{{ data.project }}</td>
+          <td>{{ data.baModel }}</td>
+          <td>{{ data.baProject }}</td>
+          <td>{{ data.originalYieldRate|percent }}</td>
+          <td>{{ data.improvedYieldRate|percent }}</td>
+          <td>{{ (data.C2Fpyr|async) !== null ? (data.C2Fpyr|async|percent) : '' }}</td>
+          <td>{{ (data.C3Fpyr|async) !== null ? (data.C3Fpyr|async|percent) : '' }}</td>
+          <td>{{ (data.C4Fpyr|async) !== null ? (data.C4Fpyr|async|percent) : '' }}</td>
+          <td>{{ (data.C5Fpyr|async) !== null ? (data.C5Fpyr|async|percent) : '' }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

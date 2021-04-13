@@ -1,0 +1,92 @@
+<div class="dfc-tip">
+  <div class="dfc-tip-row" *ngFor="let item of tipTxt">
+    <div [ngClass]="item.class"></div>
+    {{item.text}}
+  </div>
+</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="dfc-query">
+    <div>
+      <app-dfc-query-input [queryStyle]="querySelect.plant.style" [(queryValue)]="querySelect.plant.value"
+        [querySelect]="querySelect.plant.select" (queryValueChange)="changePlant()"></app-dfc-query-input>
+    </div>
+    <div style="margin: 10px;">
+      <span style="width: 80px;margin-right: 20px;">{{'dfq.report-achievement' | translate}}</span>
+      <nz-select style="width:500px;" nzMode="multiple" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [(ngModel)]="statusValue">
+        <ng-container *ngFor="let list of colorList">
+          <nz-option nzCustomContent style="width: 150px;" [nzValue]="list.value" [nzLabel]="list.label">
+            <div [ngSwitch]="list.value" [ngClass]="list.class" style="display: inline-block;">
+            </div>
+          </nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()"
+        [disabled]="queryFlag">{{'mrr.mrr-query' | translate}}</button>
+    </div>
+  </div>
+  <div>
+    <label class="dfq-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </label>
+  </div>
+  <nz-table *ngIf="tableFlag" class="workhour-track" #workhourTable nzBordered [nzData]="trackDataList"
+    [nzShowSizeChanger]="true" [nzPageSize]="10" [nzScroll]="{ x: '2200px' }">
+    <thead>
+      <tr>
+        <th nzWidth="100px">{{'mrr.mrr-plant' | translate}}</th>
+        <th nzWidth="100px">BU</th>
+        <th nzWidth="100px">{{'mrr.mrr-customer' | translate}}</th>
+        <th nzWidth="100px">{{'mrr.mrr-product' | translate}}</th>
+        <th nzWidth="150px">Project Code</th>
+        <th nzWidth="150px">Project Name</th>
+        <th nzWidth="150px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">RFQ Project Code</th>
+        <th nzWidth="150px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">RFQ Project Name</th>
+        <th nzWidth="100px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">PLM Status</th>
+        <th nzWidth="200px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">
+          {{'report.target-hour-signed' | translate}}</th>
+        <th nzWidth="100px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">
+          {{'report.workhour-upload' | translate}}</th>
+        <th nzWidth="100px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">
+          {{'report.cur-stage' | translate}}</th>
+        <th nzWidth="100px" *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">C5 D.D</th>
+        <th nzWidth="100px" nzRight="0px">{{'report.light-result' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of workhourTable.data">
+        <td>{{data.Plant | site: {type: 'plant'} }}</td>
+        <td>{{data.BU}}</td>
+        <td>{{data.Customer}}</td>
+        <td>{{data.ModelType}}</td>
+        <td>{{data.ProjectCode}}</td>
+        <td>{{data.ProjectName}}</td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">{{data.RfqProjectCode}}</td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">{{data.RfqProjectName}}</td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">{{data.PLMProjectStatus}}</td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">{{data.IsTargetSigned | result}}</td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')"><a (click)="toWorkhourMaintain(data)"
+            [ngStyle]="{'border-bottom':'1px solid black'}">{{data.workhourUploaded | result}}</a>
+        </td>
+        <td *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">{{data.currentStage}}</td>
+        <ng-container *ngIf="!(statusValue.length === 1 && statusValue[0] === 'purple')">
+          <td *ngIf="data.C5DueDay === null">{{data.C5DueDay}}</td>
+          <td *ngIf="data.C5DueDay !== null">{{data.C5DueDay | date: 'yyyy/MM/dd'}}</td>
+        </ng-container>
+        <td *ngIf="data.color === 'red' || data.color === 'yellow'" nzRight="0px" (click)="toNewmodelMaintain(data)"
+          [ngStyle]="{'color': '#eee', 'background': data.color === 'red'? 'rgb(255, 68, 68)': 'rgb(248, 252, 55)'}">
+        </td>
+        <td *ngIf="data.color === 'purple'" nzRight="0px" (click)="toWorkhourMaintain(data)"
+          [ngStyle]="{'background': 'rgb(201, 67, 201)', 'color': '#eee'}">{{(!data.textDetail ? '' : data.textDetail)}}
+        </td>
+        <td *ngIf="data.color === 'green'" nzRight="0px" (click)="toNewmodelMaintain(data)"
+          [ngStyle]="{'color': '#eee', 'background': 'rgb(60, 255, 76)','font-weight': data.fontWeight === 'bold'? 'bold': ''}">
+          {{data.workHourRatio}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-spin>

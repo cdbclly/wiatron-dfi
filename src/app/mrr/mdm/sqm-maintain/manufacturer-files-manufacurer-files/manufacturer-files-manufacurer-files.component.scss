@@ -1,0 +1,109 @@
+
+
+.uploadrate {
+  float: right;
+  .passRate {
+    margin-top: 12px;
+    text-align: center;
+    float: left;
+  }
+  .passRate2{
+    margin-top: 40px;
+    div {
+      text-align: center;
+      float: left;
+    }
+
+  }
+}
+
+
+.topTable {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width:80%;
+  border-collapse: collapse;
+  th, td {
+    border:1px solid #ffffff;
+    text-align:center;
+    padding:15px;
+  }
+  th {
+    background-color: rgb(185, 185, 185);
+  }
+  td {
+    background-color: rgb(221, 219, 219);
+  }
+}
+
+// table的th居中顯示
+::ng-deep .nz-table .ant-table-thead > tr > th {
+  text-align: center;
+}
+
+// table的td居中顯示
+.ant-table-tbody > tr > td {
+  text-align: center;
+}
+
+.dfq-btn-add {
+  margin-top: 25px;
+  margin-bottom: 5px;
+}
+
+.loadIcon {
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  outline: none;
+  background-color: transparent;
+}
+
+
+div.fakeInput {
+  margin-left: 10px;
+  display: inline-block;
+  width: 130px;
+  color: #505050;
+  background-color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 150%;
+  border: #cccccc solid 1px;
+  text-align: left;
+  height: 32px;
+  cursor: pointer;
+
+  span {
+    padding-left: 10px;
+    vertical-align: sub;
+    color: #999;
+  }
+}
+
+
+.upload {
+  input {
+    display: none;
+  }
+
+  i {
+    vertical-align: bottom;
+  }
+}
+
+
+
+//  禁用狀態下，按鈕的顏色
+::ng-deep .groupRadios .ant-radio-disabled + span {
+  color: rgb(129, 129, 129);
+}
+
+::ng-deep .groupRadios .ant-radio-disabled .ant-radio-inner {
+  border-color: rgb(129, 129, 129) !important;
+}
+
+::ng-deep .groupRadios .ant-radio-disabled .ant-radio-inner:after {
+  background-color: rgb(129, 129, 129);
+}

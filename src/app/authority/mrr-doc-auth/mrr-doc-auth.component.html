@@ -1,0 +1,190 @@
+<div class="mrr-doc-all">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>{{'dashboard.authority-maintain'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'authority-maintain.product-standard-document-maintenance'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'authority-maintain.product-standard-document-maintenance'|translate}}</span>
+  </div>
+  <div class="mrr-doc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"></app-dfc-query-input>
+    </div>
+    <div class="mrr-doc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">Query</button>
+    </div>
+  </div>
+  <div class="mrr-doc-line"></div>
+  <div class="mrr-doc-btn">
+    <div class="mrr-doc-btn-add">
+      <button nz-button [nzType]="'primary'" *ngIf='addParam.addBtnFlag' title="Add" nzShape="circle"
+        (click)="addBtn()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="mrr-doc-table" *ngIf="tableFlag">
+    <nz-table #authTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true' [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th rowspan="2">{{'authority-maintain.file-classification'|translate}}</th>
+          <th rowspan="2">{{'mrr.nudd-fileName'|translate}}</th>
+          <th rowspan="2">PIC</th>
+          <th rowspan="2">PIC Leader1</th>
+          <th rowspan="2">PIC Leader2</th>
+          <th colspan="5">{{'authority-maintain.NB-model-product-standard'|translate}}</th>
+          <th rowspan="2">{{'authority-maintain.time-point-to-notified'|translate}}</th>
+          <th rowspan="2">{{'authority-maintain.maintain'|translate}}</th>
+        </tr>
+        <tr>
+          <th>Site User1</th>
+          <th>Site User2</th>
+          <th>Site User3</th>
+          <th>Site User4</th>
+          <th>Site User5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of authTable.data; let i=index">
+          <td *ngIf="i === 0" [attr.rowspan]="authTable.data.length">{{docType}}</td>
+          <td>
+            {{data.docName}}
+            <input type="hidden" [(ngModel)]="data.PICUnit">
+          </td>
+          <td *ngFor="let key of objectKeys(editSelect)">
+            <ng-container *ngIf="!editCache[data.proDocID].edit">
+              <ng-container *ngIf="editSelect[key]['multiple']">
+                <p *ngFor="let pic of data[key]">
+                  {{(pic | member | async)?.EName}}
+                </p>
+              </ng-container>
+              <ng-container *ngIf="!editSelect[key]['multiple']">
+                {{(data[key] | member | async)?.EName}}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.proDocID].edit">
+              <ng-container *ngIf="editSelect[key]['multiple']">
+                <nz-select style="width: 100px;" [nzMode]="'multiple'" [(ngModel)]="editCache[data.proDocID].data[key]"
+                  nzAllowClear nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false"
+                  (ngModelChange)="selectChange($event, i, data.proDocID, key)"
+                  (nzOnSearch)="editSelect[key].search$.next($event)">
+                  <ng-container *ngFor="let list of editSelect[key].list">
+                    <nz-option style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label" nzCustomContent>
+                      {{list.Show}}
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </ng-container>
+              <ng-container *ngIf="!editSelect[key]['multiple']">
+                <nz-select style="width: 100px;" [(ngModel)]="editCache[data.proDocID].data[key]" nzAllowClear
+                  nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false"
+                  (nzOnSearch)="editSelect[key].search$.next($event)">
+                  <ng-container *ngFor="let list of editSelect[key].list">
+                    <nz-option style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label" nzCustomContent>
+                      {{list.Show}}
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+              </ng-container>
+
+            </ng-container>
+          </td>
+          <td>
+            <nz-checkbox-group [(ngModel)]="editCache[data.proDocID].data['stageCheckBox']"
+              [nzDisabled]="!editCache[data.proDocID].edit"></nz-checkbox-group>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.proDocID].edit">
+              <a style="margin-left: 10px;" *ngIf="!actionEnabled" disabled="disabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <a (click)="startEdit(data.proDocID)" *ngIf="actionEnabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <a *ngIf="!actionEnabled" style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-delete"></i>
+              </a>
+              <a (click)="deleteBtn(data.proDocID)" *ngIf="actionEnabled" style="margin-left: 10px;">
+                <i class="anticon anticon-delete"></i>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.proDocID].edit">
+              <a (click)="saveEdit(data.proDocID)">
+                <i class="anticon anticon-save"></i>
+              </a>
+              <a style="margin-left:10px;" (click)="cancelEdit(data.proDocID)">
+                <i class="anticon anticon-close-circle"></i>
+              </a>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<!-- 新增彈框 -->
+<nz-modal class="mrr-doc-auth-add" [nzWidth]="400" nzWrapClassName="vertical-center-modal"
+  [(nzVisible)]="addParam.isAddVisible" nzTitle="Add" nzMaskClosable="false" [nzContent]="modalAddMrrDocAuthContent"
+  [nzFooter]="modalAddMrrDocAuthFooter" (nzOnCancel)="cancelAdd()">
+  <div class="mrr-doc-auth-add-list" #modalAddMrrDocAuthContent>
+    <table>
+      <tr>
+        <td>{{ 'dfq.dfq-product' | translate}}：</td>
+        <td>{{productType}}</td>
+      </tr>
+      <tr>
+        <td>{{'authority-maintain.file-classification'|translate}}：</td>
+        <td>
+          {{docType}}
+          <input type="hidden" [(ngModel)]="addParam.addPICUnit">
+        </td>
+      </tr>
+      <tr *ngFor="let key of objectKeys(addParam.addContent)">
+        <td>
+          <span style="color:red"
+            *ngIf="addParam.addContent[key].redFlag">*</span>{{ key === 'docName' ? ('mrr.nudd-fileName' | translate) : addParam.addContent[key].title }}：
+        </td>
+        <td>
+          <input nz-input nzSize="default" style="width: 80%;" *ngIf="key === 'docName'"
+            [(ngModel)]="addParam.addContent[key].value" (ngModelChange)="addValueChange($event, key)">
+          <nz-select style="width: 80%;" *ngIf="key !== 'docName' && addParam.addContent[key].multiple"
+            [(ngModel)]="addParam.addContent[key].value" (ngModelChange)="addValueChange($event, key)" nzAllowClear
+            nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false" [nzMode]="'multiple'"
+            (nzOnSearch)="editSelect[key].search$.next($event)">
+            <ng-container *ngFor="let list of editSelect[key].list">
+              <nz-option style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label" nzCustomContent>
+                {{list.Show}}
+              </nz-option>
+            </ng-container>
+          </nz-select>
+          <nz-select style="width: 80%;" *ngIf="key !== 'docName' && !addParam.addContent[key].multiple"
+            [(ngModel)]="addParam.addContent[key].value" (ngModelChange)="addValueChange($event, key)" nzAllowClear
+            nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false"
+            (nzOnSearch)="editSelect[key].search$.next($event)">
+            <ng-container *ngFor="let list of editSelect[key].list">
+              <nz-option style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label" nzCustomContent>
+                {{list.Show}}
+              </nz-option>
+            </ng-container>
+          </nz-select>
+        </td>
+      </tr>
+      <tr>
+        <td>{{'dfq.rfi-update-time'|translate}}：</td>
+        <td>
+          <nz-checkbox-group [(ngModel)]="addParam.addStage"></nz-checkbox-group>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <ng-template #modalAddMrrDocAuthFooter>
+    <button nz-button nzType="default" (click)="cancelAdd()">Cancel</button>
+    <button nz-button nzType="primary" [disabled]="!addParam.addSaveFlag" (click)="add()">Save</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 點擊刪除, 選擇是否刪除 -->
+<app-delete-pop *ngIf='deleteParam.isDeleteVisible' (cancelDel)='cancelDelete($event)' (del)='delete($event)'
+  [isAfterDeleteVisible]='deleteParam.isAfterDeleteVisible'></app-delete-pop>

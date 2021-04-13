@@ -1,0 +1,134 @@
+<!-- <div echarts [options]="line_chart_sliding" class="line-chart" (chartClick)="showbox_sliding($event)"></div> -->
+  <div echarts [options]="line_chart_tubling" class="line-chart" (chartClick)="showbox_tubling($event)"></div>
+  <div class="suggest">
+      輔助建议决策
+ </div>
+<div class="suggest1">
+  <ul *ngFor="let item of comment let key = index">
+    <li>{{key+1}}. {{item}}</li>
+  </ul>
+</div>
+
+  <nz-modal [(nzVisible)]="isVisible1" nzTitle="" (nzOnCancel)="handleCancel1()" [nzClosable]="cancelOK1" [nzFooter]="footer1" (nzOnOk)="handleOk1()">
+      <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(detailTable_sliding_total, 'cpk實時型 total')">下载</button>
+      <div>
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <th>監控項目</th>
+              <th>測試結果</th>
+              <th>測試數量</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_sliding_total; let i = index">
+              <td>{{item['name']}}</td>
+              <td>{{item['result']}}</td>
+              <td (click)="showSubDetail_sliding(item)" class="test-num">{{item['num']}}</td>
+            </tr>
+          </table>
+        </div>
+  </nz-modal>
+  <nz-modal [(nzVisible)]="isVisible2" nzTitle="" nzWidth="80%" (nzOnCancel)="handleCancel2()" [nzClosable]="cancelOK2" [nzFooter]="footer2" (nzOnOk)="handleOk2()">
+      <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(detailTable_tubling_total, 'cpk计量型 total')">下载</button>
+      <div>
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <th>監控項目</th>
+              <th>測試結果</th>
+              <th>測試數量</th>
+              <th>正態分布圖</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_tubling_total; let i = index">
+                <td>{{item['name']}}</td>
+                <td>{{item['result']}}</td>
+                <td (click)="showSubDetail_tubling(item)" class="test-num">{{item['num']}}</td>
+                <td [ngClass]="(item['detail'] && item['detail'][0].item_startdate) ? 'linkStyle0' : 'linkStyle1'" (click)="showNormalDistibution(item)">Link</td>
+            </tr>
+          </table>
+        </div>
+  </nz-modal>
+
+  <nz-modal [(nzVisible)]="isVisible1_1" nzTitle=""  nzWidth="65%" (nzOnCancel)="handleCancel1_1()" [nzClosable]="cancelOK1_1" [nzFooter]="footer1_1"
+  [nzStyle]="{ top: '30%' }" (nzOnOk)="handleOk1_1()">
+  <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 94%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadDetail(detailTable_sliding, sliding_list, 'cpk實時型 detail')">下载</button>
+      <div class="box-table">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+             <th>機種</th>
+             <th>線別</th>
+             <th>架構</th>
+             <th>站別</th>
+              <th>治具編號</th>
+              <th>機台序列號</th>
+              <th>開始測試時間</th>
+              <th>結束測試時間</th>
+              <th>測試值</th>
+              <th>測試值上限</th>
+              <th>測試值下限</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_sliding; let i = index">
+                <td>{{sliding_list['model']}}</td>
+                <td>{{sliding_list['line']}}</td>
+                <td>{{sliding_list['upn']}}</td>
+                <td>{{sliding_list['stage']}}</td>
+                <td>{{sliding_list['fixture']}}</td>
+                <td>{{item['unitserialnumber']}}</td>
+                <td>{{item['item_startdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                <td>{{item['item_stopdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                <td>{{item['mdresult']}}</td>
+                <td>{{item['mdupperlimit'] ? (item['mdupperlimit'] < 300 ? item['mdupperlimit'] : '無設置') : (sliding_list['upper'] < 300 ? sliding_list['upper'] : '無設置')}}</td>
+                <td>{{item['mdlowerlimit'] ? (item['mdlowerlimit'] > -300 ? item['mdlowerlimit'] : '無設置') : (sliding_list['lower'] > -300 ? sliding_list['lower'] : '無設置')}}</td>
+                <!-- <td *ngIf="sliding_list['upper'] < 300">{{sliding_list['upper']}}</td>
+                <td *ngIf="sliding_list['upper'] > 300 || sliding_list['upper'] === 300">無設置</td>
+                <td *ngIf="sliding_list['lower'] > -300">{{sliding_list['lower']}}</td>
+                <td *ngIf="sliding_list['lower'] < -300 || sliding_list['lower'] === -300">無設置</td> -->
+            </tr>
+          </table>
+        </div>
+  </nz-modal>
+
+  <nz-modal [(nzVisible)]="isVisible2_2"  nzWidth="65%" nzTitle="" (nzOnCancel)="handleCancel2_2()" [nzClosable]="cancelOK2_2" [nzFooter]="footer2_2"
+  [nzStyle]="{ top: '30%' }"  (nzOnOk)="handleOk2_2()">
+  <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 94%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadDetail(detailTable_tubling, tubling_list, 'cpk计量型 detail')">下载</button>
+      <div class="box-table">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+                <th>機種</th>
+                <th>線別</th>
+                <th>架構</th>
+                <th>站別</th>
+                 <th>治具編號</th>
+                 <th>機台序列號</th>
+                 <th>開始測試時間</th>
+                 <th>結束測試時間</th>
+                 <th>測試值</th>
+                 <th>測試值上限</th>
+                 <th>測試值下限</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_tubling; let i = index">
+                <td>{{tubling_list['model']}}</td>
+                <td>{{tubling_list['line']}}</td>
+                <td>{{tubling_list['upn']}}</td>
+                <td>{{tubling_list['stage']}}</td>
+                <td>{{tubling_list['fixture']}}</td>
+                <td>{{item['unitserialnumber']}}</td>
+                <td>{{item['item_startdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                <td>{{item['item_stopdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+                <td>{{item['mdresult']}}</td>
+                <td>{{item['mdupperlimit'] ? (item['mdupperlimit'] < 300 ? item['mdupperlimit'] : '無設置') : (tubling_list['upper'] < 300 ? tubling_list['upper'] : '無設置')}}</td>
+                <td>{{item['mdlowerlimit'] ? (item['mdlowerlimit'] > -300 ? item['mdlowerlimit'] : '無設置') : (tubling_list['lower'] > -300 ? tubling_list['lower'] : '無設置')}}</td>
+                <!-- <td *ngIf="tubling_list['upper'] < 300">{{tubling_list['upper']}}</td>
+                <td *ngIf="tubling_list['upper'] > 300 || tubling_list['upper'] === 300">無設置</td>
+                <td *ngIf="tubling_list['lower'] > -300">{{tubling_list['lower']}}</td>
+                <td *ngIf="tubling_list['lower'] < -300 || tubling_list['lower'] === -300">無設置</td> -->
+            </tr>
+          </table>
+        </div>
+  </nz-modal>
+
+
+  <nz-modal [(nzVisible)]="isShowNormalDis" nzTitle=""  nzWidth="65%" (nzOnCancel)="handleCanceldis()" [nzClosable]="cancelOK1_1" [nzFooter]="footer1_1"
+  [nzStyle]="{ top: '30%' }" (nzOnOk)="handleOkdis()">
+  <!-- <div echarts [options]="line_chart_sliding" class="line-chart" (chartClick)="showbox_sliding($event)"></div> -->
+
+<div echarts [options]="normalDistribution" class="normalDis" ></div>
+
+</nz-modal>

@@ -1,0 +1,197 @@
+<div class="title">
+  <span style="width: 130px;">
+    Monitor Index:
+  </span>
+  <nz-select style="width: 220px;" nzShowSearch nzAllowClear [(ngModel)]="cur_title" (ngModelChange)="selectTitle()">
+    <nz-option *ngFor="let category of titleGroup" [nzLabel]="category" [nzValue]="category"></nz-option>
+  </nz-select>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<div class="selectRow">
+  <div class="field">
+    <span style="width: 34%;">
+      <span style="width: 20%; color: red;">*</span>
+      <span class = 'span_title'>Site</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('site')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span style="width: 34%">
+      <span style="width: 20%; color: red;">*</span>
+      <span class = 'span_title'>Plant</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+
+  <!-- <div class="field">
+    <span style="width: 34%;">
+      <span style="width: 15%; color: red;">*</span>
+      <span class = 'span_title'>Process</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_section" (ngModelChange)="getOptions('section')">
+      <nz-option *ngFor="let section of sectionGroup" [nzLabel]="section['name']" [nzValue]="section['id']"></nz-option>
+    </nz-select>
+  </div> -->
+
+  <div class="field">
+    <span style="width: 34%">
+      <span style="width: 20%; color: red;">*</span>
+      <span class = 'span_title'>Line</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_line" (ngModelChange)="getOptions('line')">
+      <nz-option *ngFor="let line of lineGroup" [nzLabel]="line" [nzValue]="line"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span style="width: 34%">
+      <span style="width: 20%; color: red;">*</span>
+      <span class = 'span_title'>Stage</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_stage" (ngModelChange)="getOptions('stage')">
+      <nz-option *ngFor="let stage of stageGroup" [nzLabel]="stage" [nzValue]="stage"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+<div class="selectRow">
+  <div class="field">
+    <span style="width: 34%;">
+      <span style="width: 12%; color: red;">*</span>
+      <span style="font-size: 13px;" class = 'span_title'>Model Name</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_model" (ngModelChange)="getOptions('model')">
+      <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field" style="width: 50%;" *ngIf="cur_title === 'SPC Monitor'">
+    <span style="padding-right: 1%; width: 17%;">
+      <span style="width: 12%; color: red;">*</span>
+      <span class = 'span_title'>Date</span>
+    </span>
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="Start Time" [(ngModel)]="dateInputFrom"
+      (ngModelChange)="getOptionDate($event, 'dateFrom')"></nz-date-picker>
+    ~
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="End Time" [(ngModel)]="dateInputTo"
+      (ngModelChange)="getOptionDate($event, 'dateTo')"></nz-date-picker>
+  </div>
+
+  <div class="field" style="width: 43%;" *ngIf="cur_title === 'PPK Monitor(Real-time)'">
+    <span style="text-align: right; padding-right: 1.25%; width: 21.25%;">
+      <span class = 'span_title'>Date</span>
+    </span>
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="Start Time" [(ngModel)]="dateInputFrom"
+      (ngModelChange)="getOptionDate($event, 'dateFrom')"></nz-date-picker>
+    ~
+    <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="End Time" [(ngModel)]="dateInputTo"
+      (ngModelChange)="getOptionDate($event, 'dateTo')"></nz-date-picker>
+  </div>
+
+  <div class="field" style="width: 43%;" *ngIf="cur_title === 'PPK Monitor(By Monthly)'">
+    <span style="text-align: right; padding-right: 1.25%; width: 21.25%;">
+      <span class = 'span_title'>Date</span>
+    </span>
+    <nz-month-picker nzShowTime nzFormat="yyyy-MM" nzPlaceHolder="Start Time" [(ngModel)]="dateInputFrom"
+      (ngModelChange)="getOptionDate($event, 'dateFrom')"></nz-month-picker>
+    ~
+    <nz-month-picker nzShowTime nzFormat="yyyy-MM" nzPlaceHolder="End Time" [(ngModel)]="dateInputTo"
+      (ngModelChange)="getOptionDate($event, 'dateTo')"></nz-month-picker>
+  </div>
+
+  <button nz-button nzType="primary" style="border-radius:6px; float: right" (click)="query()" [disabled]="queryButton"
+    *ngIf="cur_title === 'PPK Monitor(By Monthly)' || cur_title === 'PPK Monitor(Real-time)'">Query</button>
+</div>
+
+<div class="selectRow1" *ngIf="cur_title === 'SPC Monitor'">
+  <div class="field1">
+    <span style="width:  10%;">
+      <span style="color: red">*</span>
+      <span class = 'span_title'>Test Item</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_btname" (ngModelChange)="getOptions('bt')" nzPlacement="top"
+      nz-tooltip>
+      <nz-option *ngFor="let bt of btnameGroup" [nzLabel]="bt" [nzValue]="bt"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+<div class="selectRow1" *ngIf="cur_title === 'SPC Monitor'">
+  <div class="field1">
+    <span style="width: 10%; font-size: 0.8vw;">
+      <span style="color: red">*</span>
+      <span>Sub Test Item</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_stname" (ngModelChange)="getOptions('st')"
+      nzPlacement="top" nz-tooltip>
+      <nz-option *ngFor="let st of stnameGroup" [nzLabel]="st" [nzValue]="st"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px; " (click)="query()"
+    [disabled]="queryButton">Query</button>
+</div>
+
+<div *ngIf="cur_title !== 'SPC Monitor'">
+  <div class="line-chart" *ngFor="let item of ppkEchartArr  let key = index">
+    <span style="display: inline-block; margin-top: 10px; font-weight: 900;" (click)="isShow(key)">
+      {{key+1}}:{{item.title.text}}
+    </span>
+    <div echarts class="sport-chart" [options]="item" *ngIf="isShowArr[key]" (chartClick)="show_boxs($event)"></div>
+
+  </div>
+</div>
+
+<div *ngIf="cur_title === 'SPC Monitor'">
+  <div class="line-chart" *ngFor="let item of spcEchartArr  let key = index">
+    <span style="display: inline-block; margin-top: 10px; font-weight: 900;" (click)="isShow(key)">
+      {{key+1}}:{{item.series[0].data[0][2]}} Monodrome and X-MR control chart
+    </span>
+    <div echarts class="sport-chart1" [options]="item" *ngIf="isShowArr[key]" (chartClick)="show_boxs($event)"></div>
+  </div>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible" nzClosable="false" [nzFooter]="footer" nzWidth="85%" (nzOnCancel)="handleCancel()"
+  [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <button nz-button nzType="primary"
+    style="border-radius: 6px;margin-left: 92%;height: 25px;font-size: 12px; margin-bottom: 10px;"
+    (click)="downloadTotal()">Down Load</button>
+  <nz-table #nzDatalog nzBordered nzShowQuickJumper [nzData]="downLoadData" [nzPageSize]="7" [nzWidthConfig]="THwidth"
+    [(nzPageIndex)]="curPagelog" [nzScroll]="{ x:'1380px'}">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th>Model Name</th>
+        <th>Line</th>
+        <th>Stage</th>
+        <th>Serial Number</th>
+        <th>Test Item</th>
+        <th>Sub Test Item</th>
+        <th>Start Test Date</th>
+        <th>End Test Date</th>
+        <th>Test Value</th>
+        <th>UpperLimit</th>
+        <th>LowerLimit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of nzDatalog.data;  let k = index;" style="font-size: 12px;">
+        <td>{{item.model}}</td>
+        <td>{{item.line}}</td>
+        <td>{{item.stage}}</td>
+        <td>{{item.unitserialnumber}}</td>
+        <td>{{item.tdname}}</td>
+        <td>{{item.mdname}}</td>
+        <td>{{item.startdate}}</td>
+        <td>{{item.stopdate}}</td>
+        <td>{{item.mdresult}}</td>
+        <td>{{item.mdupperlimit}}</td>
+        <td>{{item.mdlowerlimit}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

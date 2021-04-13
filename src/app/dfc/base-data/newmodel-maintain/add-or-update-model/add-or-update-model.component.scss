@@ -1,0 +1,12 @@
+.flex {
+  display: flex;
+  margin-bottom: 0.5em;
+  div {
+    display: flex;
+    margin: 0 20px;
+    font-size: 14px;
+  }
+  span:first-child {
+    width: 120px;
+  }
+}

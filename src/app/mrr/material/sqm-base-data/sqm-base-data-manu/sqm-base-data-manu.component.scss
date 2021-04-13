@@ -1,0 +1,56 @@
+.mailMaintain {
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.vendorMaintain {
+  margin-bottom: 10px;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.field {
+  margin-bottom: 16px;
+
+  div {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 10px;
+
+  }
+
+  input {
+    width: 200px;
+  }
+
+  nz-select {
+    width: 200px;
+  }
+
+}
+
+.dfc-btn {
+  margin-bottom: 5px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+
+  .dfc-btn-right {
+    position: absolute;
+    float: right;
+    right: 0;
+    height: 100%;
+  }
+}

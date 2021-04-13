@@ -1,0 +1,57 @@
+.toolalert {
+  position: relative;
+}
+
+.toolalert .tooltiptext {
+  visibility: hidden;
+  width: 100%;
+  background-color: black;
+  color: black;
+  text-align: left;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  left: -0.1%;
+  margin-top: 10%;
+}
+
+.toolalert:hover .tooltiptext {
+  visibility: visible;
+}
+
+.title th {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid white;
+}
+
+.redtr .secondtd {
+  background-color: #ccc;
+  color: black;
+  font-size: 5px;
+}
+
+.toolalert td {
+  border: 1px solid white;
+}
+
+
+.redtr .firsttd {
+  background-color: rgba(212, 48, 48, 1);
+  color: #fff;
+  font-size: 13px;
+}
+
+.greentr .firsttd {
+  background-color: rgb(6, 238, 26);
+  color: black;
+  font-size: 13px;
+}
+
+
+.greentr .secondtd {
+  background-color: #ccc;
+  color: black;
+  font-size: 5px;
+}

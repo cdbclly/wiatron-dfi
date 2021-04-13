@@ -1,0 +1,33 @@
+<div class="file-maintain">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-fileList-manage' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.vendor-fileList-manage' | translate }}</span>
+  </div>
+  <div class="mrr-tabset">
+    <nz-tabset [(nzSelectedIndex)]="selectedIndex">
+      <nz-tab [nzTitle]="'mrr.vendor-vendor-fileList-maintain' | translate">
+        <app-file-maintain-file *ngIf="selectedIndex === 0"></app-file-maintain-file>
+      </nz-tab>
+      <nz-tab [nzTitle]="'mrr.vendor-vendor-file-byPass' | translate">
+        <app-file-maintain-bypass *ngIf="selectedIndex === 1"></app-file-maintain-bypass>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

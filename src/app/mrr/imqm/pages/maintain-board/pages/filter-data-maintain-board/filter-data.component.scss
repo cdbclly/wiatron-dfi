@@ -1,0 +1,56 @@
+.query-row {
+    width: 100%;
+    .field {
+        width: 25%;
+        display: inline-block;
+        margin: 15px 0;
+        span {
+          text-align: center;
+          margin-right: 10px;
+          font-size: 14px;
+        }
+        input {
+          width: 70%;
+        }
+      }
+}
+nz-select {
+    width: 60%;
+}
+
+.btn{
+  margin: 0px;
+  padding: 0px;
+  background-color: #333333;
+  width: 70px;
+  height: 35px;
+  border-radius: 6px;
+  line-height: 35px;
+  text-align: center;
+  color:#ffffff;
+  box-shadow: none;
+  outline: none;//去掉点击时的蓝色边框
+  // border: solid 1px #e6e6e6;
+  // :focus{
+  //   border: solid 1px #e6e6e6;
+  // }
+}
+
+
+.addInput{
+  width: 390px;
+  height: 35px;
+}
+
+.span-width2 {
+  width:22%;display: inline-block;
+}
+
+
+// nz-switch{
+//   margin: 0 2px;
+//   border: 2px solid white;
+//   // background-color: white;
+//   border-radius: 15px;
+//   // color: blue;
+// }

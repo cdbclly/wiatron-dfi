@@ -1,0 +1,70 @@
+<div style="margin: 0px 10px 5px 10px" *ngIf="enableUse">
+  <button nz-button [nzType]="'primary'" nzShape="circle" (click)="add()">
+    <i nz-icon type="plus" theme="outline"></i>
+  </button>
+</div>
+<div class="table">
+  <nz-table #nzTable [nzData]="data" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>List</th>
+        <th>{{formData.action === '材料維護' ? ('mrr.nudd-material' | translate) : ('mrr.nudd-process' | translate)}}</th>
+        <th>{{ 'mrr.mrr-yieldRate' | translate }}</th>
+        <th>{{ 'mrr.mrr-product' | translate }}</th>
+        <th *ngIf="enableUse">{{ 'mrr.mrr-action' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of nzTable.data; let i = index" class="editable-row">
+        <td>{{ i + 1 }}</td>
+        <td>{{formData.action === '材料維護' ? d.desc : d.name}}</td>
+        <td>
+          <div class="editable-cell" *ngIf="editId !== d.id; else editTpl">
+            <div class="editable-cell-value-wrap" (click)="startEdit(d.id, $event)">
+              {{ d.yieldRate }}
+            </div>
+          </div>
+          <ng-template #editTpl>
+            <input type="text" nz-input [(ngModel)]="d.yieldRate" />
+          </ng-template>
+        </td>
+        <td>{{d.productId}}</td>
+        <td>
+          <a *ngIf="SQMLeaderUse">
+            <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(d)"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a *ngIf="enableUse"><i nz-icon type="save" theme="outline" (click)="saveYr(d.id)"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<div>
+  <nz-modal nzWidth="400px" [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()" [nzTitle]="modalTitle"
+    [nzContent]="modalContent" [nzFooter]="modalFooter">
+    <ng-template #modalTitle>
+      {{formData.action === '材料維護' ? ('mrr.nudd-addMaterial' | translate) : ('mrr.nudd-addProcess' | translate)}}
+    </ng-template>
+    <ng-template #modalContent>
+      <div class="input">
+        <span>{{ 'mrr.mrr-product' | translate }}</span>
+        <nz-input-number [(ngModel)]="clickProduct" class="risk-input int" [disabled]="true"></nz-input-number>
+      </div>
+      <div class="input">
+        <span>{{formData.action === '材料維護' ? ('mrr.nudd-material' | translate) : ('mrr.nudd-process' | translate)}}</span>
+        <input [(ngModel)]="name" nz-input="" placeholder="Enter" class="ng-pristine ng-valid ant-input ng-touched int">
+      </div>
+      <div class="input">
+        <span>{{ 'mrr.mrr-yieldRate' | translate }}</span>
+        <nz-input-number [(ngModel)]="yieldRate" class="risk-input int" [nzPlaceHolder]="'Enter'" [nzMin]="0"
+          [nzStep]="0.1"></nz-input-number>
+      </div>
+    </ng-template>
+    <ng-template #modalFooter>
+      <button nz-button [nzType]="'primary'" style="margin-top: 16px" [nzLoading]="uploading"
+        (click)="save(formData.action)">
+        {{ 'mrr.mrr-save' | translate }}
+      </button>
+    </ng-template>
+  </nz-modal>
+</div>

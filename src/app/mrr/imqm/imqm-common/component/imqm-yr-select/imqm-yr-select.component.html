@@ -1,0 +1,21 @@
+<div class="imqm-yr-select">
+  <div style="float: left;">
+    <nz-radio-group nzName="radiogroup" [(ngModel)]="radioValue" (ngModelChange)="onChangeQueryType($event)">
+      <label nz-radio nzValue="global">{{'imq-global' | translate}}</label>
+      <label nz-radio nzValue="detail">{{'imq-detail' | translate}}</label>
+    </nz-radio-group>
+    <nz-select nzShowSearch [nzDisabled]="radioValue === 'global'" [(ngModel)]="selectValue" (ngModelChange)="onChangeQueryType($event)">
+      <nz-option nzLabel="{{'imq-supplier' | translate }}" nzValue="vendor"></nz-option>
+      <nz-option nzLabel="{{'imq-model' | translate}}" nzValue="model"></nz-option>
+      <nz-option nzLabel="{{'imq-partNumber' | translate}}" nzValue="partNumber"></nz-option>
+    </nz-select>
+  </div>
+  <div style="float: right;">
+    <nz-button-group>
+      <button *ngFor="let item of periodOption.option" [value]="item.value" [ngClass]="{ 'checked': periodOption.value === item.value }"
+        (click)="onChangePeriod(item.value)" nz-button>
+        {{item.name}}
+      </button>
+    </nz-button-group>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="formGroup" (ngSubmit)="query()">
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label>BG</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear formControlName="bg" (ngModelChange)="selectBg($event)">
+          <nz-option *ngFor="let bg of bgs" [nzLabel]="bg.id" [nzValue]="bg.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>BU</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear formControlName="bu" (ngModelChange)="selectBu($event)">
+          <nz-option *ngFor="let bu of bus" [nzLabel]="bu.name" [nzValue]="bu.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-site' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear formControlName="site" (ngModelChange)="selectSite($event)">
+          <nz-option *ngFor="let site of sites" [nzLabel]="site.id" [nzValue]="site.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear formControlName="plant" (ngModelChange)="selectPlant($event)">
+          <nz-option *ngFor="let plant of plants" [nzLabel]="plant.id" [nzValue]="plant.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-stage' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzAllowClear formControlName="stages" nzMode="multiple">
+          <nz-option *ngFor="let stage of stages" [nzLabel]="stage" [nzValue]="stage"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.ex-report-date' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-date-picker formControlName="startDate"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <span style="width:21px;font-size:19px;">~</span>
+      <nz-form-control>
+        <nz-date-picker formControlName="endDate"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear formControlName="product" (ngModelChange)="getModels()">
+          <nz-option *ngFor="let product of products" [nzLabel]="product.id" [nzValue]="product.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select id="row" nzShowSearch nzAllowClear formControlName="customer" (ngModelChange)="selectCustomer($event)">
+          <nz-option *ngFor="let customer of customers" [nzLabel]="customer" [nzValue]="customer"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select id="row" nzShowSearch nzAllowClear formControlName="model">
+          <nz-option *ngFor="let model of models" [nzLabel]="model.MODEL" [nzValue]="model.MODEL"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>{{ 'dfq.dfq-sing-status' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select id="row" nzShowSearch nzAllowClear formControlName="status">
+          <nz-option *ngFor="let status of statusList" [nzLabel]="status" [nzValue]="status"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="formGroup.invalid">{{ 'dfq.dfq-query' | translate }}</button>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</form>
+<nz-divider></nz-divider>

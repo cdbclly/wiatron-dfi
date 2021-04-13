@@ -1,0 +1,98 @@
+cache:
+  key:
+    files:
+      - package.json
+  paths:
+    - node_modules
+
+stages:
+#   - test
+  - build
+#   - deploy
+
+# test_stage:
+#   stage: test
+#   script:
+#     - npm test
+#   artifacts:
+#     paths:
+#       - ./dist
+#     when: always
+#   allow_failure: false
+
+EXT:
+    image: harbor.wistron.com/base_image/ng-cli-karma:latest
+    stage: build
+    only:
+    - master
+    tags:
+    - prd-runner01
+    before_script:
+    - npm install
+    script:
+    - npm run build:ext
+    when: always
+    artifacts:
+        name: 'EXT'
+        paths:
+        - ./dist/
+        when: always
+        expire_in: 3 days
+
+PRD:
+    image: harbor.wistron.com/base_image/ng-cli-karma:latest
+    stage: build
+    only:
+    - master
+    tags:
+    - prd-runner01
+    before_script:
+    - npm install
+    script:
+    - npm run build:prd
+    when: always
+    artifacts:
+        name: 'PRD'
+        paths:
+        - ./dist/
+        when: always
+        expire_in: 3 days
+
+QAS:
+    image: harbor.wistron.com/base_image/ng-cli-karma:latest
+    stage: build
+    only:
+    - develop
+    tags:
+    - prd-runner01
+    before_script:
+    - npm install
+    script:
+    - npm run build:qas
+    when: always
+    artifacts:
+        name: 'QAS'
+        paths:
+        - ./dist/
+        when: always
+        expire_in: 3 days
+        
+DEV:
+    image: harbor.wistron.com/base_image/ng-cli-karma:latest
+    stage: build
+    only:
+    - develop
+    tags:
+    - prd-runner01
+    before_script:
+    - npm install
+    script:
+    - npm run build:dev
+    when: always
+    artifacts:
+        name: 'DEV'
+        paths:
+        - ./dist/
+        when: always
+        expire_in: 3 days
+

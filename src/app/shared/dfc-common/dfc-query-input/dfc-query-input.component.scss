@@ -1,0 +1,36 @@
+.dfc-query-div {
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.dfc-query-span {
+  text-align: right;
+  display: inline-block;
+  padding: 0 20px;
+  span {
+    font-size: 14px;
+    font-weight: normal;
+  }
+}
+.dfc-query-content {
+  // width: calc(100% - 200px);
+  min-width: 100px;
+  text-align: left;
+  display: inline-block;
+  nz-select {
+    width: 100%;
+    min-width: 100px;
+    font-size: 14px;
+    text-align: left;
+    color: rgba(80, 80, 80, 1);
+
+  }
+  nz-input-number {
+    width: 100%;
+    min-width: 100px;
+    font-size: 14px;
+    text-align: left;
+    color: rgba(80, 80, 80, 1);
+  }
+}

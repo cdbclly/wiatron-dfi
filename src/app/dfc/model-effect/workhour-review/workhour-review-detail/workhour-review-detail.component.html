@@ -1,0 +1,307 @@
+<app-workhour-report-waterfallmap [datatot1]="chartData" [modelName]="modelName" [ctageFlow]="cFlow"
+  [processName]="processName"></app-workhour-report-waterfallmap>
+<div class="dfc-btn">
+  <div class="dfc-btn-left">
+    <button nz-button nzType="primary" *ngIf="!showAll" (click)="showTableItem()" [nzLoading]="isTableLoading">
+      <i nz-icon type="plus"></i>{{'dfc.expand-details'|translate}}
+    </button>
+    <button nz-button nzType="primary" *ngIf="showAll" (click)="showTableItem()" [nzLoading]="isTableLoading">
+      <i nz-icon type="minus"></i>{{'dfc.show-only-differences'|translate}}
+    </button>
+  </div>
+  <div class="dfc-btn-center">
+    <span>Status:</span>
+    <div class="green-circle"></div><span>Close</span>
+    <div class="orange-circle"></div><span>Ongoing</span>
+    <div class="red-circle"></div><span>Open</span>
+  </div>
+  <div class="dfc-btn-right">
+    <app-upload-file *ngIf="currentEditFlag && (Auth.insert || Auth.update)" class="dfc-btn-upload"
+      [showLoading]="showLoading" (uploadFile)="upload($event)"></app-upload-file>
+    <div class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="table">
+  <nz-table id="downdata" #mohModelTable nzBordered nzShowQuickJumper [nzShowPagination]="true"
+    [nzData]="factors | targetFilter:showAll:(dataSet| workhourReviewTableDatasFilter: {type: 'actual', change: searchFactorDetail.actual} | workhourReviewTableDatasFilter: {type: 'stage', change: searchFactorDetail.stage}| workhourReviewTableDatasFilter: {type: 'target', change: searchFactorDetail.target})"
+    [nzWidthConfig]="nzWidthConfig" [nzNoResult]="nzNoResult" [nzScroll]="nzScroll" [nzPageIndex]="currentPage"
+    [nzFrontPagination]="tablePaging">
+    <thead>
+      <tr>
+        <th rowspan="2" *ngIf="!tablePaging">ID{{'dfc.do-not-modify'|translate}}</th>
+        <th rowspan="2">{{'dfq.dfq-material'|translate}}</th>
+        <th rowspan="2">{{'dfc.forecast.factor'|translate}}</th>
+        <th colspan="4">{{'dfc.target-design'|translate}}</th>
+        <th colspan="4">{{'report.dfc-cur-design'|translate}}</th>
+        <th colspan="2">{{'dfq.rfi-improve-opportunities'|translate}}(Gap)</th>
+        <th rowspan="2" *ngIf="editFlag">{{'dfc.whether-to-improve'|translate}}</th>
+        <th rowspan="2">{{'dfq.rfi-discussion-result'|translate}}</th>
+        <th rowspan="2">{{'dfc.improve-hours-after-discussion'|translate}}(s)</th>
+        <th colspan="4">{{'dfc.current-design-improvement-goals'|translate}}</th>
+        <th rowspan="2">PIC</th>
+        <th rowspan="2">Status</th>
+        <th rowspan="2">Due Day</th>
+        <th rowspan='2' nzRight="0px" *ngIf="Auth.insert && currentEditFlag">Action</th>
+      </tr>
+      <tr>
+        <th>{{'dfc.factor-time'|translate}}(s)</th>
+        <th>
+          {{'dfc.factor-details'|translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="{{'dfc.factor-details'|translate}}"
+                [(ngModel)]="searchFactorDetail.target">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity'|translate}}</th>
+        <th>{{'dfc.working-hours-details'|translate}}(s)</th>
+        <th>{{'dfc.factor-time'|translate}}(s)</th>
+        <th>
+          {{'dfc.factor-details'|translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.actual">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity'|translate}}</th>
+        <th>{{'dfc.working-hours-details'|translate}}(s)</th>
+        <th>{{'dashboard.workhour'|translate}}(s)</th>
+        <th>{{'report.affect-moh'|translate}}(USD)</th>
+        <th>{{'dfc.factor-time'|translate}}(s)</th>
+        <th>
+          {{'dfc.factor-details'|translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.stage">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity'|translate}}</th>
+        <th>{{'dfc.working-hours-details'|translate}}(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of mohModelTable.data; let i = index;">
+        <ng-container
+          *ngFor="let j of CreateNumberArray((dataSet| workhourReviewTableDatasFilter: {type: 'actual', change: searchFactorDetail.actual} | workhourReviewTableDatasFilter: {type: 'stage', change: searchFactorDetail.stage}| workhourReviewTableDatasFilter: {type: 'target', change: searchFactorDetail.target})[data].maxRows)">
+          <tr [ngClass]="i%2==0?'even':'odd'">
+            <td *ngIf="!tablePaging">
+              {{dataSet[data].stageData[j]? dataSet[data].stageData[j].ModelOperationID :'' }}
+            </td>
+            <td *ngIf="j==0"
+              title="{{dataSet[data].stageData[j]? dataSet[data].stageData[j].Material : dataSet[data].rfqData[j].Material }}"
+              [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].stageData[j]? dataSet[data].stageData[j].Material : dataSet[data].rfqData[j].Material }}
+            </td>
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].stageData[j]?dataSet[data].stageData[j].Factor : dataSet[data].rfqData[j].Factor}}
+            </td>
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows"> {{dataSet[data].rfqFactorTime| number: '0.2'}}</td>
+            <td>
+              {{ dataSet[data].rfqData[j] ? (dataSet[data].rfqData[j].TargetFactorDetail || dataSet[data].rfqData[j].FactorDetailActural) : ''}}
+            </td>
+            <td>
+              {{ dataSet[data].rfqData[j] && (dataSet[data].rfqData[j].TargetCount == null ? dataSet[data].rfqData[j].Count : dataSet[data].rfqData[j].TargetCount) }}
+            </td>
+            <td>
+              {{ dataSet[data].rfqData[j] ? (dataSet[data].rfqData[j].CostTimeTarget || dataSet[data].rfqData[j].CostTimeActural| number: '0.2') : ''}}
+            </td>
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">{{dataSet[data].stageFactorTime| number: '0.2'}}
+            </td>
+            <td> {{dataSet[data].stageData[j] && dataSet[data].stageData[j].FactorDetailActural}}</td>
+            <td> {{dataSet[data].stageData[j] && dataSet[data].stageData[j].Count}}</td>
+            <td> {{dataSet[data].stageData[j] && dataSet[data].stageData[j].CostTimeActural| number: '0.2'}}</td>
+            <!-- 改善機會點 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{ dataSet[data].rfqFactorTime - dataSet[data].stageFactorTime| number: '0.2' }}
+            </td>
+            <!-- 影響MOH -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j] &&  (dataSet[data].stageData[j].ModifiedMOH != null?  dataSet[data].stageData[j].ModifiedMOH : ((dataSet[data].rfqFactorTime - dataSet[data].stageFactorTime)  * dl2) ) | number: '0.4'  }}
+              </ng-container>
+              <ng-container *ngIf=" ModifyMOHField(data) ">
+                <input type="text" nz-input [(ngModel)]="ModifiedMOHEditCache"
+                  (click)="onclickEdit(dataSet[data].stageData[j].ModelOperationID)">
+              </ng-container>
+            </td>
+            <!-- 是否修改 -->
+            <td *ngIf="editFlag ">
+              <ng-container
+                *ngIf=" dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <nz-radio-group [(ngModel)]="editChange">
+                  <label nz-radio nzValue="Y">Y</label>
+                  <label nz-radio nzValue="N">N</label>
+                </nz-radio-group>
+              </ng-container>
+            </td>
+            <!-- 討論結果 -->
+            <td style="cursor: pointer;"
+              (click)="showComments(data, editCache[dataSet[data].stageData[j].ModelOperationID].edit)">
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j].Comment}}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <input type="text" nz-input
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.Comment"
+                  (click)="onclickEdit(dataSet[data].stageData[j].ModelOperationID)">
+              </ng-container>
+            </td>
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows"
+              [style.color]=" (dataSet[data].targetFactorTime != null &&  (dataSet[data].stageFactorTime - dataSet[data].targetFactorTime  > 0))  ?'red':'green'  ">
+              {{(dataSet[data].targetFactorTime != null ? (dataSet[data].stageFactorTime - dataSet[data].targetFactorTime  ) :'') | number: '0.2'}}
+            </td>
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">{{dataSet[data].targetFactorTime| number: '0.2'}}
+            </td>
+            <!-- 當前改善目標細項 -->
+            <td>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j].TargetFactorDetail}}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <nz-select *ngIf="editChange === 'Y'" style="width:100px;"
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.TargetFactorDetailCode"
+                  nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false">
+                  <ng-container *ngFor="let list of listOfTargetFactorDetailSelectOption[data]">
+                    <nz-option style="width: 200px;" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+                  </ng-container>
+                </nz-select>
+                <span *ngIf="editChange === 'N'">{{dataSet[data].stageData[j].TargetFactorDetail}}</span>
+              </ng-container>
+            </td>
+            <td>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j].TargetCount}}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit&&editChange === 'Y'">
+                <input type="text" nz-input
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.TargetCount"
+                  (click)="onclickEdit(dataSet[data].stageData[j].ModelOperationID)">
+              </ng-container>
+            </td>
+            <td>{{dataSet[data].stageData[j] && dataSet[data].stageData[j].CostTimeTarget | number: '0.2' }}</td>
+            <td>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j].EName}}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <nz-select style="width: 100px;"
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.PICID" nzAllowClear
+                  nzShowSearch [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false"
+                  (nzOnSearch)="onPICSearch($event)">
+                  <ng-container *ngFor="let list of listOfPICSelectOption">
+                    <nz-option style="width: 150px;" *ngIf="!isPICListLoading" [nzValue]="list.EmpID"
+                      [nzLabel]="list.EName" nzCustomContent>
+                      {{list.Show}}
+                    </nz-option>
+                  </ng-container>
+                  <nz-option *ngIf="isPICListLoading" nzDisabled nzCustomContent>
+                    <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+                  </nz-option>
+                </nz-select>
+              </ng-container>
+            </td>
+            <td style="text-align: center">
+              <ng-container *ngIf="!tablePaging"> {{dataSet[data].stageData[j] && dataSet[data].stageData[j].Status }}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <div [ngSwitch]="dataSet[data].stageData[j].Status">
+                  <div *ngSwitchCase="0" class="red-circle"></div>
+                  <div *ngSwitchCase="1" class="orange-circle"></div>
+                  <div *ngSwitchCase="2" class="green-circle"></div>
+                </div>
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <nz-select style="width:80px;" *ngIf="editChange === 'Y'"
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.Status" nzAllowClear
+                  nzShowSearch [nzDropdownMatchSelectWidth]="false">
+                  <ng-container *ngFor="let list of listOfStatusSelectOption">
+                    <nz-option nzCustomContent style="width: 150px;" [nzValue]="list.Value" [nzLabel]="list.Label">
+                      <div [ngSwitch]="list.Value" style="display: inline-block;">
+                        <div *ngSwitchCase="0" class="red-circle"></div>
+                        <div *ngSwitchCase="1" class="orange-circle"></div>
+                        <div *ngSwitchCase="2" class="green-circle"></div>
+                      </div>
+                      {{list.Label}}
+                    </nz-option>
+                  </ng-container>
+                </nz-select>
+                <div class="green-circle" *ngIf="editChange === 'N'"></div>
+              </ng-container>
+            </td>
+            <td>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                {{dataSet[data].stageData[j].DueDay | date : dateFormat}}
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <nz-date-picker *ngIf="editChange === 'Y'"
+                  [(ngModel)]="editCache[dataSet[data].stageData[j].ModelOperationID].stageData.DueDay"
+                  [nzFormat]="dateFormat">
+                </nz-date-picker>
+                <span *ngIf="editChange === 'N'">{{defultDueDay}}</span>
+              </ng-container>
+            </td>
+            <td style="text-align: center" nzRight="0px" *ngIf="Auth.insert && currentEditFlag">
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && !editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <a *ngIf="!actionEnabled || !Auth.update" disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+                <a (click)="startEdit(data, dataSet[data].stageData[j].ModelOperationID, i, j)"
+                  *ngIf="actionEnabled && Auth.update">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </ng-container>
+              <ng-container
+                *ngIf="dataSet[data].stageData[j] && editCache[dataSet[data].stageData[j].ModelOperationID].edit">
+                <a (click)="saveEdit(dataSet[data].stageData[j].ModelOperationID)">
+                  <i class="anticon anticon-save"></i>
+                </a>
+                <a style="margin-left:10px;" (click)="cancelEdit(dataSet[data].stageData[j].ModelOperationID)">
+                  <i class="anticon anticon-close-circle"></i>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <div class='window' *ngIf='dataWindowFlag'>
+    <nz-modal [nzWidth]="400" nzFooter=" " nzWrapClassName="vertical-center-modal" [(nzVisible)]="dataWindowFlag"
+      nzMaskClosable="false" (nzOnCancel)="closeComments()" [nzTitle]="'report.discuss-result-record' | translate">
+      <table border="2" width="100%">
+        <tr class='title'>
+          <td width='30%' hight='10%' class='discuss_head'>{{ 'dfq.dfq-cflow | translate' }}</td>
+          <td width='70%' hight='10%' class='discuss_head'>Comments</td>
+        </tr>
+        <tr *ngFor='let data of dataWindow.data; let i=index;'>
+          <td width='30%' hight='10%'><span style="margin-left: 20px">{{dataWindow.data[i].Stage}}</span></td>
+          <td width='70%' hight='10%'><span style="margin-left: 20px">{{dataWindow.data[i].Comment}}</span></td>
+        </tr>
+      </table>
+    </nz-modal>
+  </div>
+</div>

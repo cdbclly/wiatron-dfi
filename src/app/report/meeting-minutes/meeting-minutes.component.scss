@@ -1,0 +1,195 @@
+@mixin  scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color:darkgray;
+  }
+}
+
+@mixin collpase-card-style {
+  content: '';
+  position: absolute;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  border-style: solid;
+  -webkit-transition: all .25s;
+  margin-left: 10px;
+}
+
+.query-wrapper {
+  margin-top: 20px;
+  nz-month-picker {
+    padding-left: 15px;
+  }
+  button {
+    margin-left: 15px;
+  }
+}
+
+.attendence-list-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  .item {
+    display: inline;
+    border: 1.2px dashed;
+    padding: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: 10px;
+    + i {
+      padding-left: 6px;
+      cursor: pointer;
+    }
+  }
+  > div {
+    margin-right: 15px;;
+    margin-bottom: 18px;
+  }
+}
+
+.searchAttendence {
+  app-search-user {
+    display: inline-block;
+    width: 220px;
+  }
+  .search {
+    font-size: 22px;
+    cursor: pointer;
+    padding-left: 10px;
+  }
+  .search-box {
+    min-width: 220px;
+  }
+}
+
+.collapse-no {
+  height: 20px;
+  &::after {
+    @include collpase-card-style();
+    border-color: black transparent;
+    border-width: 6px 6px 0 6px;
+    top: 33px;
+  }
+}
+
+.collapse-is {
+  height: 20px;
+  &::after {
+    @include collpase-card-style();
+    border-width: 6px 0 6px 6px;
+    border-color: transparent  black;
+    top: 29px;
+  }
+}
+
+.attendence-card-wrapper {
+  width:100%;
+  text-align: left;
+  ul {
+    list-style: none;
+    padding-top: 24px;
+    li {
+      padding-bottom: 3px;
+      > .attendence-card-label {
+        float: left;
+        margin-right: 20px;
+        width: 30px;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.loading-icon {
+  margin-right: 8px;
+}
+
+.issue-table-wrapper {
+  margin-top: 10px;
+}
+
+nz-modal {
+  nz-form-label {
+    width: 15%;
+    margin-left: 35px;
+  }
+  .ant-col-offset-4 {
+    margin-left: 0;
+  }
+  nz-form-control {
+    display: inline-block;
+    width: 70%;
+    app-search-user {
+      width: 90%;
+      display: inline-block;
+    }
+    i {
+      padding-left: 15px;
+    }
+  }
+}
+
+.issue-track {
+  h2 {
+    text-align: center;
+    width: calc(100% - 35px);
+    font-weight: bold;
+    display: inline-block;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+nz-divider {
+  background-color:rgba(212, 212, 212, 1);
+}
+
+.no-operate {
+  color: red;
+}
+
+.nowrap-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 210px;
+}
+
+.popover-cell {
+  max-width: 400px;
+  max-height:80px;
+  overflow-y: auto;
+  @include scrollbar();
+}
+
+textarea {
+  @include scrollbar()
+}
+
+nz-spin {
+  display: inline-block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.required {
+  &::before {
+    display: inline-block;
+    margin-right: 4px;
+    content: "*";
+    font-family: SimSun;
+    line-height: 1;
+    font-size: 14px;
+    color: #f5222d;
+  }
+}
+
+nz-form-explain {
+  font-size: 12px;
+}

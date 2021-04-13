@@ -1,0 +1,69 @@
+<div class="dfc-all" #DFCStandardSign>
+  <div class="dfc-all" *ngIf="page===0">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.workhours-standard-document-query'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'dfc.workhours-standard-document'|translate}}</span>
+    </div>
+    <div class="dfc-query">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="queryValue.modelType"
+          [querySelect]="querySelect.modelType"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.process" [(queryValue)]="queryValue.process"
+          [querySelect]="querySelect.process"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.signStatus" [(queryValue)]="queryValue.signStatus"
+          [querySelect]="querySelect.signStatus"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.searchUser" [(queryValue)]="queryValue.searchUser"
+          [querySelect]="querySelect.searchUser"
+          (searchSelectChange)="querySelect.searchUser.searchChange$.next($event)"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button nzType="primary" (click)="query()">{{'dfq.dfq-query'|translate}}</button>
+      </div>
+    </div>
+
+    <div class="dfc-line"></div>
+    <div class="dfc-table">
+      <nz-table #dfcStandardSignTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+        [nzScroll]="nzScroll" [nzPageSize]="10">
+        <thead>
+          <tr>
+            <th>{{'dfq.dfq-product'|translate}}</th>
+            <th>{{'mrr.nudd-process'|translate}}</th>
+            <th>{{'dfc.form-number'|translate}}</th>
+            <th>{{'dfq.rfi-sign-sender'|translate}}</th>
+            <th>{{'dfq.dfq-sing-status'|translate}}</th>
+            <th>{{'military-order.sign-status-describe'|translate}}</th>
+            <th nzRight="0px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of dfcStandardSignTable.data">
+            <td>{{data.modelType}}</td>
+            <td>{{data.process}}</td>
+            <td><a style="text-decoration:underline"
+                (click)="onClickNo(data.senderID, data.signID, data.no)">{{data.no}}</a></td>
+            <td>{{data.sender}}</td>
+            <td>{{data.status}}</td>
+            <td>{{data.comment}}</td>
+            <td nzRight="0px">
+              <button nz-button *ngIf="data.revokeFlag" nzType="primary"
+                (click)="revoke(data.signID)">{{'dfc.withdraw'|translate}}</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <app-standart-operation-sign-detail *ngIf="page===1" (pageroute)="pageroute($event)" [senderID]="senderID"
+    [signID]="signID" [formNo]="formNo"></app-standart-operation-sign-detail>
+</div>

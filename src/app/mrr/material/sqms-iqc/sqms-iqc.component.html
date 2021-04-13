@@ -1,0 +1,322 @@
+<div class="mrr-material-all">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>VQC VLRR/LRR {{ 'mrr.mrr-query' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">VQC VLRR/LRR {{ 'mrr.mrr-query' | translate }}</span>
+  </div>
+  <div style="margin-top: 20px;">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-partNumber' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="partNumber"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="partNumberChange$.next($event)"
+            (nzOnSearch)="partNumberSearch$.next($event)">
+            <ng-container *ngFor="let list of partNumbers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 140px" nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="manufacturer" (ngModelChange)="manufacturerChange$.next($event)">
+            <ng-container *ngFor="let list of manufacturers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" nzShowSearch formControlName="plant" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="plantChange$.next($event)">
+            <ng-container *ngFor="let list of plants">
+              <nz-option [nzValue]="list.Value" [nzLabel]="list.Value"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Code</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="projectCode"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="projectCodeChange$.next($event)"
+            (nzOnSearch)="projectCodeSearch$.next($event)">
+            <ng-container *ngFor="let list of projectCodes">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label>Project Name</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="projectName" (ngModelChange)="projectNameChange$.next($event)"
+            (nzOnSearch)="projectNameSearch$.next($event)">
+            <ng-container *ngFor="let list of projectNames">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-part' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzShowSearch formControlName="part" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="partChange$.next($event)">
+            <ng-container *ngFor="let list of parts">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.name"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-stage' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" formControlName="stage" [nzDropdownMatchSelectWidth]="false">
+            <ng-container *ngFor="let list of stages">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-vendorCode' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" formControlName="vendor" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="vendorChange$.next($event)">
+            <ng-container *ngFor="let list of vendors">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.id" nzCustomContent>
+                {{ list.name }}</nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-manufacture-date' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-range-picker formControlName="rangePicker" [nzStyle]='{"width": "240px"}'></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input hidden formControlName="partNumberVendor" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading"
+            [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="center-line"></div>
+  <div class="SQMs-Table">
+    <nz-table id="topIssueTable" #basicTable nzBordered [nzData]="SQMsData" nzShowPagination="false"
+      nzFrontPagination="false">
+      <thead>
+        <tr>
+          <th colspan="15">{{ queryManufacturer ? queryManufacturer : '' }} {{ 'mrr.material-iqc-status' | translate }}
+          </th>
+        </tr>
+        <tr>
+          <th width="7%">{{ 'mrr.material-manufacture-date' | translate }}</th>
+          <th width="6%">{{ 'mrr.mrr-plant' | translate }}</th>
+          <th width="6%">{{ 'mrr.mrr-partNumber' | translate }}</th>
+          <th width="6%">{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th width="7%">Project Code</th>
+          <th width="7%">Project Name</th>
+          <th width="5%">{{ 'mrr.mrr-part' | translate }}</th>
+          <th width="6%">{{ 'mrr.mrr-stage' | translate }}</th>
+          <th width="6%">{{ 'mrr.material-iqc-total' | translate }}</th>
+          <th width="7%">{{ 'mrr.material-iqc-sample' | translate }}</th>
+          <th width="7%">{{ 'mrr.material-poor-amount' | translate }}</th>
+          <th width="6%">{{ 'mrr.material-iqc-result' | translate }}</th>
+          <th width="7%">{{ 'mrr.mrr-defective-rate' | translate }}</th>
+          <th width="7%">{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}</th>
+          <th width="6%">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.dateCode }}</td>
+          <td>{{ data.plant | site: {type: 'plant'} }}</td>
+          <td>{{ data.partNumber }}</td>
+          <td>{{ data.manufacturer }}</td>
+          <td>{{ data.projectCode }}</td>
+          <td>{{ data.projectName }}</td>
+          <td>{{ data.partName }}</td>
+          <td>{{ data.stage }}</td>
+          <td *ngIf="!data.error">{{ data.lotQty }}</td>
+          <td *ngIf="!data.error">{{ data.sampleQty }}</td>
+          <td *ngIf="!data.error">{{ data.defectQty }}</td>
+          <td *ngIf="!data.error">{{ data.resultPass }}</td>
+          <td *ngIf="!data.error" [ngStyle]="data.defectQty ? {'backgroundColor': 'red', 'color': '#fff'} : {}">
+            {{ (data.nfr + '%') }}</td>
+          <td *ngIf="data.error" colspan="5" style="color: #fff; background-color: red;">No Record in SQMS</td>
+          <td [ngStyle]="data.yieldColor" (click)="showManufaturerInput(data)" style="cursor: pointer;">
+            {{ data.vendorYield === 'error' ? data.vendorYield : (data.vendorYield + '%') }}
+          </td>
+          <td (click)="toManufaturerInput(data)" style="cursor: pointer;"><i nz-icon type="link" theme="outline"></i>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="1500" [(nzVisible)]="manufacturerVisible"
+  (nzOnCancel)="handleCancel()" [nzClosable]="false" [nzTitle]="modalTitle" [nzFooter]="modalFooter">
+  <ng-template #modalTitle>
+    {{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}
+  </ng-template>
+  <div *ngIf="!manuIssueFlag">
+    <nz-table class="manuModal" #manuTable nzBordered [nzData]="manufacturerData" nzShowPagination="false"
+      nzFrontPagination="false" [nzNoResult]="dataSetNoResult">
+      <thead>
+        <tr>
+          <th rowspan="2">{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th rowspan="2">{{ 'mrr.mrr-part' | translate }}</th>
+          <th rowspan="2">Critical Process</th>
+          <th rowspan="2">MP {{ 'mrr.material-goal' | translate }}</th>
+          <th colspan="6">
+            {{ 'Week ' + (weekNum ? weekNum : '') }}
+            <br>
+            {{ nowDate ? (nowDate | date: 'yyyy/MM/dd') : '' }}
+          </th>
+        </tr>
+        <tr>
+          <th>{{ 'mrr.material-goal' | translate }}</th>
+          <th>{{ 'mrr.mrr-remark' | translate }}</th>
+          <th>{{ 'mrr.material-input' | translate }}</th>
+          <th>{{ 'mrr.material-output' | translate }}</th>
+          <th>{{ 'mrr.material-poor-amount' | translate }}</th>
+          <th>{{ 'mrr.material-actualYield' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of manuTable.data" (click)="trClick(data)">
+          <td>{{ data.manufacturer }}</td>
+          <td>{{ data.part }}</td>
+          <td>{{ data.operationName }}</td>
+          <td>
+            {{ data.sqmTargetYieldShow + '%' }}</td>
+          <td>
+            {{ (data.vendorTargetYieldShow || data.vendorTargetYieldShow === 0) ? (data.vendorTargetYieldShow + '%') : '%' }}
+          </td>
+          <td>
+            {{ data.remark }}</td>
+          <td>
+            {{ data.input === 0 && data.output === 0 ? 'NA' : data.input }}</td>
+          <td>
+            {{ data.input === 0 && data.output === 0 ? 'NA' : data.output }}</td>
+          <td>
+            {{ data.input === 0 && data.output === 0 ? 'NA' : data.input - data.output }}</td>
+          <td [ngStyle]="data.markRed ? {'backgroundColor': 'red', 'color': '#fff'} : {}">
+            {{ data.actual ? (Mathround(data.actual * 10000) / 100) + '%' : (0 + '%') }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <ng-template #dataSetNoResult>
+      <ng-container *ngIf="!hasQueried; else elTableNoResult">
+        {{ 'mrr.material-noData' | translate }}
+      </ng-container>
+      <ng-template #elTableNoResult>
+        <ng-container *ngIf="isExt; else elseIsExt">
+          {{ 'mrr.material-contact-sqm' | translate }} <span style="color: royalblue;">
+            <{{ 'mrr.material-model-partNo' | translate }}>
+          </span>
+        </ng-container>
+        <ng-template #elseIsExt>
+          {{ 'mrr.material-please' | translate }} {{ 'mrr.mrr-maintain' | translate }} <a
+            style="color: rgba(255, 38, 0, 0.9); border-bottom: 1px solid rgba(255, 38, 0, 0.9);"
+            (click)="linkBaseDataParts()">
+            <{{ 'mrr.material-model-partNo' | translate }}>
+          </a>
+        </ng-template>
+        , {{ 'mrr.material-if-maintain' | translate }} ->
+        <button nz-button [nzType]="'primary'" (click)="reQuery()">
+          <i class="anticon anticon-reload"></i>
+          {{ 'mrr.material-requery' | translate }}
+        </button>
+      </ng-template>
+    </ng-template>
+  </div>
+  <div *ngIf="manuIssueFlag">
+    <nz-table id="topIssueTable" #manuissueTable nzBordered nzShowQuickJumper [nzData]="topIssueData"
+      nzShowPagination="false" nzFrontPagination="false">
+      <thead>
+        <tr>
+          <th colspan="11">Top issue</th>
+        </tr>
+        <tr>
+          <th>Critical Process</th>
+          <th>{{ 'mrr.material-input' | translate }}</th>
+          <th>{{ 'mrr.material-poor-amount' | translate }}</th>
+          <th>{{ 'mrr.mrr-defective-rate' | translate }}</th>
+          <th>{{ 'mrr.material-issue' | translate }}</th>
+          <th>{{ 'mrr.material-rootcause' | translate }}</th>
+          <th>{{ 'mrr.material-action' | translate }}</th>
+          <th>{{ 'mrr.material-owner' | translate }}</th>
+          <th>{{ 'mrr.mrr-duedate' | translate }}</th>
+          <th>{{ 'mrr.mrr-status' | translate }}</th>
+          <th>{{ 'mrr.mrr-remark' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of manuissueTable.data; let i=index;">
+          <td>{{ data.operationName }}</td>
+          <td>{{ data.input }}</td>
+          <td>{{ data.defectQty }}</td>
+          <td>{{ data.nfr }}%</td>
+          <td>{{ data.issue }}</td>
+          <td>{{ data.rootcause }}</td>
+          <td>{{ data.action }}</td>
+          <td>{{ data.owner }}</td>
+          <td>{{ data.dueDate ? (data.dueDate | date: 'yyyy/MM/dd') : '' }}</td>
+          <td>
+            <div [ngSwitch]="data.status" style="display: inline-block;">
+              <div *ngSwitchCase="0" class="purple-circle"></div>
+              <div *ngSwitchCase="1" class="red-circle"></div>
+              <div *ngSwitchCase="2" class="orange1-circle"></div>
+              <div *ngSwitchCase="3" class="orange-circle"></div>
+              <div *ngSwitchCase="4" class="gray-circle"></div>
+              <div *ngSwitchCase="5" class="green-circle"></div>
+            </div>
+            {{ data.status | issueStatus }}
+          </td>
+          <td>
+            <div *ngIf="data.filePath && !data.docType"><a [ngStyle]="{'border-bottom': '1px solid black'}"
+                (click)="downIssueDoc(data.filePath)">{{ data.filePath }}</a></div>
+            <img *ngIf="data.filePath && data.docType" [attr.src]="apiURL + data.filePath"
+              style="max-width: 48px;max-height: 48px;" (click)="showIssuePicture(data.filePath)">
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <ng-template #modalFooter>
+    <button *ngIf="!manuIssueFlag" nz-button nzType="primary"
+      (click)="handleCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+    <button *ngIf="manuIssueFlag" nz-button nzType="primary"
+      (click)="goBack()">{{ 'mrr.material-backto' | translate }}</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 查看top issue圖片 -->
+<nz-modal [nzVisible]="showPicture" [nzContent]="modelShowPicture" [nzFooter]="null" (nzOnCancel)="showPicture=false"
+  nzClosable="false">
+  <ng-template #modelShowPicture>
+    <img *ngIf="showPicSrc" [attr.src]="apiURL + showPicSrc" [ngStyle]="{ 'width': '100%' }" />
+  </ng-template>
+</nz-modal>

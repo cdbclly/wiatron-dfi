@@ -1,0 +1,35 @@
+<div class="tit">{{ 'dashboard.workhour-forecast' | translate }}</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <div class="title">DFC</div>
+        <span>{{ 'dashboard.modelPrediction' | translate }}<br>
+          {{ 'dashboard.reachRatio' | translate }}</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of chartOptionsPhase1">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height" (clickChart)="onChartEvent($event)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>
+<br>
+<div class="tit">{{ 'dashboard.workhour-tracking' | translate }}</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <div class="title">DFC</div>
+        <span>KPI:{{ 'dashboard.workhour' | translate }}<br>
+          {{ 'dashboard.reachRatio' | translate }}</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of chartOptionsPhase2">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height" (clickChart)="onChartEvent($event, true)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>

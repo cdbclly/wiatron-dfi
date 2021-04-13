@@ -1,0 +1,28 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Exit Meeting</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Exit Meeting Review</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">Exit Meeting Review</div>
+<app-query-form  [bgs]="bgs" [bus]="bus" [sites]="sites" [plants]="plants"  [stages]="stages" (queryForm)="queryForm($event)" ></app-query-form>
+<nz-divider></nz-divider>
+<div *ngIf="exitMeetingId">
+  <app-npi-items-table [checklistStatus]="checklistStatus" [plantId]="plantId" [judgeStatus]="judgeStatus" [functionStatus]="functionStatus"></app-npi-items-table>
+  <app-meeting-review-signer
+    [user]="user"
+    [cfe]="cfe"
+    [pmHead]="pmHead"
+    [buQmHead]="buQmHead"
+    [buHead]="buHead"
+    [bgQmHead]="bgQmHead"
+    [plant]="plant"
+    [meetingResults]="meetingResults"
+    [workFlows]="workFlows"
+    [isPass]="isPass"
+    [showSendButton]="showSendButton"
+    (send)="send()"
+    [judgeStatus]="judgeStatus"
+    [key]="key"
+    ></app-meeting-review-signer>
+
+</div>

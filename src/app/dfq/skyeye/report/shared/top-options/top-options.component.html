@@ -1,0 +1,116 @@
+<div class="query-row">
+  <div class="field1">
+    <span style="width:  29%;">
+      <span style="color: red">*</span>
+      <span>廠別</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('site')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="width:  23%;">
+      <span style="color: red">*</span>
+      <span>廠區</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+  <!-- <div class="field">
+    <span style="width: 33%;">
+      <span style="color: red">*</span>
+      <span>製程</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_sectionId" (ngModelChange)="getOptions('section')">
+      <nz-option *ngFor="let section of sectionGroup" [nzLabel]="section['name']" [nzValue]="section['id']"></nz-option>
+    </nz-select>
+  </div> -->
+  <div class="field">
+    <span [ngClass]="project === 'test time' ? 'styleWidth1' : 'styleWidth'">
+      <span style="color: red;margin-left: 10px;">*</span>
+      <span>線別</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_line" (ngModelChange)="getOptions('line')">
+      <nz-option *ngFor="let line of lineGroup" [nzLabel]="line" [nzValue]="line"></nz-option>
+    </nz-select>
+  </div>
+
+    <div class="field1">
+    <span style="width: 29%;">
+      <span style="color: red">*</span>
+      <span>站別</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('mdname')">
+      <nz-option *ngFor="let mdname of mdGroup" [nzLabel]="mdname" [nzValue]="mdname"></nz-option>
+    </nz-select>
+  </div>
+</div>
+<div class="query-row">
+
+  <div class="field" *ngIf="project !== 'ATE Temperature'">
+    <span style="width:  29%;">
+      <span style="color: red">*</span>
+      <span>機種</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_model" (ngModelChange)="getOptions('model')">
+      <nz-option *ngFor="let modelItem of modelGroup" [nzLabel]="modelItem" [nzValue]="modelItem"></nz-option>
+    </nz-select>
+  </div>
+
+  <!-- 架构 -->
+  <div class="field"
+    *ngIf="project === 'rf cpk' || project === 'retry rate' || project === 'test time'">
+    <span style="width:  23%;">
+      <span style="color: red">*</span>
+      <span>架構</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_upn" (ngModelChange)="getOptions('upn')">
+      <nz-option *ngFor="let item of upnArr" [nzLabel]="item" [nzValue]="item"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field" *ngIf="project !== 'ATE Temperature' && project !== 'fpyr'">
+    <span [ngClass]="(project === 'retry rate' || project === 'rf cpk') ? 'style_retryRate' : 'style_other'">
+      <span style="color: red">*</span>
+      <span>治具編號</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_item" (ngModelChange)="getOptions('fixture')"
+      nzTitle="{{cur_item}}" nzPlacement="top" nz-tooltip>
+      <nz-option *ngFor="let item of itemGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+    </nz-select>
+  </div>
+  <button *ngIf="project !== 'rf cpk' && project !== 'ATE Temperature'" nz-button nzType="primary"
+    style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+  <button *ngIf="project === 'ATE Temperature'" nz-button nzType="primary"
+    style="border-radius:6px; margin-left: 92%; margin-top: 15px;" (click)="query()"
+    [disabled]="queryButton">Query</button>
+</div>
+<div class="query-row" *ngIf="project === 'rf cpk'">
+  <div class="field2">
+    <span style="width:  7%;">
+      <span style="color: red">*</span>
+      <span>總測項</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_bt" (ngModelChange)="getOptions('bt')" nzTitle="{{cur_bt}}"
+      nzPlacement="top" nz-tooltip>
+      <nz-option *ngFor="let bt of bigTdGroup" [nzLabel]="bt" [nzValue]="bt"></nz-option>
+    </nz-select>
+  </div>
+</div>
+
+<div class="query-row" *ngIf="project === 'rf cpk'">
+  <div class="field3">
+    <span style="width:  7%;">
+      <span style="color: red">*</span>
+      <span>子測項</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_st" (ngModelChange)="getOptions('st')" nzTitle="{{cur_st}}"
+      nzPlacement="top" nz-tooltip>
+      <nz-option *ngFor="let st of smlTdGroup" [nzLabel]="st" [nzValue]="st"></nz-option>
+    </nz-select>
+  </div>
+</div>
+<button *ngIf="project === 'rf cpk'" nz-button nzType="primary" style="border-radius:6px; margin-left: 92%;"
+  (click)="query()" [disabled]="queryButton">Query</button>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

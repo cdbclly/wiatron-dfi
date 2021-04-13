@@ -1,0 +1,71 @@
+.body {
+  margin: 0 1%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+span {
+  font-size: 14px;
+}
+
+nz-select {
+  width: 200px;
+  margin-right: 15px;
+}
+
+.dfc-query {
+  width: 100%;
+
+  .dfc-query-half {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 15px;
+
+    .dfc-query-span {
+      float: left;
+      width: 25%;
+
+      nz-select {
+        width: 70%;
+        margin-right: 10px;
+      }
+
+      .span-cls {
+        margin-right: 8px;
+      }
+    }
+
+    .dfc-query-span2 {
+      float: left;
+      width: 85%;
+
+      .span-cls {
+        margin-right: 5px;
+      }
+
+      nz-select {
+        width: 80%;
+        margin-right: 15px;
+      }
+    }
+  }
+}
+
+.btn {
+  float: right;
+  margin-bottom: 3px;
+}
+.table-cls {
+  display: inline-block;
+  width: 100%;
+  th {
+    text-align: center;
+  }
+  td {
+    text-align: center;
+  }
+}

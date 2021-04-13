@@ -1,0 +1,89 @@
+<div class="dfc-query">
+  <div class="dfc-query-3mol">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="selectValue.plant"
+        [querySelect]="querySelect.plant" (queryValueChange)="getModel()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="selectValue.modelType"
+        [querySelect]="querySelect.modelType" (queryValueChange)="getModel()">
+      </app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.bu" [(queryValue)]="selectValue.bu" [querySelect]="querySelect.bu">
+      </app-dfc-query-input>
+    </div>
+  </div>
+</div>
+<div class="dfc-query">
+  <div class="dfc-query-mol">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="selectValue.proName"
+        [querySelect]="showProName" (queryValueChange)="changeProjectName()"
+        (searchSelectChange)="querySelect.proName.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="selectValue.proCode"
+        [querySelect]="querySelect.proCode" (queryValueChange)="changeProjectCode()"></app-dfc-query-input>
+    </div>
+  </div>
+</div>
+<div class="dfc-query">
+  <div class="dfc-query-3mol">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.cFlow" [(queryValue)]="selectValue.cFlow"
+        [querySelect]="querySelect.cFlow"></app-dfc-query-input>
+    </div>
+    <button nz-button [nzSize]="'normal'" [disabled]="!queryEnable" [nzLoading]="queryLoading" nzType="primary"
+      (click)="query()">Query</button>
+  </div>
+</div>
+<br>
+<div class="dfc-query-div">
+  <div class="dfc-query-span2">
+    <!-- <span style="color:red">*</span> -->
+    <span>{{ 'dfq.rfi-data-matching' | translate }}<label nz-checkbox [(ngModel)]="checkPlantMatch" (ngModelChange)="plantMatchChange()"
+        style="margin-left:25px"></label></span>
+  </div>
+  <div class="dfc-query-content">
+    <nz-select nzShowSearch [nzDisabled]="!checkPlantMatch" [(ngModel)]="plantMatch"
+      (ngModelChange)="changePlantMatch()">
+      <ng-container *ngFor="let list of querySelect.plant.selectList">
+        <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+      </ng-container>
+    </nz-select>
+  </div>
+</div>
+
+<div class="dfc-query" *ngIf="viewModelMaterial.length===0 && enableProduce">
+  <div class="dfc-query-2mol" *ngIf="isCompleted">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.similarModel" [(queryValue)]="selectValue.similarModel"
+        [querySelect]="querySelect.similarModel" (queryValueChange)="changeSimilarModel()"></app-dfc-query-input>
+    </div>
+    <!-- <div class="dfc-query-btn" *ngIf="!selectValue.similarModel&&!canProduce"></div>
+    <div class="dfc-query-btn" *ngIf="!canProduce&&selectValue.similarModel">
+      <nz-spin nzSimple></nz-spin>
+    </div> -->
+    <div class="dfc-query-btn">
+      <button nz-button [disabled]="!canProduce || updateFactor||queryLoading" [nzLoading]="!isComplete"
+        [nzSize]="'normal'" nzType="primary" (click)="produceSim()">{{ 'dfq.rfi-produce-yield' | translate }}</button>
+      <button nz-button [nzSize]="'normal'" [disabled]="!canProduce || !blankHasDfcData || !isComplete"
+        [nzLoading]="updateFactor" nzType="primary" (click)="getDFCData()">{{ 'dfq.rfi-get-dfc-data' | translate }}</button>
+    </div>
+  </div>
+</div>
+<div class="dfc-query" *ngIf="viewModelMaterial.length===0 && enableProduce">
+  <div class="dfc-query-2mol" *ngIf="isComplete">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.blankModel" [(queryValue)]="selectValue.blankModel"
+        [querySelect]="querySelect.blankModel"></app-dfc-query-input>
+    </div>
+    <div class=" dfc-query-btn">
+      <button nz-button [nzSize]="'normal'" [disabled]="updateBlankFactor||queryLoading" [nzLoading]="!isCompleted"
+        nzType="primary" (click)="produceBlank()">{{ 'dfq.rfi-produce-yield' | translate }}</button>
+      <button nz-button [nzSize]="'normal'" [disabled]="queryLoading||!blankHasDfcData" [nzLoading]="updateBlankFactor"
+        nzType="primary" (click)="getBlankDFCData()">{{ 'dfq.rfi-get-dfc-data' | translate }}</button>
+    </div>
+  </div>
+</div>

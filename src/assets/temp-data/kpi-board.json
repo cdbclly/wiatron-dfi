@@ -1,0 +1,80 @@
+{
+  "warningCloseRate": {
+    "close": 5,
+    "onGoing": 8,
+    "open": 3
+  },
+  "abnormalCloseRate": {
+    "close": 4,
+    "onGoing": 8,
+    "open": 4
+  },
+  "traceCloseRate": {
+    "close": 7,
+    "onGoing": 5,
+    "open": 4
+  },
+  "materialPD": {
+    "dataBefore": ["0.60", "0.60", "0.60", "0.60", "0.60", "0.60", "0.60", "0.60"],
+    "dataPD": ["0.4", "0.5", "0.4"],
+    "dataX": ["05-19", "06-19", "07-19", "08-19", "09-19", "10-19", "11-19", "12-19"]
+  },
+  "stopLineCount": {
+    "dataBefore": [65, 65, 65, 65, 65, 65, 65, 65],
+    "dataCount": [50, 55, 45],
+    "dataX": ["05-19", "06-19", "07-19", "08-19", "09-19", "10-19", "11-19", "12-19"]
+  },
+  "vendorStopLineRank": {
+    "data": [8, 8, 7, 6, 6, 5, 5, 4, 4, 3],
+    "dataX": ["廠商1", "廠商2", "廠商3", "廠商4", "廠商5", "廠商6", "廠商7", "廠商8", "廠商9", "廠商10"]
+  },
+  "materialYRTend": {
+    "target": [99, 99, 99, 99, 99, 99, 99, 99],
+    "dataYr": [91, 93, 95, 92, 93, 94, 94, 94],
+    "dataX": ["05-19", "06-19", "07-19", "08-19", "09-19", "10-19", "11-19", "12-19"]
+  },
+  "IQCThrift": {
+    "dataX": ["Last Month", "累計"],
+    "data": [4, 35]
+  },
+  "SQMThrift": {
+    "dataX": ["Last Month", "累計"],
+    "data": [3, 36]
+  },
+  "venderThrift": {
+    "dataX": ["Last Month", "累計"],
+    "data": [5, 34]
+  },
+  "venderThriftForm": [
+    {
+      "name": "廠商1",
+      "thrift": 1,
+      "sumThrift": 80,
+      "eqCount": 5
+    },
+    {
+      "name": "廠商2",
+      "thrift": 1,
+      "sumThrift": 30,
+      "eqCount": 2
+    },
+    {
+      "name": "廠商3",
+      "thrift": 2,
+      "sumThrift": 40,
+      "eqCount": 2
+    },
+    {
+      "name": "廠商4",
+      "thrift": 1,
+      "sumThrift": 60,
+      "eqCount": 1
+    },
+    {
+      "name": "廠商5",
+      "thrift": 1,
+      "sumThrift": 40,
+      "eqCount": 5
+    }
+  ]
+}

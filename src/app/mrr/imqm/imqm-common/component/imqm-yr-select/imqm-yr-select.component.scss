@@ -1,0 +1,20 @@
+.imqm-yr-select {
+  margin-top: 10px;
+  margin-bottom: -1vw;
+  &:after {
+    content: '';
+    clear: both;
+    display: block;
+  }
+}
+
+nz-select {
+  width: 120px;
+}
+
+.ant-btn {
+  &.checked {
+    background: #333;
+    color: #fff;
+  }
+}

@@ -1,0 +1,25 @@
+.ant-table-tbody > tr > td {
+  text-align: center;
+}
+
+::ng-deep .table .ant-table-thead > tr > th {
+  text-align: center;
+}
+
+::ng-deep .model-cls .ant-modal-body {
+  text-align: center;
+  height: 100px;
+}
+
+button {
+  background-color: rgb(238, 236, 236);
+  color: #383838;
+  box-shadow: 4px 6px 6px #000;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:focus {
+  color: #383838;
+  background-color: rgb(238, 236, 236);
+  border-color: rgb(238, 236, 236);
+  box-shadow: 4px 6px 6px #000;
+}

@@ -1,0 +1,77 @@
+<div class="dfc-all" #DFCWorkhourReview>
+  <nz-breadcrumb *ngIf="page == 'first'">
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-performance-tracking'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'authority-maintain.working-hours-improvement-review'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <nz-breadcrumb *ngIf="page=='second'">
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-performance-tracking'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a
+        (click)="clickSwitch()">{{'authority-maintain.working-hours-improvement-review'|translate}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{cFlow}}{{'dfq.dfq-stage'|translate}}{{process}}{{'dfc.working-hours-generation'|translate}}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <div *ngIf="page == 'first'">
+    <div style="margin-top: 12px;">
+      <span style="font-size:20px;">{{'authority-maintain.working-hours-improvement-review'|translate}}</span>
+    </div>
+    <div class="dfc-query">
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="selectValue.plant"
+          [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="selectValue.custom"
+          [querySelect]="querySelect.custom" (queryValueChange)="changeCustom()"
+          (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="selectValue.modelType"
+          [querySelect]="querySelect.modelType" (queryValueChange)="changeModelType()"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="selectValue.proName"
+          [querySelect]="querySelect.proName" (searchSelectChange)="proNameSearch($event)"
+          (queryValueChange)="proNameChange($event)"></app-dfc-query-input>
+      </div>
+
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="selectValue.proCode"
+          [querySelect]="querySelect.proCode"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.modelName" [(queryValue)]="selectValue.modelName"
+          [querySelect]="querySelect.modelName" (searchSelectChange)="onModelSearch($event)"
+          (queryValueChange)="onModelChange($event)"></app-dfc-query-input>
+      </div>
+      <div>
+        <app-dfc-query-input [queryStyle]="queryStyle.cFlow" [(queryValue)]="selectValue.cFlow"
+          [querySelect]="querySelect.cFlow"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button nzType="primary" (click)="query()">Query</button>
+      </div>
+    </div>
+    <div class="dfc-line"></div>
+    <div class='kanban-title' *ngIf="kanbanFlag">{{'dfc.model-working-hours'|translate}}-Target/Actul </div>
+    <div class="kanban-content" *ngIf="kanbanFlag">
+      <div>{{'dfq.dfq-plant'|translate}}: {{kanban.plant}}</div>
+      <div>{{'dfq.dfq-customer'|translate}}: {{kanban.custom}}</div>
+      <div>{{'dfq.dfq-product'|translate}}: {{kanban.modelType}}</div>
+      <div>project Code: {{kanban.proCode}}</div>
+      <div>project Name: {{kanban.proName}}</div>
+      <div>Model Name: {{kanban.modelName}}</div>
+    </div>
+    <div class='kanban-cFlow' *ngIf="kanbanFlag">C{{'dfq.dfq-stage'|translate}}: {{kanban.cFlow}}</div>
+    <div class="dfc-echart">
+      <div echarts (chartClick)="onChartEvent($event, 'chartClick')" class="dfc-chart-first" [options]="optionsFirst">
+      </div>
+    </div>
+  </div>
+  <app-workhour-review-detail *ngIf="page==='second'" [stageID]="queryDetailStageID" [process]="queryDetailProcess"
+    [tableHeight]="tableHeight"></app-workhour-review-detail>
+</div>

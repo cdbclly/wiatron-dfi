@@ -1,0 +1,208 @@
+<div class='kanban-title'></div>
+<app-workhour-report-waterfallmap [datatot1]="chartData"
+  [title]="projectName + ' ' + cFlow + ' ' + ('mrr.mrr-stage' | translate) + ' ' + processName + ' ' + ('report.process-workhour-improve-analysis' | translate)">
+</app-workhour-report-waterfallmap>
+<div class="dfc-btn">
+  <div class="dfc-btn-left">
+    <button nz-button nzType="primary" *ngIf="!showAll" (click)="showTableItem()">
+      <i nz-icon type="plus"></i>{{'report.expand-detail' | translate}}
+    </button>
+    <button nz-button nzType="primary" *ngIf="showAll" (click)="showTableItem()">
+      <i nz-icon type="minus"></i>{{'report.only-show-differ' | translate}}
+    </button>
+  </div>
+  <div class="dfc-btn-center">
+    <span>Status:</span>
+    <div class="green-circle"></div><span>Close</span>
+    <div class="orange-circle"></div><span>Ongoing</span>
+    <div class="red-circle"></div><span>Open</span>
+  </div>
+  <nz-spin class="spin" *ngIf="showLoading" nzTip='Uploading...'>
+  </nz-spin>
+  <div class="dfc-btn-right">
+    <div class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="table">
+  <nz-table id="downdata" #mohModelTable nzBordered nzShowQuickJumper [nzShowPagination]="true"
+    [nzData]="(factors | targetFilter:showAll: (dataSet | workhourReviewTableDatasFilter: {type: 'actual', change: searchFactorDetail.actual} | workhourReviewTableDatasFilter: {type: 'rfq', change: searchFactorDetail.rfq}| workhourReviewTableDatasFilter: {type: 'target', change: searchFactorDetail.target}))"
+    [nzWidthConfig]="nzWidthConfig" [nzNoResult]="nzNoResult" [nzScroll]="nzScroll" [nzFrontPagination]="tablePaging">
+    <thead>
+      <tr>
+        <th rowspan="2">{{'dfq.dfq-material' | translate}}</th>
+        <th rowspan="2">{{'report.model-workhour-factor' | translate}}</th>
+        <th colspan="4">{{'report.rfq-design' | translate}}</th>
+        <th colspan="4">{{'report.dfc-cur-design' | translate}}</th>
+        <th colspan="4">{{'report.goal-design' | translate}}</th>
+        <th colspan="4">{{'report.workhour-differ' | translate}}(s)</th>
+        <th rowspan="2">{{'report.discuss-result' | translate}}</th>
+        <th rowspan="2">PIC</th>
+        <th rowspan="2">Status</th>
+        <th rowspan="2">Due Day</th>
+      </tr>
+      <tr>
+        <th>{{'report.factor-workhour' | translate}}(s)</th>
+        <th>
+          {{'report.model-workhour-design' | translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.rfq">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity' | translate}}</th>
+        <th>{{'report.factor-detail-workhour' | translate}}(s)</th>
+        <th>{{'report.factor-workhour' | translate}}(s)</th>
+        <th>
+          {{'report.model-workhour-design' | translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.actual">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity' | translate}}</th>
+        <th>{{'report.factor-detail-workhour' | translate}}(s)</th>
+        <th>{{'report.factor-workhour' | translate}}(s)</th>
+        <th>
+          {{'report.model-workhour-design' | translate}}
+          <nz-dropdown nzTrigger="click" [nzClickHide]="false">
+            <i class="anticon anticon-search" nz-dropdown></i>
+            <div class="dfc-factorDetail">
+              <input type="text" nz-input placeholder="Search factor details" [(ngModel)]="searchFactorDetail.target">
+            </div>
+          </nz-dropdown>
+        </th>
+        <th>{{'report.dfc-kpi-quantity' | translate}}</th>
+        <th>{{'report.factor-detail-workhour' | translate}}(s)</th>
+        <th>{{'report.rfq-and' | translate}}{{cFlow}}{{'report.differ-workhour' | translate}}</th>
+        <th>{{cFlow}}{{'report.and-goal-differ-time' | translate}}</th>
+        <th>{{'report.rfq-and-goal-differ-time' | translate}}</th>
+        <th>{{'report.saved-moh' | translate}}(USD) </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of mohModelTable.data; let i = index;">
+        <ng-container
+          *ngFor="let j of CreateNumberArray((dataSet | workhourReviewTableDatasFilter: {type: 'actual', change: searchFactorDetail.actual} | workhourReviewTableDatasFilter: {type: 'rfq', change: searchFactorDetail.rfq}| workhourReviewTableDatasFilter: {type: 'target', change: searchFactorDetail.target})[data].maxRows)">
+          <tr [ngClass]="i%2==0?'even':'odd'">
+            <!-- 物料 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows"
+              title="{{dataSet[data].stageData[j]? dataSet[data].stageData[j].Material : dataSet[data].rfqData[j].Material }}">
+              {{dataSet[data].stageData[j]? dataSet[data].stageData[j].Material : dataSet[data].rfqData[j].Material }}
+            </td>
+            <!-- 因素 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].stageData[j]?dataSet[data].stageData[j].Factor : dataSet[data].rfqData[j].Factor}}
+            </td>
+            <!-- 因素工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].rfqOriginalTime| number: '0.2'}}
+            </td>
+            <!-- 設計 -->
+            <td>
+              {{ dataSet[data].rfqData[j] && dataSet[data].rfqData[j].FactorDetailActural }}
+            </td>
+            <!-- 數量 -->
+            <td>
+              {{ dataSet[data].rfqData[j] && dataSet[data].rfqData[j].Count }}
+            </td>
+            <!-- 工時 -->
+            <td>
+              {{ dataSet[data].rfqData[j] && dataSet[data].rfqData[j].CostTimeActural| number: '0.2' }}
+            </td>
+            <!-- 當前設計因素工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].stageFactorTime| number: '0.2'}}
+            </td>
+            <!-- 設計 -->
+            <td>
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].FactorDetailActural}}
+            </td>
+            <!-- 數量 -->
+            <td>
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].Count}}
+            </td>
+            <!-- 工時 -->
+            <td>
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].CostTimeActural| number: '0.2'}}
+            </td>
+            <!-- 目標設計因素工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].rfqFactorTime| number: '0.2'}}
+            </td>
+            <!-- 設計 -->
+            <td>
+              {{dataSet[data].rfqData[j] && (dataSet[data].rfqData[j].TargetCount !== null ? dataSet[data].rfqData[j].TargetFactorDetail :   dataSet[data].rfqData[j].FactorDetailActural     )  }}
+            </td>
+            <!-- 數量 -->
+            <td>
+              {{dataSet[data].rfqData[j] && (dataSet[data].rfqData[j].TargetCount !== null ? dataSet[data].rfqData[j].TargetCount :  dataSet[data].rfqData[j].Count  ) }}
+            </td>
+            <!-- 工時 -->
+            <td>
+              {{dataSet[data].rfqData[j] && (dataSet[data].rfqData[j].TargetCount !== null ? dataSet[data].rfqData[j].CostTimeTarget : dataSet[data].rfqData[j].CostTimeActural )| number: '0.2'}}
+            </td>
+            <!-- RFQ與Cx差異工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].rfqOriginalTime - dataSet[data].stageFactorTime | number: '0.2'}}
+            </td>
+            <!-- Cx與目標差異工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{ dataSet[data].stageFactorTime - dataSet[data].rfqFactorTime | number: '0.2'}}
+            </td>
+            <!-- RFQ與目標差異工時 -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dataSet[data].rfqOriginalTime - dataSet[data].rfqFactorTime | number: '0.2'}}
+            </td>
+            <!-- 節省MOH  -->
+            <td *ngIf="j==0" [attr.rowspan]="dataSet[data].maxRows">
+              {{dl2 * (dataSet[data].rfqOriginalTime - dataSet[data].stageFactorTime) | number: '0.4' }}
+            </td>
+            <!-- 討論結果 -->
+            <td style="cursor: pointer;" (click)="showComments(data)">
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].Comment}}
+            </td>
+            <!-- PIC -->
+            <td>
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].EName}}
+            </td>
+            <!-- Status -->
+            <td style="text-align: center">
+              <div *ngIf="dataSet[data].stageData[j]" [ngSwitch]="dataSet[data].stageData[j].Status">
+                <div *ngSwitchCase="0" class="red-circle"></div>
+                <div *ngSwitchCase="1" class="orange-circle"></div>
+                <div *ngSwitchCase="2" class="green-circle"></div>
+              </div>
+            </td>
+            <!-- Due Date -->
+            <td>
+              {{dataSet[data].stageData[j] && dataSet[data].stageData[j].DueDay | date : dateFormat}}
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <div class='window' *ngIf='dataWindowFlag'>
+    <nz-modal [nzWidth]="400" nzFooter=" " nzWrapClassName="vertical-center-modal" [(nzVisible)]="dataWindowFlag"
+      nzMaskClosable="false" (nzOnCancel)="closeComments()" [nzTitle]="'report.discuss-result-record' | translate">
+      <table border="2" width="100%">
+        <tr class='title'>
+          <td width='30%' hight='10%' class='discuss_head'>{{'dfq.dfq-cflow' | translate}}</td>
+          <td width='70%' hight='10%' class='discuss_head'>Comments</td>
+        </tr>
+        <tr *ngFor='let data of dataWindow.data; let i=index;'>
+          <td width='30%' hight='10%'><span style="margin-left: 20px">{{dataWindow.data[i].Stage}}</span></td>
+          <td width='70%' hight='10%'><span style="margin-left: 20px">{{dataWindow.data[i].Comment}}</span></td>
+        </tr>
+      </table>
+    </nz-modal>
+  </div>
+</div>

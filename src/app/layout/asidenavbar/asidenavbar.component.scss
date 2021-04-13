@@ -1,0 +1,36 @@
+* {
+  font-size: 17px;
+}
+.icon {
+  width: 17px;
+  margin-right: 10px;
+  opacity: 0.8;
+  margin-right: 14px;
+}
+
+.icon:hover {
+  width: 17px;
+  margin-right: 10px;
+  opacity: 1;
+}
+
+a {
+  color: white;
+}
+
+.sp-2 {
+  font-size: 15px;
+}
+.sp-2.active {
+  background-color: #F5C910;
+}
+.sp-2.active>a.link {
+  color: #000;
+}
+
+.sp-2:hover {
+  background-color: rgba(245, 199, 16, 0.5);
+}
+.sp-2:hover>a.link {
+  color: #fff;
+}

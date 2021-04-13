@@ -1,0 +1,135 @@
+<div class="dfc-tip">
+  <div class="dfc-tip-row" *ngFor="let item of tipTxt">
+    <div [ngClass]="item.class"></div>
+    {{item.text}}
+  </div>
+</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="dfc-query">
+    <div>
+      <app-dfc-query-input [queryStyle]="querySelect.plant.style" [(queryValue)]="querySelect.plant.value"
+        [querySelect]="querySelect.plant.select" (queryValueChange)="changePlant()"></app-dfc-query-input>
+    </div>
+    <div style="margin: 10px;">
+      <span style="width: 80px;margin-right: 20px;">{{'dfq.report-achievement' | translate}}</span>
+      <nz-select style="width:500px;" nzMode="multiple" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [(ngModel)]="statusValue">
+        <ng-container *ngFor="let list of colorList">
+          <nz-option nzCustomContent style="width: 150px;" [nzValue]="list.value" [nzLabel]="list.label">
+            <div [ngSwitch]="list.value" [ngClass]="list.class" style="display: inline-block;">
+            </div>
+          </nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()"
+        [disabled]="queryFlag">{{'mrr.mrr-query' | translate}}</button>
+    </div>
+  </div>
+  <div>
+    <label class="dfq-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </label>
+  </div>
+  <nz-table *ngIf="tableFlag" class="workhour-forecast" #workhourTable nzBordered [nzData]="forecastDataList"
+    [nzShowSizeChanger]="true" [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th nzShowExpand width="90px">{{'mrr.vendor-extension' | translate}}</th>
+        <th>{{'mrr.mrr-plant' | translate}}</th>
+        <th>BU</th>
+        <th>{{'mrr.mrr-customer' | translate}}</th>
+        <th>{{'mrr.mrr-product' | translate}}</th>
+        <th>Project Code</th>
+        <th>Project Name</th>
+        <th>PLM Status</th>
+        <th>{{'report.target-hour-signed' | translate}}</th>
+        <th>RFQ D.D</th>
+        <th>{{'report.light-result' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="workhourTable.data">
+        <tr>
+          <td nzShowExpand [(nzExpand)]="data.expand" (nzExpandChange)="nzExpandChangeProName($event, data)"></td>
+          <td>{{ data.Plant | site: {type: 'plant'} }}</td>
+          <td>{{ data.BU }}</td>
+          <td>{{ data.Customer }}</td>
+          <td>{{ data.ProductType }}</td>
+          <td>{{ data.ProjectCode }}</td>
+          <td>{{ data.ProjectName }}</td>
+          <td>{{ data.PLMProjectStatus }}</td>
+          <td><a (click)="toTargethourSign(data)"
+              [ngStyle]="{'border-bottom':'1px solid black'}">{{data.IsTargetSigned | result}}</a>
+          </td>
+          <td>{{data.RfqDueDay | date: 'yyyy/MM/dd'}}</td>
+          <td (click)="toNewmodelMaintain(data)"
+            [ngStyle]="{'color': '#eee', 'background': data.color === 'green'? 'rgb(60, 255, 76)': data.color === 'red'? 'rgb(255, 68, 68)': data.color === 'yellow'? 'rgb(248, 252, 55)': data.color === 'grey'? 'grey': 'rgb(201, 67, 201)'}">
+            {{(!data.textDetail ? '' : data.textDetail)}}
+          </td>
+        </tr>
+        <tr [nzExpand]="data.expand">
+          <td></td>
+          <td colspan="7">
+            <nz-table class="innerTable" #innerTable [nzData]="data.targetSignResult" nzSize="middle"
+              [nzShowPagination]="false">
+              <thead>
+                <tr>
+                  <th nzShowExpand width="90px">{{'mrr.vendor-extension' | translate}}</th>
+                  <th>Model Name</th>
+                  <th>{{'report.target-hour-sended' | translate}}</th>
+                  <th>{{'report.target-hour-sign-pass' | translate}}</th>
+                </tr>
+              </thead>
+    <tbody>
+      <ng-template ngFor let-item [ngForOf]="innerTable.data">
+        <tr>
+          <td nzShowExpand [(nzExpand)]="item.expand"></td>
+          <td>{{ item.modelName }}</td>
+          <td><a (click)="toTargethour(data)"
+              [ngStyle]="{'border-bottom':'1px solid black'}">{{ item.isTargetSignSent | result}}</a></td>
+          <td><a (click)="toTargethourSign(data)"
+              [ngStyle]="{'border-bottom':'1px solid black'}">{{ item.isTargetSignApproved | result}}</a>
+          </td>
+        </tr>
+        <tr [nzExpand]="item.expand">
+          <td></td>
+          <td colspan="3">
+            <nz-table class="innerTable" #modelSignTable [nzData]="item.targetSignDetail" nzSize="small"
+              [nzShowPagination]="false">
+              <thead>
+                <tr>
+                  <th>{{'mrr.nudd-process' | translate}}</th>
+                  <th>{{'report.target-hour-lastSend-date' | translate}}</th>
+                  <th>{{'report.target-hour-lastSign-status' | translate}}</th>
+                </tr>
+              </thead>
+    <tbody>
+      <tr *ngFor="let sign of modelSignTable.data">
+        <!-- 無送簽 -->
+        <td *ngIf="sign.colFlag">{{ (sign.processCode | dfcProcess | async)?.Name }}</td>
+        <td *ngIf="sign.colFlag" [attr.colspan]="sign.colspan">{{ sign.msg }}</td>
+        <!-- 有送簽 -->
+        <td *ngIf="!sign.colFlag"><a
+            (click)="toTargethourSignDetail(sign.signId, sign.targetOperationSignId, data.ProjectNameID, item.stageId, sign.processCode)"
+            [ngStyle]="{'border-bottom':'1px solid black'}">{{ (sign.processCode | dfcProcess | async)?.Name }}</a>
+        </td>
+        <td *ngIf="!sign.colFlag">{{ sign.date }}</td>
+        <td *ngIf="!sign.colFlag">{{ sign.status }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  </td>
+  </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+  </td>
+  </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+</nz-spin>

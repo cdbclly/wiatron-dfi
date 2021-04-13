@@ -1,0 +1,33 @@
+{
+  "warningData": {
+    "dataX": ["料號1", "料號2", "料號3", "料號4", "料號5", "料號6", "料號7", "料號8", "料號9", "料號10"],
+    "data": [4, 3, 5, 0, 2, 0, 1, 2, 2, 1]
+  },
+  "alertSubDetail": [
+    {
+      "modelName": "機種1",
+      "formId": "TCP111111",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種1",
+      "formId": "TCP222222",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種1",
+      "formId": "TCP333333",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種1",
+      "formId": "TCP444444",
+      "status": "onGoing"
+    },
+    {
+      "modelName": "機種1",
+      "formId": "TCP55555",
+      "status": "onGoing"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+.box-table {
+  nz-table {
+    tr {
+      td {
+        font-size: 10px;
+      }
+    }
+  }
+}
+.tr-headstyle {
+  background-color: #333;
+  color: white;
+  text-align: center;
+}
+.loadmore{
+  text-align: center;
+  margin-top: 12px;
+  height: 32px;
+  line-height: 32px;
+}
+.chartX {
+  height: 200px;
+  width: 90%;
+}
+button {
+  display: inline-block;
+  margin-left: 20px;
+}
+.p1 {
+  border-bottom: 1px solid;
+  width: 110%;
+  margin-top: -10px;
+  margin-left: -9px;
+  text-align: center;
+}
+.p2 {
+  width: 110%;
+  margin-left: -9px;
+  margin-bottom: -12px;
+  margin-top: -9px;
+  text-align: center;
+}
+.span1 {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+.span2 {
+  display: inline-block;
+  width: 50%;
+  border-right: 1px solid;
+  text-align: center;
+}
+th {
+  text-align: center;
+}
+td {
+  text-align: center;
+}
+
+.redColor {
+  color: red;
+}
+
+.chart {
+  background: white;
+  margin:5px;
+  height: 280px;
+  width: 60%;
+}
+
+.flexUI {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+
+  height: 100%;
+  width: 100%;
+}
+
+.spanx {
+  display: inline-block;
+  width: 65%;
+}
+
+// div table th, td {
+//   width: 10vw;
+//   font-size: 13px;
+// }
+
+::ng-deep .vertical-center-modal .ant-modal-body  {
+  background-color: #D3D3D3 !important;
+}

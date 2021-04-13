@@ -1,0 +1,45 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="title" *ngIf="routeFlag">{{title}}</div>
+  <div *ngIf="!routeFlag">
+    <div class="title" *ngIf="legendFlag"><i class="anticon anticon-link"></i><a href="javascript:void(0)"
+        [routerLink]="['/dashboard/report/issue', floorTitle]">{{floorTitle}}</a>
+      <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummarytop "> &nbsp;
+        {{ siteSummary.name }}: <span
+          style="color:blue;font-weight: bold;">{{siteSummary.value}}</span>{{ 'dashboard.pie-item' | translate }};
+        &nbsp; </label></div>
+    <div class="title" *ngIf="!legendFlag"><i class="anticon anticon-link"></i><a href="javascript:void(0)"
+        [routerLink]="['/dashboard/report/issue', floorTitle]">{{floorTitle}}</a>
+      <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummarybottom "> &nbsp;
+        {{ siteSummary.name }}: <span
+          style="color:blue;font-weight: bold;">{{siteSummary.value}}</span>{{ 'dashboard.pie-item' | translate }};
+        &nbsp;
+      </label>
+    </div>
+  </div>
+
+  <div class="dfc-content">
+    <div class="dfc-left">
+      <div class="dfc-tip" *ngIf="legendFlag">
+        <div class="dfc-tip-row" *ngFor="let item of tipTxt1">
+          <div [ngClass]="item.class"></div>
+          <a (click)="switchColor(item)"
+            [ngStyle]="{'color': item.color === statusColor? 'black': 'grey'}">{{item.text}}</a>
+        </div>
+      </div>
+      <div class="dfc-tip" *ngIf="!legendFlag">
+        <div class="dfc-tip-row" *ngFor="let item of tipTxt2">
+          <div [ngClass]="item.class"></div>
+          <a (click)="switchColor(item)"
+            [ngStyle]="{'color': item.color === statusColor? 'black': 'grey'}">{{item.text}}</a>
+        </div>
+      </div>
+      <div echarts class="chart" (chartClick)="onChartEventRFQ($event)" [options]="option"></div>
+    </div>
+    <div class="dfc-right">
+      <div echarts class="right-chart1" *ngIf="legendFlag" (chartClick)="onPlantRfqChartEvent($event)"
+        [options]="rightOption1"></div>
+      <div echarts class="right-chart2" *ngIf="!legendFlag" (chartClick)="onPlantWorkhourChartEvent($event)"
+        [options]="rightOption2"></div>
+    </div>
+  </div>
+</nz-spin>

@@ -1,0 +1,63 @@
+<div echarts [options]="line_chart" id="line-chart"  class="line-chart" (chartClick)="showModal($event)"></div>
+   <div class="suggest">
+      輔助建议决策---系統開發中
+ </div>
+   <nz-modal [(nzVisible)]="isVisible" nzTitle="" nzWidth="80%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+    <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(detailTable_total, 'retest-rate total')">下载</button>
+     <div class="box-table-total">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+                <th style="width: 35%;">總測試不良項目</th>
+                <th style="width: 35%;">子測試不良項目</th>
+              <th style="width: 15%;">Retest Rate</th>
+              <th style="width: 15%;">測試數量</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_total; let i = index">
+                <td>{{item['tdname']}}</td>
+                <td>{{item['mdname']}}</td>
+                <td>{{item['result']}}</td>
+                <td (click)="showSubDetail(item)" class="test-num">{{item['num']}}</td>
+            </tr>
+          </table>
+        </div>
+    </nz-modal>
+
+    <nz-modal [(nzVisible)]="isVisible_1" nzWidth="65%" [nzStyle]="{ top: '30%' }" nzTitle="" (nzOnCancel)="handleCancel_1()" [nzClosable]="cancelOK_1" [nzFooter]="footer_1" (nzOnOk)="handleOk_1()">
+        <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadDetail(detailTable_retry, retry_list, 'retest-rate detail')">下载</button>
+      <div class="box-table">
+            <table cellspacing="0" cellpadding="0">
+              <thead>
+                  <th>機種</th>
+                  <th>線別</th>
+                  <th>架構</th>
+                  <th>站別</th>
+                   <th>治具編號</th>
+                   <th>機台序列號</th>
+                   <th>開始測試時間</th>
+                   <th>結束測試時間</th>
+                   <th>測試值</th>
+                   <th>測試值上限</th>
+                   <th>測試值下限</th>
+              </thead>
+              <tr *ngFor="let item of detailTable_retry; let i = index">
+              <td>{{retry_list['model']}}</td>
+              <td>{{retry_list['line']}}</td>
+              <td>{{retry_list['upn']}}</td>
+              <td>{{retry_list['stage']}}</td>
+              <td>{{retry_list['fixture']}}</td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{seriesNum.split(';*&')[0]}}</p></td>
+
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{(seriesNum.split(';*&')[1]) ? (seriesNum.split(';*&')[1]) : 'NA' }}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{(seriesNum.split(';*&')[2]) ? (seriesNum.split(';*&')[2]) : 'NA' }}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{seriesNum.split(';*&')[3] ? seriesNum.split(';*&')[3] : 'NA' }}</p></td>
+
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{seriesNum.split(';*&')[5] ? (seriesNum.split(';*&')[5] < 300 ? seriesNum.split(';*&')[5] : '無設置') : (retry_list['upper'] < 300 ? retry_list['upper'] : '無設置') }}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{seriesNum.split(';*&')[4] ? (seriesNum.split(';*&')[4] > -300 ? seriesNum.split(';*&')[4] : '無設置')  : (retry_list['lower'] > -300) ? retry_list['lower'] : '無設置' }}</p></td>
+              <!-- <td *ngIf="retry_list['upper'] > 300 || retry_list['upper'] === 300">無設置</td>
+              <td *ngIf="retry_list['upper'] < 300">{{retry_list['upper']}}</td>
+              <td *ngIf="retry_list['lower'] < -300 || retry_list['lower'] === -300">無設置</td>
+              <td *ngIf="retry_list['lower'] > -300">{{retry_list['lower']}}</td> -->
+              </tr>
+            </table>
+          </div>
+      </nz-modal>

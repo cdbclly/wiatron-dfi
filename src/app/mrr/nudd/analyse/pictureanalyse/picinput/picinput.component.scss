@@ -1,0 +1,97 @@
+body {
+  width: 100%;
+}
+
+.toolalert {
+  position: relative;
+}
+
+.dfc-delAfter-icon {
+  height: 100px;
+  width: 100%;
+  color: rgba(0, 169, 157, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 76px;
+  }
+}
+
+.dfc-delAfter-text {
+  width: 238px;
+  height: 46px;
+  margin-left: 22px;
+  padding: 10px;
+  text-align: center;
+
+  span {
+    color: rgba(80, 80, 80, 1);
+    font-size: 18px;
+  }
+}
+
+.toolalert .tooltiptext {
+  visibility: hidden;
+  width: 100%;
+  background-color: black;
+  color: black;
+  text-align: left;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  left: -0%;
+  margin-top: 17%;
+}
+
+.toolalert:hover .tooltiptext {
+  visibility: visible;
+}
+
+td {
+  border: 1px solid white;
+  font-size: 15px;
+}
+
+th {
+  border: 1px solid;
+  font-size: 18px;
+}
+
+.mrr-btn-download {
+  height: 100%;
+  width: 140px;
+  float: right;
+  justify-content: space-around;
+  display: flex;
+  // margin-top:80px;
+}
+
+
+.overall td {
+  background-color: rgba(117, 117, 117, 1);
+  color: white;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+.overall th {
+  background-color: #333;
+  color: white;
+  font-weight: normal;
+  border: 1px solid white;
+}
+
+.tips {
+  width: 100%;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}

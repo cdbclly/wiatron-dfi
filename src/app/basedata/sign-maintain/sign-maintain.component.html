@@ -1,0 +1,188 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Base Data</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'base-data.sign-off-maintenance'|translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content" style="font-size:20px">
+  {{'base-data.sign-off-maintenance'|translate}}
+</div>
+<div class="query-row">
+  <div class="field1">
+    <span style="color: #ff0000;margin-right: 0px;width: auto">*</span>
+    <span>Form</span>
+    <nz-select style="width: 200px;" nzShowSearch [(ngModel)]="selectedModel" (ngModelChange)="change()">
+      <nz-option *ngFor="let model of workflowForms" [nzValue]="model.id" [nzLabel]="model.description"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span>Key</span>
+    <nz-select style="width: 15vw;" nzAllowClear [(ngModel)]="selectedKey">
+      <nz-option *ngFor="let keys of keysForm" [nzValue]="keys" [nzLabel]="keys"></nz-option>
+    </nz-select>&nbsp;
+  </div>
+
+  <button nz-button nzType="primary" (click)="onSearch()">Query</button>
+</div>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<div class="btn">
+  <button nz-button nzType="primary" nzShape="circle" (click)="showModal()">
+    <i class="anticon anticon-plus"></i>
+  </button>
+</div>
+
+<div class="table">
+  <nz-table #nestedTable nzBordered [nzData]="displayData" [nzPageSize]="10" *ngIf="tableShow">
+    <thead>
+      <tr>
+        <th class="model" nzWidth="300px">Form</th>
+        <th class="model" nzWidth="300px">Key</th>
+        <th class="model" nzWidth="100px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nestedTable.data">
+        <td (click)="getWorkflowSign(data)">{{ data.workflowForm["description"] }}</td>
+        <td (click)="getWorkflowSign(data)">{{ data.key }}</td>
+        <td>
+          <a class="delete">
+            <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(data.id)"></i>
+          </a>
+          <a>
+            <i nz-icon type="edit" theme="outline" (click)="showModal2(data)"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-modal [(nzVisible)]="signShow" nzOkText="Ok" nzCancelText="Cancel" (nzOnCancel)="cancel()"[nzTitle]="signModelTitle" [nzWidth]="1000">
+  <div class="btn">
+    <button nz-button nzType="primary" nzShape="circle" (click)="showModal1()">
+      <i class="anticon anticon-plus"></i>
+    </button>
+  </div>
+  <div class="table">
+    <nz-table #innerTable [nzData]="workflowSignatory" nzSize="middle" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th class="stage">Stage</th>
+          <th class="stage">StageDesc</th>
+          <th class="stage">PicId</th>
+          <th class="stage">IsDynamic</th>
+          <th class="stage" nzWidth="200px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of innerTable.data">
+          <td>{{ data.stage }}</td>
+          <td>{{ data.stageDesc }}</td>
+          <td>{{data.picId | userEnname | async}}</td>
+          <td>{{ data.isDynamic }}</td>
+          <td>
+            <a class="delete">
+              <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm1(data)"></i>
+            </a>
+            <a>
+              <i nz-icon type="edit" theme="outline" (click)="showModal3(data)"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-modal>
+
+
+<nz-modal [(nzVisible)]="isVisible" nzOkText="Ok" nzCancelText="Cancel"  [nzTitle]="addModelTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+  [nzOkLoading]="isOkLoading">
+  <div class="input">
+    <label>
+      <span>Form:</span>
+      <nz-select style="width: 230px;" [(ngModel)]="workflowFormId" (ngModelChange)="getKeyTips()" nzAllowClear>
+        <nz-option *ngFor="let form of workflowForms" [nzValue]="form.id" [nzLabel]="form.description"></nz-option>
+      </nz-select>
+    </label>
+    <label>
+      <span>Module:</span>
+      <nz-select style="width: 230px;" [(ngModel)]="addModel" nzAllowClear>
+        <nz-option *ngFor="let module of modules" [nzValue]="module" [nzLabel]="module"></nz-option>
+      </nz-select>
+    </label>
+    <label>
+      <span>Key:</span>
+      <input nz-input [(ngModel)]="addKey" placeholder="{{ keyTips }}" />
+    </label>
+  </div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible1" nzOkText="Ok" nzCancelText="Cancel"  [nzTitle]="addModelTitle" (nzOnCancel)="handleCancel1()" (nzOnOk)="handleOk1()"
+  [nzOkLoading]="isOkLoading1">
+  <div class="input">
+    <label>
+      <span>Stage:</span>
+      <input nz-input [(ngModel)]="addStage" />
+    </label>
+    <label>
+      <span>StageDesc:</span>
+      <input nz-input [(ngModel)]="addStageDesc" />
+    </label>
+    <label>
+      <!-- <span>PicId:</span><input nz-input [(ngModel)]="addPicId" />-->
+      <!-- 修改為查找英文名存工號 -->
+      <span> PicId: </span>
+      <div class="input-search">
+        <app-search-user (selectedUserData)="getAddPicId($event)"></app-search-user>
+      </div>
+    </label>
+    <label>
+      <span>IsDynamic:</span>
+      <input nz-input [(ngModel)]="addIsDynamic" />
+    </label>
+  </div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible2" nzOkText="Ok" nzCancelText="Cancel" [nzTitle]="modifyModelTitle" (nzOnCancel)="handleCancel2()" (nzOnOk)="handleOk2()"
+  [nzOkLoading]="isOkLoading2">
+  <div class="input">
+    <label>
+      <span>Module:</span>
+      <input nz-input [(ngModel)]="updateModel" />
+    </label>
+    <label>
+      <span>Key:</span>
+      <input nz-input [(ngModel)]="updateKey" />
+    </label>
+  </div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible3" nzOkText="Ok" nzCancelText="Cancel" [nzTitle]="modifyModelTitle" (nzOnCancel)="handleCancel3()" (nzOnOk)="handleOk3()"
+  [nzOkLoading]="isOkLoading3">
+  <div class="input">
+    <label>
+      <span>Stage:</span>
+      <input nz-input [(ngModel)]="updateStage" />
+    </label>
+    <label>
+      <span>StageDesc:</span>
+      <input nz-input [(ngModel)]="updateStageDesc" />
+    </label>
+    <!-- <label>
+      <span>PicId:</span>
+      <input nz-input [(ngModel)]="updatePicId" />
+    </label> -->
+    <label>
+      <!-- 修改為查找英文名存工號 -->
+      <span> PicId: </span>
+      <div class="input-search">
+        <app-search-user (selectedUserData)="getUpdatePicId($event)"></app-search-user>
+      </div>
+    </label>
+    <label>
+      <span>IsDynamic:</span>
+      <input nz-input [(ngModel)]="updateIsDynamic" />
+    </label>
+  </div>
+</nz-modal>

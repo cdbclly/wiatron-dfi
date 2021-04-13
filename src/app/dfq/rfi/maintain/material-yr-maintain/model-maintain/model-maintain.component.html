@@ -1,0 +1,125 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-data-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-institutional-material-maintenance' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-model-maintenance' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.rfi-model-maintenance' | translate }}
+</div>
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="product cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectProduct" [(ngModel)]="selectProduct"
+        (ngModelChange)="getPlants()">
+        <ng-container *ngFor="let product of products">
+          <nz-option [nzValue]="product" [nzLabel]="product"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="plant cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectPlant" [(ngModel)]="selectPlant"
+        (ngModelChange)="getCustomers()">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant.plant" [nzLabel]="plant.sitePlant"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="customer cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectCustomer"
+        [(ngModel)]="selectCustomer" (ngModelChange)="getModels()">
+        <ng-container *ngFor="let customer of customers">
+          <nz-option [nzValue]="customer" [nzLabel]="customer"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>&nbsp;&nbsp;
+    <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="model cannot be empty">
+      <nz-select style="width: 910px" nzShowSearch nzAllowClear nzMode="multiple" formControlName="selectModel"
+        [(ngModel)]="selectModel">
+        <ng-container *ngFor="let model of models">
+          <nz-option [nzLabel]="model" [nzValue]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!validateForm.valid">{{ 'dfq.dfq-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-divider></nz-divider>
+<!-- <div *ngIf="tableShow">
+    <div class="btn">
+      <button nz-button nzType="primary" (click)="save()">
+        保存
+      </button>
+    </div> -->
+<div class="table-cls" *ngIf="tableShow">
+  <nz-table #basicTable nzBordered nzShowSizeChanger [nzData]="massProductionData" [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <th>Project Code</th>
+        <!-- <th>Model Name</th> -->
+        <th>{{ 'dfq.rfi-model-get-data' | translate }}</th>
+        <th>{{ 'dfq.rfi-model-get-cycle' | translate }}
+          <br>({{ 'dfq.rfi-model-get-first-time' | translate }})
+        </th>
+        <th>{{ 'dfq.rfi-model-get-times' | translate }}
+        </th>
+        <th>{{ 'dfq.rfi-model-get-frequency' | translate }}<br>({{ 'dfq.rfi-model-get-frequency-unit' | translate }})
+        </th>
+        <th>Action
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of basicTable.data">
+        <td>
+          {{item.model}}
+        </td>
+        <td>
+          {{item.project}}
+        </td>
+        <!-- <td>xx
+          </td> -->
+        <td>
+          <nz-radio-group [(ngModel)]="item.isGain">
+            <label nz-radio nzValue="1">Y</label>
+            <label nz-radio nzValue="0">N</label>
+          </nz-radio-group>
+        </td>
+        <td>
+          <span>{{firstCycle}}</span>
+        </td>
+        <td>
+          <nz-input-number [(ngModel)]="item.cycleTimes" (ngModelChange)="isDisabled(item)" [nzDisabled]="item.flag1"
+            style="width: 100px;" [nzMin]="1" [nzMax]="20" [nzStep]="1"></nz-input-number>
+        </td>
+        <td>
+          <nz-input-number [(ngModel)]="item.frequency" (ngModelChange)="isDisabled1(item)" [nzDisabled]="item.flag2"
+            style="width: 100px;" [nzMin]="1" [nzMax]="6" [nzStep]="1"></nz-input-number>
+        </td>
+        <td>
+          <a (click)="save(item)">
+            <i nz-icon type="save" theme="outline"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<!-- </div> -->

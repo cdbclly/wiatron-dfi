@@ -1,0 +1,75 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>NUDD {{ 'mrr.nudd-risk-evaluate' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>2D/3D {{ 'mrr.nudd-risk-evaluate' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  2D/3D {{ 'mrr.nudd-risk-evaluate' | translate }}
+</div>
+<app-queryform [plantFlag]="false" (custo)="custo($event)" (menu)=menu($event) (change)=change($event) [typeShow]="true"
+  [queryShow]="queryShow"></app-queryform>
+<div style="display: inline-block;width:70%;">
+  <span style="color: red;margin-right: 0px;width: auto">*</span>
+  <span style="text-align: right;margin-right: 10px;">{{ 'mrr.mrr-part' | translate }}</span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="part">
+    <nz-option *ngFor="let part of parts" [nzLabel]="part.name" [nzValue]="part.name"></nz-option>
+  </nz-select>
+  <span style="color: red;margin-right: 0px;width: auto">*</span>
+  <span style="text-align: right;margin-right: 10px;">{{ 'mrr.nudd-craft' | translate }}</span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="processType" (ngModelChange)="getProcessType(processType)">
+    <nz-option *ngFor="let processType of processTypes" [nzLabel]="processType.name" [nzValue]="processType.name">
+    </nz-option>
+  </nz-select>
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="addLists()"
+    [disabled]="!addEnable">{{ 'mrr.mrr-add' | translate }}</button>
+</div>
+<div style="float:right;margin-left: 15px;" *ngIf="ifInputShow">
+  <div class="dfc-btn-upload">
+    <label class="upload">
+      <input id="upload" type="file" (change)="handleFileInput($event.target)">
+      <div class="fakeInput">
+        <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+        <span *ngIf="!uploadFileName">{{ 'mrr.nudd-selectFactorFile' | translate }}</span>
+      </div>
+    </label>
+    <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+      title="上傳" (click)="upload()">
+      <i class="anticon anticon-upload"></i>
+    </label>
+  </div>
+</div>
+<br><br>
+<div class="add-craft">
+  <nz-table #nzTable [nzData]="dataSet" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>2D/3D</th>
+        <th>{{ 'mrr.mrr-part' | translate }}</th>
+        <th>{{ 'mrr.nudd-craft' | translate }}</th>
+        <th>{{ 'mrr.mrr-action' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="nzTable.data">
+        <tr>
+          <td>{{data.dimension}}</td>
+          <td>{{data.part}}</td>
+          <td>{{data.processType}}</td>
+          <td><a (click)="delete(data.key)"><i class="anticon anticon-delete"></i></a></td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+</div>
+<br>
+<div style="text-align: center">
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="paramShow()"
+    [disabled]="dataSet.length !== parts.length">{{ 'mrr.nudd-generateRisk' | translate }}</button>
+</div>
+<br>
+<app-picinput *ngIf="tableShow && dataSet.length!=0 && site" [otherItems]="otherItems" [valueItems]="valueItems"
+  [dataSet]="inputDataSet" [inputShow]="ifInputShow" [dimension]="dimension" [analysisShow]="analysisShow"
+  [modelResultId]="modelResultId" [customer]="customer" [projectName]="projectName" [site]="site" [rdId]="rdId"
+  [url]="url" [facts]="facts" [afterAnalyseEnable]="afterAnalyseEnable" (tableChange)="tableChange($event)">
+</app-picinput>

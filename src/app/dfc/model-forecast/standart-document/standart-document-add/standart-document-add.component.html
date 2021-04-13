@@ -1,0 +1,145 @@
+<!-- 新增 -->
+<nz-modal class="dfc-add-modal" [nzWidth]="410" nzWrapClassName="vertical-center-modal" [(nzVisible)]="isAddDataVisible"
+  nzTitle="新增項目" nzMaskClosable="false" [nzContent]="modalAddContent" [nzFooter]="modalAddFooter"
+  (nzOnCancel)="handleAddCancel()">
+  <div class="dfc-add-list" #modalAddContent>
+    <table>
+      <tr>
+        <td width="72px"></td>
+        <td width="280px"></td>
+        <td width="30px"></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.modelType" [(queryValue)]="addValue.Select.modelType"
+            [querySelect]="addSelect.modelType"></app-dfc-query-input>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.process" [(queryValue)]="addValue.Select.process"
+            [querySelect]="addSelect.process"></app-dfc-query-input>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.module" [(queryValue)]="addValue.Select.module"
+            [querySelect]="addSelect.module"></app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addValue.Plus.module"
+            (click)="clickAddPlus('module')"></i>
+        </td>
+      </tr>
+      <tr *ngIf="addValue.Plus.module">
+        <td>
+          <div></div>
+        </td>
+        <td>
+          <input nz-input placeholder="新增模組" [(ngModel)]="addValue.PlusValue.module" nzSize="default">
+        </td>
+        <td>
+          <i class="anticon anticon-save dynamic-save-button" (click)="clickSavePlus('module')"></i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.material" [(queryValue)]="addValue.Select.material"
+            [querySelect]="addSelect.material"></app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addValue.Plus.material"
+            (click)="clickAddPlus('material')"></i>
+        </td>
+      </tr>
+      <tr *ngIf="addValue.Plus.material">
+        <td>
+          <div></div>
+        </td>
+        <td>
+          <input nz-input placeholder="新增物料" [(ngModel)]="addValue.PlusValue.material" nzSize="default">
+        </td>
+        <td>
+          <i class="anticon anticon-save dynamic-save-button" (click)="clickSavePlus('material')"></i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.factor" [(queryValue)]="addValue.Select.factor"
+            [querySelect]="addSelect.factor"></app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addValue.Plus.factor"
+            (click)="clickAddPlus('factor')"></i>
+        </td>
+      </tr>
+      <tr *ngIf="addValue.Plus.factor">
+        <td>
+          <div></div>
+        </td>
+        <td>
+          <input nz-input placeholder="新增因素" [(ngModel)]="addValue.PlusValue.factor" nzSize="default">
+        </td>
+        <td>
+          <i class="anticon anticon-save dynamic-save-button" (click)="clickSavePlus('factor')"></i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.factorDetail" [(queryValue)]="addValue.Select.factorDetail"
+            [querySelect]="addSelect.factorDetail"></app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addValue.Plus.factorDetail"
+            (click)="clickAddPlus('factorDetail')"></i>
+        </td>
+      </tr>
+      <tr *ngIf="addValue.Plus.factorDetail">
+        <td>
+          <div></div>
+        </td>
+        <td>
+          <input nz-input placeholder="新增因素細項" [(ngModel)]="addValue.PlusValue.factorDetail" nzSize="default">
+        </td>
+        <td>
+          <i class="anticon anticon-save dynamic-save-button" (click)="clickSavePlus('factorDetail')"></i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.action" [(queryValue)]="addValue.Select.action"
+            [querySelect]="addSelect.action"></app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addValue.Plus.action"
+            (click)="clickAddPlus('action')"></i>
+        </td>
+      </tr>
+      <tr *ngIf="addValue.Plus.action">
+        <td>
+          <div></div>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="addStyle.action2" [(queryValue)]="addValue.PlusValue.action">
+          </app-dfc-query-input>
+        </td>
+        <td>
+          <i class="anticon anticon-save dynamic-save-button" (click)="clickSavePlus('action')"></i>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <app-dfc-query-input [queryStyle]="addStyle.costTime" [(queryValue)]="addValue.Select.costTime">
+          </app-dfc-query-input>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  <ng-template #modalAddFooter>
+    <button nz-button nzType="default" (click)="handleAddCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleAddSave()">Save</button>
+  </ng-template>
+</nz-modal>

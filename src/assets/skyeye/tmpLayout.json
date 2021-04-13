@@ -1,0 +1,56 @@
+[
+  {
+    "plant": "F232",
+    "line": "HA18B",
+    "UPN": "165.02507.0001",
+    "mfg": "DIP",
+    "route": "AOPTPPSNA",
+    "qty": 0,
+    "wiporno": true
+  },
+  {
+    "plant": "F232",
+    "line": "HA18A",
+    "UPN": "165.02507.0002",
+    "mfg": "DIP",
+    "route": "AOC9IYPOPPSN",
+    "qty": 0,
+    "wiporno": true
+  },
+  {
+    "plant": "F232",
+    "line": "AP7-T",
+    "UPN": "165.02507.0003",
+    "mfg": "DIP",
+    "route": "AOC5C6C7C8C9IYPOPPSN",
+    "qty": 0,
+    "wiporno": true
+  },
+  {
+    "plant": "F232",
+    "line": "AP7-T",
+    "UPN": "165.02507.0003",
+    "mfg": "DIP",
+    "route": "AOC5C6C7C8IYPOPPSN",
+    "qty": 0,
+    "wiporno": true
+  },
+  {
+    "plant": "F232",
+    "line": "HA30",
+    "UPN": "165.02507.0004",
+    "mfg": "DIP",
+    "route": "AOPWPTPPSN",
+    "qty": 0,
+    "wiporno": true
+  },
+  {
+    "plant": "F232",
+    "line": "HA35",
+    "UPN": "165.02507.0006",
+    "mfg": "DIP",
+    "route": "AOC5C6PWPTPPSN",
+    "qty": 0,
+    "wiporno": true
+  }
+]

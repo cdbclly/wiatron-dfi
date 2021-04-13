@@ -1,0 +1,51 @@
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+}
+
+.table-cls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .table-inner{
+    width:75%;
+    height: 100%;
+  }
+  .editButton {
+    //消除button的默认样式
+    margin: 0;
+    padding: 0;
+    border: 1px solid transparent;  //自定义边框
+    outline: none;    //消除默认点击蓝色边框效果
+    background-color: transparent;
+  }
+}
+
+.dfq-btn-add {
+  margin-bottom: 5px;
+}
+
+
+
+
+// table的th居中顯示
+::ng-deep .table .ant-table-thead > tr > th {
+  text-align: center;
+}
+
+// table的td居中顯示
+::ng-deep .table .ant-table-tbody > tr > td {
+  text-align: center;
+}
+
+// 新增彈框內容居中
+::ng-deep .model-cls .ant-modal-body {
+  text-align: center;
+}
+
+
+.dfq-btn-download {
+  margin-left: 20px;
+  margin-bottom: 6px;
+  height: 100%;
+}

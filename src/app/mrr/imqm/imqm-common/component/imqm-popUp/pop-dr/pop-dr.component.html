@@ -1,0 +1,3 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <app-material-end-product [barOptions]="barData"></app-material-end-product>
+</nz-modal>

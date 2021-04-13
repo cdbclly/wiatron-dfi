@@ -1,0 +1,26 @@
+<div class="tit" *ngIf="flag">
+  <i class="anticon anticon-link"></i>
+  <a href="javascript:void(0)"
+    [routerLink]="['/dashboard/report/issue/NUDD風險評估']">{{ 'dashboard.nudd' | translate }}</a>
+  <label style="font-weight:normal;" *ngFor="let option of options">
+    <span
+      style="color:blue;font-weight: bold;">{{ option.title }}:{{ option.data[0].value }}{{ 'dashboard.pie-item' | translate }};</span>
+  </label>
+</div>
+<div class="tit" *ngIf="!flag">{{ 'dashboard.nudd' | translate }}</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>KPI:{{ 'dashboard.riskAssessment' | translate }}<br>{{ 'dashboard.reachRatio' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let option of options; let i = index">
+        <app-pie-chart [title]="option.title" [subtext]="option.subtext" [data]="option.data" [width]="option.width"
+          [height]="option.height" (clickChart)="clickMrr($event)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>

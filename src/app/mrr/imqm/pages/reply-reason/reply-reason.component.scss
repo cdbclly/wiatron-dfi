@@ -1,0 +1,15 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  textarea {
+    width: 500px;
+  }
+  .traceback {
+    border: 1px solid black;
+    padding: 0.5rem;
+    textarea {
+      width: 300px;
+    }
+  }
+}

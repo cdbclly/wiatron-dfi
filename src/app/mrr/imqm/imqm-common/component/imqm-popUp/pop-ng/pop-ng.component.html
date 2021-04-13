@@ -1,0 +1,6 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+    <app-forms-list [seriesTotalData]="tableData" (subTableDetail)="showSubFormTable($event)" (closeForm)="closeForm($event)" (rejectForm)="rejectForm($event)"></app-forms-list>
+ </nz-modal>
+ <!-- <nz-modal *ngIf="formItem" [(nzVisible)]="isVisibleSub" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancelSub()" [nzClosable]="cancelOKSub" [nzFooter]="footerSub" (nzOnOk)="handleOkSub()">
+     <app-forms-item [seriesData]="formItem" [seriesHeadWidth]="subDetailFormHeadWidth" [seriesMaxHead]="subDetailFormMaxHead" [seriesRawData]="subDetailFormListData"></app-forms-item>
+ </nz-modal> -->

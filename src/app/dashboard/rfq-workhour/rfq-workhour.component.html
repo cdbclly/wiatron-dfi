@@ -1,0 +1,21 @@
+<div class="board-row">
+  <nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <div class="title">DFC</div>
+          <span>{{ 'dashboard.rfqWorkLoad' | translate }}<br>
+            <i class="anticon anticon-link"></i>
+            <a
+              href="http://dfi.wks.wistron.com.cn/dfi/api/containers/guide/download/DFC餅圖說明.pptx">{{'dashboard.pieIntroduction' | translate}}</a></span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of options">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" [color]="options.color" (clickChart)="onChartEventRFQ($event)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </nz-spin>
+</div>
+<br>

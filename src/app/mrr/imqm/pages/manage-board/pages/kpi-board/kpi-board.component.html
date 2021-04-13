@@ -1,0 +1,30 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-magBoard' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-kPIManagement' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-kPIMagBord' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-kpi-board-select  (queryOps)="query($event)"></app-kpi-board-select>
+<div>
+  <app-material-pie-product [pieOptions]="warningCloseRatePie" (subDetail)="showFormList($event, 'warning')"></app-material-pie-product>
+  <app-material-pie-product [pieOptions]="abnormalCloseRatePie" (subDetail)="showFormList($event, 'abnormal')"></app-material-pie-product>
+  <app-material-pie-product [pieOptions]="traceClosePie" (subDetail)="showFormList($event, 'trace')"></app-material-pie-product>
+</div>
+<app-imqm-line-chart [lineOptions]="materialPDDRLine" ></app-imqm-line-chart>
+<app-imqm-line-chart [lineOptions]="materialStopCountLine" ></app-imqm-line-chart>
+<app-material-alert-product [options]="stopLineRankBar"></app-material-alert-product>
+<!-- Yield Rate趋势图查詢 -->
+<app-imqm-yr-select [radio]="yrTrendQueryType.radio" [period]="yrTrendPeriod" (changeQueryType)="onChangeYrTrendQueryType($event)" (changePeriod)="onChangeYrTrendPeriod($event)"></app-imqm-yr-select>
+<app-imqm-line-chart [lineOptions]="materialYRLine" [target]="yrTrendTarget" (lineChartClick)="detailAnalyze($event, true)"></app-imqm-line-chart>
+<!-- <div *ngIf="icqThriftBar">
+  <app-material-alert-product [options]="icqThriftBar"></app-material-alert-product>
+  <app-material-alert-product [options]="sqmThriftBar"></app-material-alert-product>
+  <app-material-alert-product [options]="venderThriftBar" (subDetail)="showVenderThriftDetail($event)"></app-material-alert-product>
+</div> -->
+<app-pop-alert [data]="dataAlert" (dateItem)="showFormDetail($event)"></app-pop-alert>
+<app-pop-vender-thrift [data]="venderThriftData"></app-pop-vender-thrift>
+
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>
+<!-- Yield Rate趋势图饼图 -->
+<app-pop-yr [drAnalyze]="defectLossAnalyze"></app-pop-yr>

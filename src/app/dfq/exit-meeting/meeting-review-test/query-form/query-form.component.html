@@ -1,0 +1,87 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="meetinQueryForm" (ngSubmit)="submitQueryForm(meetinQueryForm.value)">
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label nzRequired>BG</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch formControlName="bg" (ngModelChange)="getBus($event)">
+          <nz-option *ngFor="let bg of bgs" [nzLabel]="bg.id" [nzValue]="bg.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>BU</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch formControlName="bu" (ngModelChange)="getModels({ 'businessUnit':$event })">
+          <nz-option *ngFor="let bu of bus" [nzLabel]="bu.name" [nzValue]="bu.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-site' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch formControlName="site" (ngModelChange)="getPlants($event)">
+          <nz-option *ngFor="let site of sites" [nzLabel]="site.id" [nzValue]="site.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select nzShowSearch formControlName="plant" (ngModelChange)="getModels({ 'plant':$event })">
+          <nz-option *ngFor="let plant of plants" [nzLabel]="plant.id" [nzValue]="plant.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select style="width: 10vw;" nzShowSearch formControlName="customer">
+          <nz-option *ngFor="let customer of customers" [nzLabel]="customer" [nzValue]="customer"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-stage' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="stage">
+          <nz-option *ngFor="let stage of stages" [nzLabel]="stage.id" [nzValue]="stage.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label>Project Code</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="projectCode">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label>Project Name</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="projectName">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+      <nz-form-control>
+        <nz-select style="width: 10vw;" nzShowSearch formControlName="model">
+          <nz-option *ngFor="let model of models" [nzLabel]="model" [nzValue]="model"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div class="query-row">
+    <nz-form-item>
+      <nz-form-label>Document NO.</nz-form-label>
+      <nz-form-control>
+        <input nz-input formControlName="docno">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [disabled]="!meetinQueryForm.valid">Query</button>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+</form>

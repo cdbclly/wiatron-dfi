@@ -1,0 +1,111 @@
+<div style="display: flex;justify-content: space-between;">
+  <nz-breadcrumb style="display: inline-block;">
+    <!-- <nz-breadcrumb-item>Report</nz-breadcrumb-item> -->
+    <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>高速機監控</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <div class="instruction">
+    <div class="every">
+      <div class="div1" style=" background: red; "></div>
+      <div class="div2">红色(≤ -85 KPa)</div>
+    </div>
+    <div class="every">
+      <div class="div1" style=" background: yellow; "></div>
+      <div class="div2">黄(-85KPa<X<-87KPa)</div>
+    </div>
+    <div class="every">
+      <div class="div1" style=" background: white; "></div>
+      <div class="div2">白(≥-87KPa)</div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="content">
+  <a *ngIf="cur_plant"
+    href="http://dmc.{{cur_site | lowercase}}.wistron.com.cn/EC/?Plant={{cur_plant}}&eventId={{project | event : 'toEvent'}}&evt_dt={{cur_date}}"
+    target="_blank"><i class="anticon anticon-link" nzTitle="Link DMC" nzPlacement="top" nz-tooltip></i></a>
+</div> -->
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<nz-table
+#nzDataA
+nzBordered
+nzShowQuickJumper
+[nzData]="dataAContent"
+[nzShowPagination] = 'false'
+[nzWidthConfig] = "THwidth"
+[nzScroll]="{ x:totoalWidth}"
+class="tableStyle">
+<thead>
+ <tr>
+   <th rowspan="2" style="background: blue; border: 1px solid orange;">A面</th>
+    <th [attr.colspan]= "dataAhead[1][k]" *ngFor="let item of dataAhead[0] let k = index" style="background: blue; border: 1px solid orange;">{{item}}</th>
+  </tr>
+ <tr >
+   <th *ngFor="let data of dataAhead[2]" style="background: black; color: white; border: 1px solid orange;">{{data}}</th>
+ </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let data of nzDataA.data; let b = index" style="font-size: 14px;">
+    <td [ngClass]="lineABackGround[b]  ? lineABackGround[b] : ''">{{dataALine[b]}}</td>
+      <td   *ngFor="let item of data; let a = index" (click)="showEchart('A', b, a, dataALine[b])" [ngClass]="-item <= 85 ? 'redColor' : (-item > 85 && -item < 87 ? 'yellowColor' : '')">{{item}}</td>
+    </tr>
+</tbody>
+</nz-table>
+
+<br>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<nz-table
+#nzDataB
+nzBordered
+nzShowQuickJumper
+[nzData]="dataBContent"
+[nzShowPagination] = 'false'
+[nzWidthConfig] = "THwidth"
+[nzScroll]="{ x:totoalWidth}"
+class="tableStyle">
+<thead>
+ <tr>
+   <th rowspan="2" style="background: blue; border: 1px solid orange;">B面</th>
+    <th [attr.colspan]= "dataBhead[1][k]" *ngFor="let item of dataBhead[0] let k = index" style="background: blue; border: 1px solid orange;">{{item}}</th>
+  </tr>
+ <tr >
+   <th *ngFor="let data of dataBhead[2]" style="background: black; color: white; border: 1px solid orange;">{{data}}</th>
+ </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let data of nzDataB.data; let b = index" style="font-size: 14px;">
+    <td [ngClass]="lineBBackGround[b]  ? lineBBackGround[b] : ''">{{dataBLine[b]}}</td>
+    <td *ngFor="let item of data; let a = index" (click)="showEchart('B',b, a, dataBLine[b])" [ngClass]="-item <= 85 ? 'redColor' : (-item > 85 && -item < 87 ? 'yellowColor' : '')">{{item}}</td>
+    </tr>
+</tbody>
+</nz-table>
+
+
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" nzWidth="80%" [nzClosable]="cancelOK" [nzFooter]="footer">
+  <div class="bgView">
+    <div class="lef">
+      <div *ngIf="echart" echarts [options]="echart" id="line-chart"  class="column-chart" ></div>
+    </div>
+    <div>
+      <div style="display: flex;justify-content: flex-end; margin-bottom: 10px;">
+        <button class="btn" (click)="closeEchart()"> X </button>
+      </div>
+      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateInputFrom"
+        (ngModelChange)="getOptionDate($event, 'dateFrom')" style="margin-bottom: 10px;"></nz-date-picker>
+      <br>
+      <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateInputTo"
+        (ngModelChange)="getOptionDate($event, 'dateTo')" style="margin-bottom: 10px;"></nz-date-picker>
+      <div style="display: flex;justify-content: flex-end;">
+        <button nz-button nzType="primary" (click)="query()"
+        [disabled]="queryButton">Query</button>
+      </div>
+    </div>
+  </div>
+
+
+ </nz-modal>

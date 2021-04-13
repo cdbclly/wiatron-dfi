@@ -1,0 +1,174 @@
+.body {
+  margin: 0 1%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+#yrReport {
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.dfc-query {
+  margin-top: 17px;
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .dfc-query-half {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    div {
+      width: 49%;
+
+      .dfc-query-span {
+        width: 110px;
+        text-align: right;
+        display: inline-block;
+      }
+
+      .dfc-query-span2 {
+        width: 70px;
+        text-align: right;
+        display: inline-block;
+      }
+
+      nz-select {
+        margin-left: 5px;
+        width: 50%;
+        font-size: 14px;
+        text-align: left;
+        color: rgba(80, 80, 80, 1);
+        background-color: rgba(255, 255, 255, 1);
+      }
+
+      input {
+        margin-left: 5px;
+        width: 400px;
+        font-size: 14px;
+        text-align: left;
+        color: rgba(80, 80, 80, 1);
+        background-color: rgba(255, 255, 255, 1);
+        border: rgba(204, 204, 204, 1) solid 0px;
+      }
+    }
+
+    .dfc-query-btn {
+      width: 83px;
+
+      button {
+        margin-left: 10px;
+        width: 73px;
+      }
+    }
+  }
+
+  .dfc-query-full {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    div {
+      width: 99%;
+
+      nz-select {
+        margin-left: 5px;
+        width: 70%;
+        font-size: 14px;
+        text-align: left;
+        color: rgba(80, 80, 80, 1);
+        background-color: rgba(255, 255, 255, 1);
+      }
+
+      input {
+        margin-left: 5px;
+        width: 930px;
+        font-size: 14px;
+        text-align: left;
+        color: rgba(80, 80, 80, 1);
+        background-color: rgba(255, 255, 255, 1);
+        border: rgba(204, 204, 204, 1) solid 0px;
+      }
+
+      .dfc-query-span {
+        width: 110px;
+        text-align: right;
+        display: inline-block;
+      }
+    }
+  }
+
+
+}
+
+.dfc-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-left {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin-right: 30px;
+  }
+
+  .dfc-btn-center {
+    // float: left;
+    display: flex;
+    align-items: center;
+
+    // justify-content: center;
+    span {
+      font-size: 14px;
+      font-weight: normal;
+      color: rgba(80, 80, 80, 1);
+    }
+
+    div {
+      margin-left: 10px;
+      margin-right: 5px;
+    }
+  }
+
+  .ant-btn.upload {
+    border-radius: 0 4px 4px 0;
+  }
+}
+
+.download {
+  float: right;
+  height: 100%;
+}
+
+.rfi-table {
+  width: 100%;
+  float: left;
+  // background: green;
+}
+
+.spin {
+  position: fixed;
+  top: 100px;
+  left: 49%;
+}

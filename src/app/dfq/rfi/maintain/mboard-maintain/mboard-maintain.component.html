@@ -1,0 +1,169 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-data-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>MB{{ 'dfq.rfi-material-yield-maintenance' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">MB{{ 'dfq.rfi-material-yield-maintenance' | translate }}</div>
+<div>
+  <form nz-form [nzLayout]="'inline'" [formGroup]="validatorForm2" (ngSubmit)="query()">
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-site'| translate }}</nz-form-label>
+      <nz-form-control nzErrorTip="site cannot be empty">
+        <nz-select nzShowSearch nzAllowClear formControlName="siteId" [(ngModel)]="selectedSite"
+          (ngModelChange)="getPlants(selectedSite)">
+          <ng-container *ngFor="let site of sites">
+            <nz-option [nzValue]="site.id" [nzLabel]="site.id"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-plant'| translate }}</nz-form-label>
+      <nz-form-control nzErrorTip="plant cannot be empty">
+        <nz-select nzShowSearch nzAllowClear nzLoading formControlName="plantId" [(ngModel)]="selectedPlant"
+          (ngModelChange)="getSite(selectedPlant)">
+          <ng-container *ngFor="let plant of plants">
+            <nz-option [nzValue]="plant.id" [nzLabel]="plant.siteId + '-' + plant.id"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired>{{ 'dfq.dfq-product'| translate }}</nz-form-label>
+      <nz-form-control nzErrorTip="product cannot be empty">
+        <nz-select nzShowSearch nzAllowClear formControlName="productId" [(ngModel)]="selectedProduct">
+          <nz-option *ngFor="let product of products" [nzValue]="product.id" [nzLabel]="product.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button nz-button nzType="primary" [nzLoading]="isLoading"
+          [disabled]="!validatorForm2.valid">{{ 'dfq.dfq-query'| translate }}</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<nz-divider></nz-divider>
+<div>
+  <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!queryed"
+    (click)="edit()">{{ 'dfq.dfq-add' | translate }}</button>
+  <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!canSend() || numberOfChecked === 0"
+    (click)="send()">{{ 'dfq.dfq-send-sign' | translate }}</button>
+  <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!canSign() || numberOfChecked === 0"
+    (click)="editMBsignOk()">{{ 'dfq.dfq-sign-off' | translate }}</button>
+  <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!queryed"
+    (click)="download()">{{ 'dfq.dfq-download' | translate }}</button>
+  <button nz-button nzType="primary" [nzLoading]="uploadLoading" [disabled]="!uploadFileName"
+    (click)="upload()">{{ 'dfq.dfq-upload' | translate }}</button>
+  <input id="upload" type="file" accept=".xlsx,.xls" (change)="changeUploadFile($event.target)" />
+  <span *ngIf="numberOfChecked >= 0"> {{numberOfChecked}} items have been selected</span>
+</div>
+<div class="rfi-table">
+  <div>
+    <nz-table #nzTable nzBordered [nzData]="listOfDisplayData" [nzLoading]="isLoading" [nzPageSize]="10"
+      [nzShowSizeChanger]="true" [nzShowPagination]="isPagination">
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+        <tr>
+          <th nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
+            (nzCheckedChange)="checkAll($event)"></th>
+          <th>Action</th>
+          <th nzShowFilter [(nzFilters)]="partIds" (nzFilterChange)="filter(searchStatus, $event)">
+            {{ 'dfq.dfq-partNumber' | translate }}</th>
+          <th>{{ 'dfq.rfi-adverse-number' | translate }}</th>
+          <th>{{ 'dfq.rfi-Manufacturing-quantity' | translate }}</th>
+          <th>{{ 'dfq.dfq-yield' | translate }}</th>
+          <th nzShowFilter [(nzFilters)]="status" (nzFilterChange)="filter($event, searchPartIds)">
+            {{ 'dfq.dfq-sign-status' | translate }}</th>
+          <th> {{ 'dfq.dfq-editor' | translate }}</th>
+          <th>{{ 'dfq.dfq-update-date' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzTable.data;let i = index">
+          <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" [nzDisabled]="data.disabled"
+            (nzCheckedChange)="refreshStatus()"></td>
+          <td>
+            <div *ngIf="data.status !== '0'">
+              <a (click)="edit(data)"><i nz-icon type="edit" theme="outline"></i></a>
+            </div>
+          </td>
+          <td>{{data.partId}}</td>
+          <td>{{data.defectNum}}</td>
+          <td>{{data.total}}</td>
+          <td>{{1 - data.defectNum / data.total | percent}}</td>
+          <td>{{data.status | flowStatus}}</td>
+          <td>{{data.modifiedBy | userEnname | async}}</td>
+          <td>{{data.modified | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <!-- signature modal -->
+  <div>
+    <nz-modal nzWidth="500px" [(nzVisible)]="showSignatureModal" [nzTitle]="modalTitle1" [nzContent]="modalContent2"
+      (nzOnCancel)="cancalSignature()" [nzFooter]="modalFooter2">
+      <ng-template #modalTitle1>{{ 'dfq.dfq-sign-off' | translate }}</ng-template>
+      <ng-template #modalContent2>
+        <label>
+          <textarea nz-input [disabled]="false" nzWidth="400px" [(ngModel)]="comments" class="select2"
+            id="comments"></textarea>
+        </label>
+      </ng-template>
+      <ng-template #modalFooter2>
+        <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="false"
+          (click)="sign(true, comments)">Approve</button>
+        <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="false"
+          (click)="sign(false, comments)">Reject</button>
+      </ng-template>
+    </nz-modal>
+  </div>
+  <!-- edit modal -->
+  <div>
+    <nz-modal [(nzVisible)]="addModalShow" (nzOnCancel)="handleCancel()" (nzOnOk)="submitForm(part)"
+      [nzOkLoading]="isLoading" [nzFooter]="addModalFooter">
+      <form nz-form [formGroup]="validatorForm" (ngSubmit)="submitForm(part)">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="6" [nzXs]="24" nzErrorTip="plant cannot be empty">
+            <input nz-input formControlName="plantId" [(ngModel)]="part.plantId" [attr.disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="6" [nzXs]="24" nzErrorTip="product cannot be empty">
+            <input nz-input formControlName="productId" [(ngModel)]="part.productId" [attr.disabled]="true" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>{{ 'dfq.dfq-partNumber' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="6" [nzXs]="24" nzErrorTip="part cannot be empty">
+            <input nz-input formControlName="partId" [(ngModel)]="part.partId" [attr.disabled]="part.id" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>{{ 'dfq.rfi-adverse-number' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="6" [nzXs]="24">
+            <nz-input-number formControlName="defectNumber" [(ngModel)]="part.defectNum" [nzMin]="0"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>{{ 'dfq.rfi-Manufacturing-quantity' | translate }}</nz-form-label>
+          <nz-form-control [nzSm]="6" [nzXs]="24">
+            <nz-input-number formControlName="total" [(ngModel)]="part.total" [nzMin]="1"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">{{ 'dfq.dfq-yield' | translate }}</nz-form-label>
+          <nz-form-label>{{1 - part.defectNum / part.total | percent}}</nz-form-label>
+        </nz-form-item>
+      </form>
+      <ng-template #addModalFooter>
+        <button nz-button nzType="primary" (click)="handleCancel()">cancel</button>
+        <button nz-button nzType="primary" [disabled]="!validatorForm.valid" (click)="submitForm(part)">save</button>
+      </ng-template>
+    </nz-modal>
+  </div>
+
+</div>

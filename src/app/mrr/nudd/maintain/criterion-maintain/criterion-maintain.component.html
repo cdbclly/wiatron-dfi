@@ -1,0 +1,343 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-2d3d' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'mrr.nudd-2d3d' | translate }}
+</div>
+<app-criterion-query (modelFlag)="onModelFlag($event)" (queryForm)="onQueryForm($event)"></app-criterion-query>
+<div class="options" *ngIf="modelFlag">
+  <div class="options-table">
+    <nz-table #nzTable [nzData]="[1]" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.nudd-switch' | translate }}</th>
+          <th>{{ 'mrr.nudd-craft' | translate }}</th>
+          <th>{{ 'mrr.nudd-code' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let processtype of processes;let i = index" (click)="clickProcess(processtype)">
+          <td>
+            <nz-switch [(ngModel)]="processtype.enabled" (ngModelChange)="isEnabledProcess(processtype)"></nz-switch>
+          </td>
+          <td><a (click)="clickProcessName(processtype)"
+              [ngStyle]="{'border-bottom': processtype.designItems.length > 0? '': '1px solid black'}">{{processtype.name}}</a>
+          </td>
+          <td>{{processtype.id}}</td>
+        </tr>
+        <tr *ngIf="enableUse">
+          <td>
+            <div class="add">
+              <button nz-button nzType="primary" nzShape="circle" (click)="addProcesses()">
+                <i nz-icon type="plus" theme="outline"></i>
+              </button>
+            </div>
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div>
+      <nz-modal nzWidth="350px" [(nzVisible)]="addProcessFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+        [nzFooter]="modalFooter" (nzOnCancel)="processModelCancel()">
+        <ng-template #modalTitle>
+          {{ 'mrr.nudd-addProcessType' | translate }}
+        </ng-template>
+        <ng-template #modalContent>
+          <div class="input">
+            <span>{{ 'mrr.nudd-craft' | translate }}</span>
+            <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+              [(ngModel)]="processForm.name">
+          </div>
+        </ng-template>
+        <ng-template #modalFooter>
+          <button nz-button nzType="primary" (click)="processModelCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+          <button nz-button nzType="primary" (click)="processModelOk()"
+            [nzLoading]="isProcessConfirmLoading">{{ 'mrr.mrr-save' | translate }}</button>
+        </ng-template>
+      </nz-modal>
+    </div>
+  </div>
+  <div class="options-table" *ngIf="desisgnItemFlag">
+    <nz-table #nzTable [nzData]="[1]" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.nudd-switch' | translate }}</th>
+          <th style="width: 130px">{{ 'mrr.nudd-2d3d-item' | translate }}</th>
+          <th>{{ 'mrr.nudd-itemCode' | translate }}</th>
+          <th *ngIf="enableUse">{{ 'mrr.nudd-riskLevel' | translate }}</th>
+          <th *ngIf="SQMLeaderUse">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let desisgnItem of desisgnitem;let i = index" (click)="clickDesisgnItem(desisgnItem)">
+          <td>
+            <nz-switch [(ngModel)]="desisgnItem.enabled" (ngModelChange)="isEnabledDesignItem(desisgnItem)"></nz-switch>
+          </td>
+          <td><a (click)="clickDesignItemName(desisgnItem)"
+              [ngStyle]="{'border-bottom': desisgnItem.sides.length > 0? '': '1px solid black'}">{{desisgnItem.name}}</a>
+          </td>
+          <td>{{desisgnItem.id}}</td>
+          <td *ngIf="enableUse">
+            <button nz-button nzType="primary"
+              (click)="clickWithDesisgnModel(desisgnItem)">{{ 'mrr.nudd-connection' | translate }}</button>
+          </td>
+          <td *ngIf="SQMLeaderUse">
+            <div>
+              <i nz-icon type="delete" theme="outline" (click)="delDesisgnItem(desisgnItem)"></i>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="add" *ngIf="enableUse">
+              <button nz-button nzType="primary" nzShape="circle" (click)="addDesisgn()">
+                <i nz-icon type="plus" theme="outline"></i>
+              </button>
+            </div>
+          </td>
+          <td colspan="4">{{ 'mrr.nudd-craft' | translate }}：{{processClickedName}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div>
+      <nz-modal nzWidth="350px" [(nzVisible)]="addDesisgnitemFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+        [nzFooter]="modalFooter" (nzOnCancel)="desisgnModelCancel()">
+        <ng-template #modalTitle>
+          {{ 'mrr.nudd-addItem' | translate }}:{{processClickedName}}
+        </ng-template>
+        <ng-template #modalContent>
+          <div class="input">
+            <span>{{ 'mrr.nudd-itemCode' | translate }}</span>
+            <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+              [(ngModel)]="desisgnForm.id">
+          </div>
+          <div class="input">
+            <span>{{ 'mrr.nudd-itemName' | translate }}</span>
+            <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+              [(ngModel)]="desisgnForm.name">
+          </div>
+        </ng-template>
+        <ng-template #modalFooter>
+          <button nz-button nzType="primary" (click)="desisgnModelCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+          <button nz-button nzType="primary" (click)="desisgnModelOk()"
+            [nzLoading]="isDesisgnitemConfirmLoading">{{ 'mrr.mrr-save' | translate }}</button>
+        </ng-template>
+      </nz-modal>
+    </div>
+
+  </div>
+  <div class="options-table" *ngIf="positionFlag">
+    <nz-table #nzTable [nzData]="[1]" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.nudd-switch' | translate }}</th>
+          <th>{{ 'mrr.nudd-position' | translate }}</th>
+          <th>{{ 'mrr.nudd-positionCode' | translate }}</th>
+          <th *ngIf="SQMLeaderUse">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let position of positions;let i = index" (click)="clickPosition(position)">
+          <td>
+            <nz-switch [(ngModel)]="position.enabled" (ngModelChange)="isEnabledPosition(position)"></nz-switch>
+          </td>
+          <td><a (click)="clickSideName(position)"
+              [ngStyle]="{'border-bottom': position.points.length > 0? '': '1px solid black'}">{{position.name}}</a>
+          </td>
+          <td>{{position.code}}</td>
+          <td *ngIf="SQMLeaderUse">
+            <div>
+              <i nz-icon type="delete" theme="outline" (click)="delPosition(position)"></i>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="add" *ngIf="enableUse">
+              <div class="add">
+                <button nz-button nzType="primary" nzShape="circle" (click)="addPositions()">
+                  <i nz-icon type="plus" theme="outline"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+          <td colspan="3">{{ 'mrr.nudd-itemName' | translate }}：{{desisgnClickName}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div>
+      <nz-modal nzWidth="350px" [(nzVisible)]="addPositionFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+        [nzFooter]="modalFooter" (nzOnCancel)="positionsModelCancel()">
+        <ng-template #modalTitle>
+          {{ 'mrr.nudd-addPosition' | translate }}:{{desisgnClickName}}
+        </ng-template>
+        <ng-template #modalContent>
+          <div class="input">
+            <span>{{ 'mrr.nudd-position' | translate }}</span>
+            <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+              [(ngModel)]="positionForm.name">
+          </div>
+          <div class="input">
+            <span>{{ 'mrr.nudd-code' | translate }}</span>
+            <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+              [(ngModel)]="positionForm.code">
+          </div>
+        </ng-template>
+        <ng-template #modalFooter>
+          <button nz-button nzType="primary"
+            (click)="positionsModelCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+          <button nz-button nzType="primary" (click)="positionsModelOk()"
+            [nzLoading]="isPositionConfirmLoading">{{ 'mrr.mrr-save' | translate }}</button>
+        </ng-template>
+      </nz-modal>
+    </div>
+  </div>
+  <div class="options-table" *ngIf="pointFlag">
+    <nz-table #nzTable [nzData]="[1]" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.nudd-switch' | translate }}</th>
+          <th>{{ 'mrr.nudd-point' | translate }}</th>
+          <th>{{ 'mrr.nudd-code' | translate }}</th>
+          <th *ngIf="SQMLeaderUse">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let point of points">
+          <td>
+            <nz-switch [(ngModel)]="point.enabled" (ngModelChange)="isEnabledPoint(point)"></nz-switch>
+          </td>
+          <td>{{positionClickedName}}</td>
+          <td>{{point.name}}</td>
+          <td *ngIf="SQMLeaderUse">
+            <div>
+              <i nz-icon type="delete" theme="outline" (click)="delPoint(point)"></i>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="enableUse">
+          <td>
+            <div class="add">
+              <div class="add">
+                <button nz-button nzType="primary" nzShape="circle" (click)="addPoint()">
+                  <i nz-icon type="plus" theme="outline"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+          <td colspan="2"></td>
+          <td *ngIf="SQMLeaderUse"></td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <nz-modal nzWidth="350px" [(nzVisible)]="addPointFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter" (nzOnCancel)="pointModelCancel()">
+      <ng-template #modalTitle>
+        {{ 'mrr.nudd-addPoint' | translate }}:{{positionClickedName}}
+      </ng-template>
+      <ng-template #modalContent>
+        <div class="input">
+          <span>{{ 'mrr.nudd-code' | translate }}</span>
+          <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched"
+            [(ngModel)]="pointForm.name">
+        </div>
+      </ng-template>
+      <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="pointModelCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+        <button nz-button nzType="primary" (click)="pointModelOk()"
+          [nzLoading]="isPointConfirmLoading">{{ 'mrr.mrr-save' | translate }}</button>
+      </ng-template>
+    </nz-modal>
+  </div>
+</div>
+<div>
+  <nz-modal nzWidth="800px" [(nzVisible)]="withDesisgnFlag" nzTitle=" " [nzFooter]="null"
+    (nzOnCancel)="WithDesisgnModelCancel()">
+    <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="showJudgeMode()">
+      <label nz-radio nzValue="0">{{ 'mrr.nudd-number-input' | translate }}</label>
+      <label nz-radio nzValue="1">{{ 'mrr.nudd-describe-input' | translate }}</label>
+    </nz-radio-group>
+    <div *ngIf="judgeMode">
+      <table class="risk-table" *ngIf="riskTableData">
+        <thead>
+          <tr>
+            <th>{{ 'mrr.nudd-technology-risk' | translate }}</th>
+            <th>{{ 'mrr.nudd-specification-isComplete' | translate }}</th>
+            <th>{{ 'mrr.nudd-processRisk' | translate }}</th>
+            <th>{{ 'mrr.nudd-supplyChain' | translate }}</th>
+            <th>{{ 'mrr.nudd-riskLevel' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let riskTr of riskTableData; let i = index">
+            <td *ngFor="let risk of riskTr; let j = index" (click)="clickRisk(i, j)">
+              <div *ngIf="j !== 4">
+                <div>
+                  MAX:
+                  <nz-input-number class="risk-input" [(ngModel)]="risk.maximum" [nzSize]="'small'"
+                    [nzPlaceHolder]="'Enter'"></nz-input-number>
+                </div>
+                <div style="margin-top: 1px">
+                  MIN:
+                  <nz-input-number class="risk-input" [(ngModel)]="risk.minimum" [nzMin]="0" [nzSize]="'small'"
+                    [nzStep]="0.1" [nzPlaceHolder]="'Enter'"></nz-input-number>
+                </div>
+              </div>
+              <div *ngIf="j === 4">{{ risk }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="!judgeMode">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>{{ 'mrr.nudd-describe' | translate }}</th>
+            <th>{{ 'mrr.nudd-riskScore' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>H</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>L</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align: center">
+      <button nz-button nzType="primary" (click)="WithDesisgnModelCancel()">
+        {{ 'mrr.mrr-return' | translate }}</button>&nbsp;&nbsp;
+      <button nz-button nzType="primary" (click)="WithDesisgnModelOk()" [nzLoading]="isWithDesisgnLoading">
+        {{ 'mrr.mrr-save' | translate }}
+      </button>
+    </div>
+  </nz-modal>
+</div>
+<!-- can update processTypeName,designItemName,sideName -->
+<div>
+  <nz-modal nzWidth="350px" [(nzVisible)]="updateNameFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+    [nzFooter]="modalFooter" (nzOnCancel)="updateCancel()">
+    <ng-template #modalTitle>
+      {{updateTitle === '修改工藝名' ? ('mrr.nudd-update-processType' | translate) : updateTitle === '修改項目名' ? ('mrr.nudd-update-item' | translate) : ('mrr.nudd-update-position' | translate)}}
+    </ng-template>
+    <ng-template #modalContent>
+      <div class="input">
+        <span>{{itemName === '工藝' ? ('mrr.nudd-craft' | translate) : itemName === '項目' ? ('mrr.nudd-item' | translate) : ('mrr.nudd-position' | translate)}}</span>
+        <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched" [(ngModel)]="updateName">
+      </div>
+    </ng-template>
+    <ng-template #modalFooter>
+      <button nz-button nzType="primary" (click)="updateCancel()">{{ 'mrr.mrr-return' | translate }}</button>
+      <button nz-button nzType="primary" (click)="updateOk()">{{ 'mrr.mrr-save' | translate }}</button>
+    </ng-template>
+  </nz-modal>
+</div>

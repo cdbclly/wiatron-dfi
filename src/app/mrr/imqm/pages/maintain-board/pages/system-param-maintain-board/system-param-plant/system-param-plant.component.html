@@ -1,0 +1,130 @@
+<div class="query-row">
+    <div class="field1">
+        <span class="span-width1">
+          <span style="color: red;">*</span>
+          <span>Site</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="curSite" (ngModelChange)="getOptions('site')">
+          <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+        </nz-select>
+      </div>
+    <div class="field1">
+      <span class="span-width1">
+        <span style="color: red;">*</span>
+        <span>{{'imq-plant' | translate}}</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="curPlant" (ngModelChange)="getOptions('factory')">
+        <nz-option *ngFor="let factory of factoryGroup" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+      </nz-select>
+    </div>
+    <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+  </div>
+
+  <div class="table">
+    <nz-table #plantTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true' [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th width="10%">{{'imq-plant' | translate}}</th>
+          <th width="50%">{{'imq-pop-table-type' | translate}}</th>
+          <th width="25%">{{'imq-mt-setValue' | translate}}</th>
+          <th width="15%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of plantTable.data; let i = index;">
+          <td *ngIf="data.detail !== undefined" style="font-size: 10px;">{{data.detail.plant}}</td>
+          <td *ngIf="data.detail === undefined" style="font-size: 10px;">{{curPlant}}</td>
+          <td style="font-size: 10px;">{{data.name}}</td>
+          <td style="text-align: left;" *ngIf="data.detail !== undefined">
+            <ng-container *ngIf="!editCache[data.id].edit" [ngSwitch]="data.id">
+              <span *ngSwitchCase="2">{{data.detail['drMonthlyAverage']}} %</span>
+              <span *ngSwitchCase="5">{{data.detail['yrTarget']}} %</span>
+              <span *ngSwitchCase="1">{{data.detail['numberStopsMonthlyAverage']}} {{'imq-mt-count' | translate}}</span>
+              <span *ngSwitchCase="3">{{data.detail['spcCalculationFrequency']}} {{'imq-mt-hour' | translate}}</span>
+              <span *ngSwitchCase="4">{{data.detail['automaticTraceability']}} Pcs</span>
+              <span *ngSwitchCase="6">{{data.detail['cpkCriteria']}}</span>
+              <span *ngSwitchCase="7">{{data.detail['fakeRawdataCount']}} Pcs</span>
+              <span *ngSwitchCase="8">{{data.detail['sqmsWeb']}}</span>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.id].edit" [ngSwitch]="data.id">
+               <span *ngSwitchCase="1" >
+                  <input type="text" style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.numberStopsMonthlyAverage"> {{'imq-mt-count' | translate}}
+               </span>
+               <span *ngSwitchCase="3">
+                  <input type="text" style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.spcCalculationFrequency"
+                  > {{'imq-mt-hour' | translate}}
+              </span>
+               <span *ngSwitchCase="4">
+                  <input type="text" style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.automaticTraceability"> Pcs
+               </span>
+               <span *ngSwitchCase="2">
+                  <input type="text"  style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.drMonthlyAverage"> %
+               </span>
+               <span *ngSwitchCase="5">
+                  <input type="text"  style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.yrTarget"> %
+               </span>
+               <span *ngSwitchCase="6">
+                  <input type="text"  style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.cpkCriteria">
+               </span>
+               <span *ngSwitchCase="7">
+                <input type="fakeRawdata" style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.fakeRawdataCount"> Pcs
+             </span>
+             <span *ngSwitchCase="8">
+              <input type="sqmsWeb"  style="width: 70%;" nz-input [(ngModel)]="editCache[data.id].data.detail.sqmsWeb">
+           </span>
+            </ng-container>
+          </td>
+          <td *ngIf="data.detail === undefined">
+                <ng-container *ngIf="editCache[data.id].edit" [ngSwitch]="data.id">
+                    <span *ngSwitchCase="2">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="2" nz-input [(ngModel)]="new_drMonthlyAverage"> %
+                    </span>
+                    <span *ngSwitchCase="5">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="5" nz-input [(ngModel)]="new_yrTarget"> %
+                    </span>
+                    <span *ngSwitchCase="1">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="1" nz-input [(ngModel)]="new_numberStopsMonthlyAverage"> {{'imq-mt-count' | translate}}
+                    </span>
+                    <span *ngSwitchCase="3">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="3" nz-input [(ngModel)]="new_spcCalculationFrequency"> {{'imq-mt-hour' | translate}}
+                    </span>
+                    <span *ngSwitchCase="4">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="4" nz-input [(ngModel)]="new_automaticTraceability"> Pcs
+                    </span>
+                    <span *ngSwitchCase="6">
+                        <input type="text" style="width: 70%;" *ngSwitchCase="6" nz-input [(ngModel)]="new_cpkCriteria">
+                    </span>
+                    <span *ngSwitchCase="7">
+                      <input type="fakeRawdata" style="width: 70%;" *ngSwitchCase="7" nz-input [(ngModel)]="new_fakeRawdataCount"> Pcs
+                  </span>
+                  <span *ngSwitchCase="8">
+                    <input type="sqmsWeb" style="width: 70%;" *ngSwitchCase="8" nz-input [(ngModel)]="new_sqmsWeb">
+                </span>
+                </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit">
+              <div *ngIf="!actionEnabled">
+                <a style="margin-left: 10px;" disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </div>
+              <div *ngIf="actionEnabled && isAuthEdit">
+                <a style="margin-left: 10px;" (click)="startEdit(data.id)">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.id].edit">
+              <a (click)="saveEdit(data.id)">
+                <i class="anticon anticon-save"></i>
+              </a>
+              <a style="margin-left:10px;" (click)="cancelEdit(data.id)">
+                <i class="anticon anticon-close-circle"></i>
+              </a>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>

@@ -1,0 +1,2 @@
+<div *ngIf="barOptions" echarts [options]="barChart" (chartClick)="showSubChart($event, barOptions['target'], barOptions['toolTip'])"
+[ngStyle]="{ 'width': barOptions['width'], 'height': barOptions['height'], 'float': barOptions['float']}" class="bar-chart"></div>

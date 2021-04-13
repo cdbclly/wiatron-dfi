@@ -1,0 +1,50 @@
+.body {
+  margin: 0 1%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+span {
+  font-size: 14px;
+}
+
+nz-select {
+  width: 200px;
+  margin-right: 15px;
+}
+
+.dfc-query {
+  width: 100%;
+
+  .dfc-query-half {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 15px;
+
+    .dfc-query-span {
+      float: left;
+      width: 25%;
+
+      nz-select {
+        width: 70%;
+        margin-right: 10px;
+      }
+
+      .span-cls {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.mapping-transfer {
+  margin-top: 10px;
+  width: 100%;
+}
+.transfer {
+  text-align: center;
+}

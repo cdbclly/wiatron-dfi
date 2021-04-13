@@ -1,0 +1,541 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>生產偏移管理(Spec)</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  生產偏移管理(Spec)
+</div>  
+  <div class="query-row" style="margin-bottom: 25px;">
+    <div class="field1">
+      <span style="width:  33%;">
+        <span style="color: red">*</span>
+        <span>廠別</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+        <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" >
+        </nz-option>
+      </nz-select>
+    </div>
+      <!-- 厂区 -->
+    <div class="field1" (click)="getOptList('plant')">
+      <span style="width:  22%;">
+        <span style="color: red">*</span>
+        <span style="margin-right: 2px;">廠區</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+        <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+      </nz-select>
+    </div>
+      <!-- 机种 -->
+    <div class="field1" (click)="getOptList('model')">
+      <span style="width:  20%;">
+        <span style="color: red">*</span>
+        <span>機種</span>
+      </span>
+      <nz-select style="width: 70%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_model" (ngModelChange)="getOptions('query')">
+        <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model" ></nz-option>
+      </nz-select>
+    </div>
+    <div class="field1" (click)="getOptList('upn')">
+      <span style="width: 20%;">
+      <span style="color: red">*</span>
+      <span>架構</span>
+      </span>
+      <nz-select style="width: 70%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_upn" (ngModelChange)="getOptions('upn')">
+        <nz-option *ngFor="let upn of upnArr" [nzLabel]="upn" [nzValue]="upn"></nz-option>
+      </nz-select>
+    </div>
+    <div class="field1" >
+      <span style="width: 20%;">
+      <span style="color: red">*</span>
+      <span>站別</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_stationtype" (ngModelChange)="getOptions('stationtype')">
+        <nz-option *ngFor="let st of stGroup" [nzLabel]="st" [nzValue]="st"></nz-option>
+      </nz-select>
+    </div>
+  </div>
+  <div class="query-row">
+    <div class="field1_3" style="margin-bottom: 5px;">
+      <span style="width: 33%;">
+      <span>治具編號</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_item" (ngModelChange)="getOptions('fixture')">
+        <nz-option *ngFor="let item of itemGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+      </nz-select>
+    </div>
+    <div class="field1" style="width: 45%;margin-bottom: 5px;">
+      <span style=" width:9%; margin-right: 2%;">
+        <span style="color: red">*</span>
+        <span>日期</span>
+      </span>
+        <!-- <nz-range-picker style="width: 80%;" [nzFormat]="dateFormat" [(ngModel)]="dateRange" nzShowTime (ngModelChange)="getOptions('cur_date', $event)"></nz-range-picker> -->
+        <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="開始時間" [(ngModel)]="dateRangeFrom" (ngModelChange)="getOptions('datefrom')"></nz-date-picker>
+        ~
+        <nz-date-picker nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss" nzPlaceHolder="結束時間" [(ngModel)]="dateRangeTo" (ngModelChange)="getOptions('dateto')"></nz-date-picker>
+    </div>
+    <button class="field1_2" nz-button nzType="primary" (click)="queryclick()" style="border-radius:6px" [disabled]="queryButton">Query</button>
+  </div>
+  <nz-divider nzType="horizontal" style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+  <div class="query-row" style="margin-top: 10px;" id="firstrow" name="specoffsetrow">
+    <div id="eChart" class="field8" style="height:300px;border:1px solid #000;">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" id="info" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>  
+    </div>
+    <div id="eChart1" class="field8" style="height:300px;border:1px solid #000;margin-left: 2px;">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart1" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>  
+    </div>
+    <div id="eChart2" class="field8" style="height:300px;border:1px solid #000;margin-left: 2px;">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart2" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- <nz-divider nzType="horizontal" style="background-color:rgba(212, 212, 212, 1);"></nz-divider> -->
+  <div class="query-row" style="height:100px;border-top:1px solid rgba(212, 212, 212, 1);border-bottom:1px solid rgba(212, 212, 212, 1);" id="toolbar">
+    <div class="query-row" style="height:35px;margin-top: 10px;">
+      <p class="field0" style="color: red;">工廠</p>
+      <div class="field1" style="width:  15%;">
+        <span style="width:  25%;">
+           <span id="tdname">总项目</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_tdname" (ngModelChange)="getOptions('tdname')" nzTitle="{{cur_tdname}}" nzPlacement="top" nz-tooltip>
+          <nz-option *ngFor="let item of tdnameGroup" [nzLabel]="item" [nzValue]="item">
+          </nz-option>
+        </nz-select>
+      </div>
+      <div class="field1" style="width:  15%;">
+        <span style="width:  25%;">
+           <span id="mdname">子项目</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('mdname')" nzTitle="{{cur_mdname}}" nzPlacement="top" nz-tooltip>
+          <nz-option *ngFor="let item of mdnameGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field1_4">
+        <span style="width:  30%;">
+           <span>Upperlimit</span>
+        </span>
+        <nz-select style="width: 120px;" nzShowSearch nzAllowClear [(ngModel)]="cur_Upperlimit" (ngModelChange)="getOptions('Upperlimit')">
+          <nz-option *ngFor="let item of UpperlimitGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field1_4">
+        <span style="width:  28%;">
+           <span>Lowlimit</span>
+        </span>
+        <nz-select style="width: 120px;" nzShowSearch nzAllowClear [(ngModel)]="cur_Lowerlimit" (ngModelChange)="getOptions('Lowerlimit')">
+          <nz-option *ngFor="let item of LowerlimitGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+      <button class="field1_5" nz-button nzType="primary" style="border-radius:6px" (click)="showmaterialsModal()">Bug list</button>
+      <button class="field1_5" nz-button nzType="primary" style="border-radius:6px" (click)="shownglogModal()">NG log</button>
+      <button class="field1_5" nz-button nzType="primary" style="border-radius:6px" (click)="showDebuglistModal()">Spec推送</button>
+    </div>
+    <div class="query-row" style="height:35px;margin-bottom: 10px;">
+      <p class="field0" style="color: red;">RD</p>
+      <div class="field1" style="width:  15%;">
+        <span style="width:  25%;">
+           <span>总项目</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_tdname" (ngModelChange)="getOptions('fixture')" nzTitle="{{cur_tdname}}" nzPlacement="top" nz-tooltip>
+          <nz-option *ngFor="let item of tdnameGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field1" style="width:  15%;">
+        <span style="width:  25%;">
+           <span>子项目</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('fixture')" nzTitle="{{cur_mdname}}" nzPlacement="top" nz-tooltip>
+          <nz-option *ngFor="let item of mdnameGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field1_4">
+        <span style="width:  30%;">
+           <span>Upperlimit</span>
+        </span>
+        <input type="text" style="width: 120px;" nz-input [(ngModel)]="upperCpk"/>
+      </div>
+      <div class="field1_4">
+        <span style="width:  28%;">
+           <span>Lowlimit</span>
+        </span>
+        <input type="text" style="width: 120px;" nz-input [(ngModel)]="lowerCpk"/>
+      </div>
+      <button class="field1_2" nz-button nzType="primary" (click)="showspecModal()" style="border-radius:6px" >RD Spec调试</button>
+      <button class="field1_2" nz-button nzType="primary" (click)="queryclick1()" style="border-radius:6px">Query</button>
+    </div>
+  </div>
+  <!-- <nz-divider nzType="horizontal" style="background-color:rgba(212, 212, 212, 1);"></nz-divider> -->
+  <div class="query-row" id="downfirstrow" name="downspecoffsetrow">
+    <div id="eChart" class="field8" style="height:300px;border:1px solid #000">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>  
+    </div>
+    <div id="eChart1" class="field8" style="height:300px;border:1px solid #000;margin-left: 2px;">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart1" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>  
+    </div>
+    <div id="eChart2" class="field8" style="height:300px;border:1px solid #000;margin-left: 2px;">
+      <p id="title" style="font-size: 14px;width:100%;height:10%;text-align:center;color: red;">00001治具A項目CPK分析圖</p>
+      <div class="query-row" style="margin-top: 0%;">
+          <div class="datavalue" class="field9" style="height:250px;width:35%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div style="height:64%;width:99%;border-bottom:1px solid #000;background-color: white;margin-top: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">过程数据</div>
+              <div id="mdlowerlimit">规格下限</div>
+              <div id="mean">规格中心</div>
+              <div id="mdupperlimit">规格上限</div>
+              <div id="mdtarget">样本均值</div>
+              <div id="count">样本数量</div>
+              <div id="sigma">标准差</div>
+            </div>
+            <div style="height:34%;width:99%;background-color: white;margin-top:1px;margin-bottom: 1px;margin-left:1px;margin-right: 1px;">
+              <div style="text-align:center">整体能力</div>
+              <div id="pp" style="text-align:left">Pp</div>
+              <div id="ppk" style="text-align:left">Ppk</div>
+            </div>
+          </div>
+          <div id="Decorator" class="field9" style="height:250px;width:60%;border:1px solid #000;background-color: white;margin-top: 0px;margin-left:5px;">
+            <div id="lineChart2" class="field9" style="height:246px;width:97%;background-color: white;margin-top: 1px;margin-left:1px;margin-bottom:1px;margin-right:1px;">
+            </div>
+          </div>
+      </div>  
+    </div>
+    <!--*********************************************************************************************-->
+    <nz-modal [(nzVisible)]="isVisible_spec" nzTitle="CPK Spec调试界面" (nzOnCancel)="CancelspecModal()" (nzOnOk)="handleOkspecModal()">
+      <div style="margin-left: 50px;">
+        <div class="query-row">
+            
+            <p><span class="add-span">总测试项目</span>
+                <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_tdname" (ngModelChange)="getOptions('')">
+                  <nz-option *ngFor="let item of tdnameGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+                </nz-select>
+            </p>
+            
+            <p><span class="add-span">子测试项目</span>
+              <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_mdname" (ngModelChange)="getOptions('')">
+                <nz-option *ngFor="let item of mdnameGroup" [nzLabel]="item" [nzValue]="item"></nz-option>
+              </nz-select>
+            </p>
+            <p><span class="add-span">Spec(Upper Limit)</span>
+              <input type="text" nz-input style="width: 390px;height: 35px;" nz-input [(ngModel)]="upperCpk"/>
+            </p>
+            <p><span class="add-span">Spec(Low Limit)</span>
+              <input type="text" nz-input style="width: 390px;height: 35px;" nz-input [(ngModel)]="lowerCpk"/>
+            </p>
+        </div>
+      </div>
+    </nz-modal>
+    <nz-modal nzWidth="60%" [(nzVisible)]="isVisible_speclist" nzTitle="CPK Spec调试List" [nzFooter]="modalFooter" (nzOnCancel)="CancelspecListModal()" (nzOnOk)="handleOkspecListModal()">
+      <div>
+        <nz-table
+          nzBordered
+          nzShowQuickJumper
+          [nzData]="debuglistdata"
+          [nzPageSize]="5000"
+          [nzWidthConfig] = "cpkdebuglistwidth"
+          [(nzPageIndex)]="curPage"
+          [nzScroll]="{ x: '500px' }">
+          <thead>
+            <tr style="font-size: 12px;">
+              <th>NO.</th>
+              <th>总测试项目</th>
+              <th>子测试项目</th>
+              <th>Upper Limit</th>
+              <th>Low Limit</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of debuglistdata;  let i = index;" style="font-size: 12px;">
+            <td>
+              {{data.no}}
+            </td>
+            <td>
+              {{data.tdname}}
+            </td>
+            <td>
+              {{data.mdname}}
+            </td>
+            <td>
+              {{data.UpperLimit}}
+            </td>
+            <td>
+              {{data.LowerLimit}}
+            </td>
+            <td>
+              {{data.Action}}
+            </td>           
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="handleOkspecListModal()" [nzLoading]="isConfirmLoading">Spec推送</button>
+      </ng-template>
+    </nz-modal>
+    <nz-modal nzWidth="85%" [(nzVisible)]="isVisible_materials" [nzClosable]="false" [nzFooter]="null" nzTitle="" (nzOnCancel)="CancelmaterialsModal()" (nzOnOk)="handleOkmaterialsModal()">
+      <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadbuglist(buglistdata, 'BuglistData')">下载</button>
+      <div>
+        <nz-table
+          nzBordered
+          nzShowQuickJumper
+          [nzData]="buglistdata"
+          [nzPageSize]="5000"
+          [(nzPageIndex)]="curPage"
+          [nzScroll]="{ x: '1000px' }">
+          <thead>
+            <tr style="font-size: 12px;">
+              <th nzWidth="50px">PN</th>
+              <th nzWidth="50px">Stage</th>
+              <th nzWidth="50px">Symptom</th>
+              <th nzWidth="100px">Symptom Description</th>
+              <th nzWidth="50px">Defectqty</th>
+              <th nzWidth="50px">Analysis</th>
+              <th nzWidth="50px">Root Cause</th>
+              <th nzWidth="50px">Solution</th>
+              <th nzWidth="50px">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of buglistdata;  let i = index;" style="font-size: 12px;">
+            <td>
+              {{data.PN}}
+            </td>
+            <td>
+              {{data.Stage}}
+            </td>
+            <td>
+              {{data.Symptom}}
+            </td>
+            <td>
+              {{data.SymptomDescription}}
+            </td>
+            <td>
+              {{data.DefectRate}}
+            </td>
+            <td>
+              {{data.Analysis}}
+            </td>   
+            <td>
+              {{data.RootCause}}
+            </td>
+            <td>
+              {{data.Solution}}
+            </td>    
+            <td>
+              {{data.Status}}
+            </td>      
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </nz-modal>
+    <nz-modal nzWidth="90%" [(nzVisible)]="isVisible_nglog" [nzClosable]="false" [nzFooter]="null" nzTitle="" (nzOnCancel)="Cancelnglog()" (nzOnOk)="handleOknglog()">
+      <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadNglog(nglogdata, 'nglogdata')">下载</button>
+      <div>
+        <nz-table
+          nzBordered
+          nzShowQuickJumper
+          [nzData]="nglogdata"
+          [nzPageSize]="5000"
+          [(nzPageIndex)]="curPage"
+          [nzScroll]="{ x: '1000px' }">
+          <thead>
+            <tr style="font-size: 12px;">
+              <th nzWidth="100px">SN</th>
+              <th nzWidth="100px">总测试项目</th>
+              <th nzWidth="80px">子测试项目</th>
+              <th nzWidth="60px">Stage</th>
+              <th nzWidth="90px">Spec(Upperlimit)</th>
+              <th nzWidth="90px">Spec(Lowlimit)</th>
+              <th nzWidth="60px">实际值</th>
+              <th nzWidth="70px">治具编号</th>
+              <th nzWidth="80px">测试开始时间</th>
+              <th nzWidth="80px">测试结束时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of nglogdata;  let i = index;" style="font-size: 12px;">
+            <td>
+              {{data.sn}}
+            </td>
+            <td>
+              {{data.tdname}}
+            </td>
+            <td>
+              {{data.mdname}}
+            </td>
+            <td>
+              {{data.stage}}
+            </td>
+            <td>
+              {{data.Upperlimit}}
+            </td>
+            <td>
+              {{data.Lowerlimit}}
+            </td>
+            <td>
+              {{data.mdresult}}
+            </td>
+            <td>
+              {{data.item}}
+            </td>     
+            <td>{{data.startdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+            <td>{{data.stopdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>      
+          </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </nz-modal>
+    <nz-modal [(nzVisible)]="cpkrowdatavisible" nzWidth="90%" nzTitle="" (nzOnCancel)="handleCancelcpkrowdata()" [nzClosable]="false" [nzFooter]="null" (nzOnOk)="handleOkcpkrowdata()">
+      <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadCpkrowdata(cpkrowdata, 'CPKRowData')">下载</button>
+    <div>
+      <nz-table
+        nzBordered
+        nzShowQuickJumper
+        [nzData]="cpkrowdata"
+        [nzPageSize]="5000"
+        [nzWidthConfig] = CPKRawdatawidth
+        [(nzPageIndex)]="curPage"
+        [nzScroll]="{ x: '1000px' }">
+        <thead>
+          <tr style="font-size: 12px;">
+            <th>NO.</th>
+            <th>機種</th>
+            <th>線別</th>
+            <th>站別</th>
+            <th>治具编号</th>
+            <th>机台序列号</th>
+            <th>开始测试时间</th>
+            <th>结束测试时间</th>
+            <th>测试值</th>
+            <th>测试SPEC上限</th>
+            <th>测试SPEC下限</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of cpkrowdata;  let i = index;" style="font-size: 12px;">
+          <td>{{data.no}}</td>
+          <td>{{data.model}}</td>
+          <td>{{data.stationline}}</td>
+          <td>{{data.stationtype}}</td>
+          <td>{{data.item}}</td>
+          <td>{{data.unitserialnumber}}</td>
+          <td>{{data.startdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+          <td>{{data.stopdate | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+          <td>{{data.mdresult}}</td>
+          <td>{{data.mdupperlimit}}</td>
+          <td>{{data.mdlowerlimit}}</td>           
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-modal>
+  </div>

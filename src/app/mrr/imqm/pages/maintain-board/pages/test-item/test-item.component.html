@@ -1,0 +1,157 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-testManage' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select [subject]="subject" [onlyShowRequired]="require" [specialStar]="isShow" (queryOps)="query($event)">
+</app-imqm-select>
+
+
+<nz-content [ngClass]="styleShow ? 'content1' : 'content2'">
+  <div class="bg1" *ngIf="testGroupData.length > 0">
+    <nz-table #borderedTable nzBordered [nzShowPagination]='false' nzSize="middle" [nzData]="testGroupData">
+      <thead>
+        <tr>
+          <th>{{'imq-yr-startStop' | translate}}</th>
+          <th>{{'imq-yr-testGrop' | translate}}</th>
+          <th>{{'imq-yr-itemCount' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td>
+            <nz-switch [(ngModel)]="data.isGroupAble" [nzDisabled]="data.count === 0 ? true : false" (ngModelChange)="testGroupSwitchChange(data)"></nz-switch>
+          </td>
+          <td (click)="showNextTab(data.id, data)">{{data.groupName1}}</td>
+          <td>{{data.count}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+
+  <div class="bg2">
+    <div style="float: right;margin-right: 10px;">
+      <button nz-button [nzType]="'primary'" title="{{'imq-yr-add' | translate}}" nzShape="circle" style="margin-bottom: 15px;" (click)="addOneData()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </div>
+
+    <button nz-button [nzType]="'primary'" title="{{'imq-yr-excelDownLoad' | translate}}" nzShape="circle" (click)="downloadTemp()"
+      style="float: left; margin-bottom: 15px; margin-right: 10px;">
+      <i nz-icon type="file-excel" theme="outline"></i>
+    </button>
+
+
+    <div class="btn-upload">
+      <label class="upload">
+        <input id="upload" type="file" (change)="uploadExcel($event.target)">
+        <div class="fakeInput">
+          <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+          <span *ngIf="!uploadFileName">{{'imq-yr-excel' | translate}}</span>
+        </div>
+      </label>
+
+      <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+        title="{{'imq-yr-uploadData' | translate}}" (click)="uploadExcelData()">
+        <i class="anticon anticon-upload"></i>
+      </label>
+      <span style="display: inline-block; margin: 0 40px;">{{groupName}}</span>
+    </div>
+
+
+    <div class="upload-progress" [hidden]="showProgress">
+      <nz-progress [nzPercent]="progressBar" nzSize="small" [nzStatus]="proStatus"></nz-progress>
+    </div>
+
+
+
+    <nz-table  nzBordered [nzShowPagination]='false' nzSize="middle"
+      [nzData]="dataSet">
+      <thead>
+        <tr>
+          <th nzWidth="15%">{{'imq-yr-startStop' | translate}}</th>
+          <th nzWidth="25%"><span style="display: block; width: 100%;" (click)="sortData()">{{'imq-yr-testName' | translate}}</span></th>
+          <th nzWidth="10%">{{'imq-yr-index' | translate}}</th>
+          <th nzWidth="20%">
+            <span>SPC</span>
+            <span style="display: inline-block; margin: 0 5px 0 15px;">All</span>
+            <nz-switch style=" border: 2px solid white; margin: 0 2px; border-radius: 15px;" [(ngModel)]="all_switchSPC" [nzCheckedChildren]="trans['on']" [nzUnCheckedChildren]="trans['off']"
+            [nzDisabled]="disabledEdite" (ngModelChange)="allSwitchValue('spc')"></nz-switch>
+          </th>
+          <th nzWidth="20%">
+            <span>CPK</span>
+            <span style="display: inline-block; margin: 0 5px 0 15px;">All</span>
+            <nz-switch style=" border: 2px solid white; margin: 0 2px; border-radius: 15px;" [(ngModel)]="all_switchCPK" [nzCheckedChildren]="trans['on']" [nzUnCheckedChildren]="trans['off']"
+            [nzDisabled]="disabledEdite" (ngModelChange)="allSwitchValue('cpk')"></nz-switch>
+          </th>
+          <th nzWidth="10%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of dataSet">
+          <td>
+            <nz-switch [nzDisabled]="editStatus" [(ngModel)]="data.isAble" (ngModelChange)="testItemSwitchChange(data)"></nz-switch>
+          </td>
+
+          <td>
+            <div class="editable-cell">
+              <div class="editable-cell-text-wrapper">
+                <ng-container *ngIf="!editCache[data.id].edit">
+                  {{data.itemName}}
+                </ng-container>
+                <ng-container *ngIf="editCache[data.id].edit">
+                  <input type="text" nz-input [(ngModel)]="editCache[data.id].data.itemName">
+                </ng-container>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            {{data.index}}
+          </td>
+
+          <td>
+            <nz-switch [nzDisabled]="editStatus || disabledEdite" [(ngModel)]="data.isSpcAble" (ngModelChange)="spcSwitchChange(data, dataSet)"></nz-switch>
+          </td>
+          <td>
+            <nz-switch [nzDisabled]="editStatus || disabledEdite" [(ngModel)]="data.isCpkAble" (ngModelChange)="cpkSwitchChange(data, dataSet)"></nz-switch>
+          </td>
+          <td>
+            <div class="editable-row-operations" >
+              <ng-container *ngIf="!editCache[data.id].edit">
+                <a [hidden]="editStatus" (click)="startEdit(data)">{{'imq-yr-action' | translate}}</a>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.id].edit">
+                <a (click)="saveEdit(data.id)">{{'imq-yr-save' | translate}}</a>
+                <nz-popconfirm [nzTitle]="'Sure to cancel?'" (nzOnConfirm)="cancelEdit(data)">
+                  <a nz-popconfirm>{{'imq-yr-cancel' | translate}}</a>
+                </nz-popconfirm>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-content>
+
+
+<div>
+  <nz-modal nzWidth="350px" [(nzVisible)]="addProcessFlag" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+    (nzOnCancel)="processModelCancel()">
+    <ng-template #modalTitle>
+      {{'imq-yr-addItemTest' | translate}}
+    </ng-template>
+    <ng-template #modalContent>
+      <div class="input">
+        <span>{{'imq-yr-testName' | translate}}</span>
+        <input nz-input="" placeholder="" class="ng-pristine ng-valid ant-input ng-touched" [(ngModel)]="oneName">
+      </div>
+    </ng-template>
+    <ng-template #modalFooter>
+      <button nz-button nzType="primary" (click)="processModelCancel()">{{'imq-yr-back' | translate}}</button>
+      <button nz-button nzType="primary" (click)="processModelOk()">{{'imq-yr-save' | translate}}</button>
+    </ng-template>
+  </nz-modal>
+</div>

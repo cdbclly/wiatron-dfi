@@ -1,0 +1,210 @@
+<div class="dfc-all" #DFCModelWorkhour>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'authority-maintain.model-time-data-maintenance'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'authority-maintain.model-time-data-maintenance'|translate}}</span>
+  </div>
+  <div class="dfc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">Query</button>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+
+  <div class="dfc-txt" *ngIf="isSpanShowFlag">
+    <span>{{'dfq.dfq-plant'|translate}}：</span><span>{{spanPlant}}</span>
+    <span>{{'dfq.dfq-customer'|translate}}：</span><span>{{spanCustomer}}</span>
+    <span>Project Code：</span><span>{{spanFamily}}</span>
+    <span>Project Name：</span><span>{{spanName}}</span>
+    <span>C{{'dfq.dfq-stage'|translate}}：</span><span>{{spanCFlow}}</span>
+  </div>
+  <div class="dfc-rfq" *ngIf="!rfqMapping">
+    <div>
+      <label>
+        <span style="color:red">*</span>
+        <span>RFQ Project Code</span>
+        <nz-select style="width: 150px;" [(ngModel)]="rfqFamilySelectValue" nzAllowClear nzShowSearch
+          [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false">
+          <ng-container *ngFor="let list of rfqFamilySelectList">
+            <nz-option [nzValue]="list" [nzLabel]="list" style="width: 210px;" nzCustomContent>
+              <div style="width: 210px;text-align: left;">{{list}}</div>
+            </nz-option>
+          </ng-container>
+        </nz-select>
+      </label>
+    </div>
+    <div>
+      <label>
+        <span style="color:red">*</span>
+        <span>RFQ Project Name</span>
+        <nz-select style="width: 150px;" [(ngModel)]="rfqNameSelectValue" nzAllowClear nzShowSearch
+          [nzServerSearch]="true" [nzDropdownMatchSelectWidth]="false">
+          <ng-container *ngFor="let list of rfqNameSelectList">
+            <nz-option [nzValue]="list['ProjectNameID']" [nzLabel]="list['Label']" style="width: 210px;"
+              nzCustomContent>
+              <div style="width: 210px;text-align: left;">{{list['Label']}}</div>
+            </nz-option>
+          </ng-container>
+        </nz-select>
+      </label>
+    </div>
+    <div class="dfc-rfq-btn">
+      <button nz-button [nzSize]="'small'" *ngIf="Auth.insert" nzType="primary" (click)="saveRFQ()">Save</button>
+    </div>
+  </div>
+  <!-- 有Mapping關係, 顯示 -->
+  <div class="dfc-rfq" *ngIf="rfqMapping && !rfqShowSpan">
+    <div>
+      <label>
+        <span>RFQ Project Code:</span>
+        <span>{{rfqFamilySelectValue}}</span>
+      </label>
+    </div>
+    <div>
+      <label>
+        <span>RFQ Project Name:</span>
+        <span>{{rfqNameSelectValue}}</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="dfc-btn">
+    <div class="dfc-btn-delete" *ngIf="Auth.delete">
+      <button nz-button *ngIf="!disabledDeleteButton" title="Delete" [nzType]="'primary'" nzShape="circle"
+        (click)="operateDelete()">
+        <i class="anticon anticon-delete"></i>
+      </button>
+    </div>
+    <div class="dfc-btn-span" *ngIf="Auth.insert && stageIDFlag && (rfqMapping ) && !targetSignFlag">
+      <span>{{'dfc.friendly-reminder'|translate}}</span>
+    </div>
+    <div class="dfc-btn-right">
+      <div class="dfc-btn-upload" *ngIf="Auth.insert && stageIDFlag && (rfqMapping && !rfqShowSpan) && !targetSignFlag">
+        <nz-dropdown>
+          <button nz-button nz-dropdown [nzType]="'primary'" (click)="cloneOperationTime()">
+            {{'dfc.apply-model-time'|translate}}
+          </button>
+        </nz-dropdown>
+      </div>
+      <app-upload-file *ngIf="stageIDFlag && (rfqMapping) && !targetSignFlag" class="dfc-btn-upload"
+        [showLoading]="showLoading" (uploadFile)="upload($event)"></app-upload-file>
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-table">
+    <div class="dfc-table-div">
+      <nz-table #mohModelTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+        [nzScroll]="nzScroll" [nzPageSize]="10" (nzCurrentPageDataChange)="currentPageDataChange($event)"
+        (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()">
+        <thead>
+          <tr>
+            <th rowspan='2' nzLeft="0px" *ngIf="stageIDFlag && (rfqMapping && !rfqShowSpan)" nzShowCheckbox
+              [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)"></th>
+            <th rowspan='2'>{{'mrr.nudd-process'|translate}}</th>
+            <th rowspan='2'>{{'dfc.module'|translate}}</th>
+            <th rowspan='2'>{{'dfq.dfq-material'|translate}}</th>
+            <th colspan='2'>{{'report.affect-workhour-factor'|translate}}</th>
+            <th rowspan='2'>{{'dfc.model-information-quantity'|translate}}</th>
+            <th [attr.colspan]='actionList.length'>BaseData</th>
+            <th rowspan='2'>Total</th>
+            <th rowspan='2' nzRight="0px" *ngIf="stageIDFlag && (rfqMapping && !rfqShowSpan)">Action</th>
+          </tr>
+          <tr>
+            <th>{{'report.model-workhour-factor'|translate}}</th>
+            <th>{{'report.model-workhour-factor-detail'|translate}}</th>
+            <th *ngFor="let action of actionList">
+              {{action}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of mohModelTable.data;let i = index;">
+            <td nzLeft="0px" *ngIf="stageIDFlag && (rfqMapping && !rfqShowSpan) && !targetSignFlag" nzShowCheckbox
+              [(nzChecked)]="data.Checked" (nzCheckedChange)="refreshStatus()"></td>
+            <td nzLeft="0px" *ngIf="stageIDFlag && (rfqMapping && !rfqShowSpan) && targetSignFlag"></td>
+            <td>{{data.process}}</td>
+            <td>{{data.Module}}</td>
+            <td>{{data.material}}</td>
+            <td>{{data.factor}}</td>
+            <td>{{data.factorDetail}}</td>
+            <td style="text-align: right;">
+              <ng-container *ngIf="!editCache[data.modelOperationID].edit">
+                {{data.count}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.modelOperationID].edit">
+                <input type="text" nz-input [(ngModel)]="editCache[data.modelOperationID].data.count"
+                  (blur)="onblurEdit(data.modelOperationID)" (click)="onclickEdit(data.modelOperationID)">
+              </ng-container>
+            </td>
+            <td *ngFor="let action of data.action">
+              {{action.costtime | number:'0.2'}}
+            </td>
+            <td>{{data.total | number:'0.2'}}</td>
+            <td *ngIf="stageIDFlag && (rfqMapping && !rfqShowSpan)" nzRight="0px">
+              <ng-container *ngIf="!editCache[data.modelOperationID].edit">
+                <a *ngIf="!actionEnabled || !Auth.update || targetSignFlag" style="margin-left: 10px;"
+                  disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+                <a *ngIf="actionEnabled && Auth.update && !targetSignFlag" (click)="startEdit(data.modelOperationID, i)"
+                  style="margin-left: 10px;">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.modelOperationID].edit">
+                <a (click)="saveEdit(data.modelOperationID)">
+                  <i class="anticon anticon-save"></i>
+                </a>
+                <a style="margin-left:10px;" (click)="cancelEdit(data.modelOperationID)">
+                  <i class="anticon anticon-close-circle"></i>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <!-- 失去焦点判断编辑状态是否需要储存 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="300" [(nzVisible)]="isEditSaveVisible" nzTitle="Warn"
+    (nzOnCancel)="cancelEdit(editrow)" [nzFooter]="modalEditSaveFooter">
+    {{'dfc.information-has-not-been-saved'|translate}}
+    <ng-template #modalEditSaveFooter>
+      <button nz-button nzType="default" (click)="cancelEdit(editrow)">Cancel</button>
+      <button nz-button nzType="primary" (click)="saveEdit(editrow)">Save</button>
+    </ng-template>
+  </nz-modal>
+  <!-- 點擊刪除, 選擇是否刪除 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="300" [(nzVisible)]="isDeleteVisible" nzTitle="Delete"
+    (nzOnCancel)="cancelDelete()" [nzFooter]="modalDeleteFooter">
+    {{'dfc.sure-you-want-delete'|translate}}
+    <ng-template #modalDeleteFooter>
+      <button nz-button nzType="default" (click)="cancelDelete()">Cancel</button>
+      <button nz-button nzType="primary" (click)="Delete()">Delete</button>
+    </ng-template>
+  </nz-modal>
+  <!-- 刪除后提示 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="282" [nzStyle]="{ height: '202px' }"
+    [(nzVisible)]="isAfterDeleteVisible" [nzClosable]="false" [nzCancelText]="null" [nzOkText]="null" [nzFooter]="null"
+    nzTitle="">
+    <div class="dfc-delAfter-icon">
+      <i class="anticon anticon-check"></i>
+    </div>
+    <div class="dfc-delAfter-text">
+      <span>{{'military-order.deleted'|translate}}</span>
+    </div>
+  </nz-modal>
+</div>

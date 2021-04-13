@@ -1,0 +1,255 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 100px" nzShowSearch formControlName="selectPlant">
+        <ng-container *ngFor="let list of plantList">
+          <nz-option [nzValue]="list.Value" [nzLabel]="list.Value"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 150px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [nzServerSearch]="true" formControlName="selectManufacturer"
+        (nzOnSearch)="manufacturerSearchChange$.next($event)">
+        <ng-container *ngFor="let list of manufacturers">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading"
+        [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<!-- 廠商賬號維護 -->
+<div class="dfc-btn">
+  <div class="dfc-btn-right">
+    <button *ngIf="addFlag" nz-button [nzType]="'primary'" nzShape="circle" (click)="showUserNameModal()">
+      <i class="anticon anticon-plus"></i>
+    </button>
+  </div>
+</div>
+<div class="vendorMaintain">
+  <nz-table #externalUserTable nzBordered nzShowPagination="false" [nzData]="externalUserSet">
+    <thead>
+      <tr>
+        <th colspan="7">{{ 'mrr.material-maintain-idinfo' | translate }}</th>
+      </tr>
+      <tr>
+        <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+        <th>{{ 'mrr.material-vendorCode' | translate }}</th>
+        <th>{{ 'mrr.material-userId' | translate }}</th>
+        <th>{{ 'mrr.material-password' | translate }}</th>
+        <th>{{ 'mrr.material-updatedBy' | translate }}</th>
+        <th>{{ 'mrr.material-last-updatetime' | translate }}</th>
+        <th>{{ 'mrr.mrr-action' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of externalUserTable.data">
+        <td>{{data.manufacturerId}}</td>
+        <td>{{data.vendorId}}</td>
+        <td>{{data.username}}</td>
+        <td>
+          <ng-container *ngIf="!editCache[data.username].edit; else pwInputTpl">
+            {{data.username ? ('mrr.material-hidePw' | translate) : ''}}
+          </ng-container>
+          <ng-template #pwInputTpl>
+            <input style="width: 120px;" type="password" nz-input [(ngModel)]="updatePassword" />
+          </ng-template>
+        </td>
+        <td>{{data.updatedBy | userEnname | async}}</td>
+        <td>{{data.updatedOn | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+        <td>
+          <div>
+            <ng-container *ngIf="!editCache[data.username].edit">
+              <i class="anticon anticon-edit" style="cursor: pointer" (click)="editPassword(data)"></i>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.username].edit">
+              <i class="anticon anticon-check" style="cursor: pointer" (click)="save(data)"></i>
+              &nbsp;&nbsp;
+              <i class="anticon anticon-close" style="cursor: pointer" (click)="cancel(data)"></i>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<nz-modal nzWidth="430px" [nzTitle]="'mrr.material-add-externalUser' | translate" [(nzVisible)]="addUserNameFlag"
+  [nzContent]="modalContent1" [nzFooter]="modalFooter1" (nzOnCancel)="handleCancel1()">
+  <ng-template #modalContent1>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.mrr-vendor' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="this.validateForm.value.selectManufacturer" [disabled]="true">
+        <ng-container *ngFor="let list of manufacturers">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.material-vendorCode' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="acountParam.vendorId">
+        <ng-container *ngFor="let list of vendorList">
+          <nz-option [nzValue]="list.vendorId" [nzLabel]="list.vendorId"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.material-userId' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="acountParam.username">
+        <ng-container *ngFor="let list of userNameList">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.material-password' | translate }}</div>
+      <input type="password" nz-input [(ngModel)]="acountParam.password" />
+    </div>
+  </ng-template>
+  <ng-template #modalFooter1>
+    <button nz-button nzType="default" (click)="handleCancel1()">Cancel</button>
+    <button nz-button nzType="primary" (click)="addUserData()">Save</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 廠商郵件信息維護 -->
+<div *ngIf="!isExt">
+  <div class="dfc-btn">
+    <div class="dfc-btn-right">
+      <button *ngIf="addFlag" nz-button [nzType]="'primary'" nzShape="circle" (click)="showMailModal()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="mailMaintain">
+    <nz-table #basicTable nzBordered nzShowQuickJumper [nzData]="manufacturerData" [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th colspan="7">{{ 'mrr.material-maintain-mailinfo' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'mrr.mrr-plant' | translate }}</th>
+          <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th>{{ 'mrr.material-contact-person' | translate }}</th>
+          <th>{{ 'mrr.material-mail' | translate }}</th>
+          <th>{{ 'mrr.material-supervisor' | translate }}</th>
+          <th>{{ 'mrr.material-resign' | translate }}</th>
+          <th>{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.plantId | site: {type: 'plant'} }}</td>
+          <td>{{ data.manufacturerId }}</td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit; else picInputTpl">
+              {{ data.name }}
+            </ng-container>
+            <ng-template #picInputTpl>
+              <input style="width: 120px;" type="text" nz-input [(ngModel)]="editCache[data.id].data.name"
+                (ngModelChange)="nameChange($event)" />
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit; else picMailInputTpl">
+              {{ data.email }}
+            </ng-container>
+            <ng-template #picMailInputTpl>
+              <input style="width: 200px;" type="text" nz-input [(ngModel)]="editCache[data.id].data.email"
+                (ngModelChange)="emailChange($event)" />
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit; else picLeaderInputTpl">
+              {{ data.picLeader }}
+            </ng-container>
+            <ng-template #picLeaderInputTpl>
+              <nz-select style="width: 120px;" nzShowSearch [(ngModel)]="editCache[data.id].data.supervisorId"
+                (ngModelChange)="picChange($event)">
+                <ng-container *ngFor="let list of addLeaderList">
+                  <nz-option [nzValue]="list.id" [nzLabel]="list.name">
+                  </nz-option>
+                </ng-container>
+              </nz-select>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit; else picIsLeaveInputTpl">
+              {{ data.isLeave }}
+            </ng-container>
+            <ng-template #picIsLeaveInputTpl>
+              <nz-select style="width: 120px;" nzShowSearch [(ngModel)]="editCache[data.id].data.isLeave">
+                <ng-container *ngFor="let item of addisLeaveList">
+                  <nz-option [nzValue]="item" [nzLabel]="item"></nz-option>
+                </ng-container>
+              </nz-select>
+            </ng-template>
+          </td>
+          <td>
+            <div class="editable-row-operations">
+              <ng-container *ngIf="!editCache[data.id].edit">
+                <i class="anticon anticon-edit" style="cursor: pointer" (click)="startEdit(data)"></i>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.id].edit">
+                <i class="anticon anticon-check" style="cursor: pointer" (click)="saveEdit(data)"></i>
+                &nbsp;&nbsp;
+                <i class="anticon anticon-close" style="cursor: pointer" (click)="cancelEdit(data)"></i>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+<nz-modal nzWidth="430px" [nzTitle]="'mrr.material-add-mail' | translate" [(nzVisible)]="addMailFlag"
+  [nzContent]="modalContent" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+  <ng-template #modalContent>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.mrr-plant' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="this.validateForm.value.selectPlant" [disabled]="true">
+        <ng-container *ngFor="let list of plantList">
+          <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.mrr-vendor' | translate }}</div>
+      <nz-select nzShowSearch [(ngModel)]="this.validateForm.value.selectManufacturer" [disabled]="true">
+        <ng-container *ngFor="let list of manufacturers">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.material-contact-person' | translate }}</div><input nz-input
+        [(ngModel)]="saveData.selectPic">
+    </div>
+    <div class="field">
+      <div><span class="mustItem">*</span>{{ 'mrr.material-mail' | translate }}</div><input nz-input
+        [(ngModel)]="saveData.selectPicMail">
+    </div>
+    <div class="field">
+      <div>{{ 'mrr.material-supervisor' | translate }}</div>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="saveData.selectPicLeader">
+        <ng-container *ngFor="let list of addLeaderList">
+          <nz-option [nzValue]="list.id" [nzLabel]="list.name">
+          </nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="addMailData()">Save</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,116 @@
+.body {
+  margin: 0 1%;
+  width: 100%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+td {
+  font-size: 15px;
+}
+
+th {
+  font-size: 18px;
+}
+
+.result {
+  // display: inline-grid;
+  width: 100%;
+
+  th {
+    text-align: center;
+    border: 1px solid;
+  }
+}
+.toolalert .tooltiptext {
+  visibility: hidden;
+  z-index: 1;
+  position: absolute;
+  text-align: left;
+  margin-top: -9%;
+  margin-left: -7.5%;
+  width: 13%;
+}
+// .toolalert2 .tooltiptext2 {
+//   visibility: hidden;
+//   z-index: 1;
+//   position: absolute;
+//   text-align: left;
+//   margin-top: 2%;
+//   margin-left: -18%;
+//   width: 20%;
+//   background-color: black;
+//   color: white;
+// }
+
+// .toolalert2:hover .tooltiptext2 {
+//   visibility: visible;
+// }
+
+.toolalert:hover .tooltiptext {
+  visibility: visible;
+}
+
+.mrr-btn-download {
+  height: 100%;
+  width: 160px;
+  float: right;
+  justify-content: space-around;
+  display: flex;
+  margin-top: 50px;
+}
+
+
+.buttonarea {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.overall td {
+  background-color: rgba(117, 117, 117, 1);
+  color: white;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+.overall th {
+  background-color: #333;
+  color: white;
+  font-weight: normal;
+  border: 1px solid white;
+}
+
+td {
+  text-align: center;
+  border: 1px solid white;
+}
+
+.dfc-delAfter-icon {
+  height: 100px;
+  width: 100%;
+  color: rgba(0, 169, 157, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 76px;
+  }
+}
+
+.dfc-delAfter-text {
+  width: 238px;
+  height: 46px;
+  margin-left: 22px;
+  padding: 10px;
+  text-align: center;
+
+  span {
+    color: rgba(80, 80, 80, 1);
+    font-size: 18px;
+  }
+}

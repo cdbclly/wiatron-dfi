@@ -1,0 +1,247 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye品質監控管理系統</nz-breadcrumb-item>
+  <nz-breadcrumb-item>品質監控資料維護</nz-breadcrumb-item>
+  <nz-breadcrumb-item>螺絲機參數維護</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  螺絲機參數維護
+</div>
+<div class="query-row">
+  <!-- 厂别 -->
+    <div class="field1">
+      <span style="width: 29%;">
+        <span style="color: red;">*</span>
+        <span>Site</span>
+      </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+          <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" ></nz-option>
+        </nz-select>
+    </div>
+
+   <!-- 厂区 -->
+   <div class="field" (click)="getOptList('plant')">
+     <span style="width: 28%;">
+      <span style="color: red">*</span>
+      <span>Plant</span>
+     </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+        <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+      </nz-select>
+   </div>
+
+  <!-- 机种 -->
+  <div class="field" (click)="getOptList('model')">
+      <span>Model</span>
+      <nz-select style="width: 75%;" nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_model" (ngModelChange)="getOptions('query')">
+        <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model" ></nz-option>
+      </nz-select>
+  </div>
+
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<button nz-button [nzType]="'primary'" title="上传模板下载" nzShape="circle" (click)="downloadTemp()" style="margin-bottom: 15px; margin-right: 10px;">
+  <i nz-icon type="file-excel" theme="outline"></i>
+</button>
+<button nz-button [nzType]="'primary'" *ngIf="ckpiInfos && ckpiInfos.length > 0" title="下载" nzShape="circle" (click)="downloadData()" style="margin-bottom: 15px;">
+  <i nz-icon type="download" theme="outline"></i>
+</button>
+<div class="btn-upload" *ngIf="role['insert'] === true">
+  <label class="upload">
+    <input id="upload" type="file" (change)="handleFileInput($event.target)">
+    <div class="fakeInput">
+      <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+      <span *ngIf="!uploadFileName">選擇Excel檔案</span>
+    </div>
+  </label>
+  
+  <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+    title="上傳" (click)="uploadPre()">
+    <i class="anticon anticon-upload"></i>
+  </label>
+</div>
+<div class="upload-progress" [hidden]="showProgress">
+  <nz-progress [nzPercent]="progressBar" nzSize="small" [nzStatus]="proStatus"></nz-progress>
+</div>
+
+<!-- 可编辑的table -->
+<div>
+  <nz-table
+    #nzData
+    nzBordered
+    nzShowQuickJumper
+    [nzData]="ckpiInfos"
+    [nzPageSize]="10"
+    [(nzPageIndex)]="curPage"
+    [nzScroll]="{ x:'1000px'}">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th nzWidth="100px">廠別</th>
+        <th nzWidth="100px">廠區</th>
+        <th nzWidth="120px">設備採編</th>
+        <th nzWidth="80px">點位</th>
+        <th nzWidth="120px">監控項目</th>
+        <th nzWidth="100px">機種</th>
+        <th nzWidth="200px">上限值(Kgf-cm/KPa)</th>
+        <th nzWidth="200px">下限值(Kgf-cm/KPa)</th>
+        <th nzWidth="120px">維護人</th>
+        <th nzWidth="130px">修改日期</th>
+        <th nzWidth="130px">初始日期</th>
+        <th nzWidth="120px">Action</th>
+        <th nzWidth="80px">Log</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzData.data;  let i = index;" style="font-size: 12px;">
+      <td>
+          {{data.site}}
+      </td>
+      <td>
+        {{data.plantId}}
+      </td>
+      <td>
+        {{data.machineSn}}
+      </td>
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['stance']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+            {{data.stance}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['monitorPro']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+            {{data.monitorPro}}
+        </ng-container>
+      </td>
+      <!-- 机种 -->
+      <td>
+        {{data.model}}
+      </td>    
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['maxKgf']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+            {{data.maxKgf}}
+        </ng-container>
+      </td>     
+      <td>
+        <ng-container *ngIf="editMap.get(data['id'])">
+            <input type="text" nz-input [(ngModel)]="editItem['minKgf']">
+        </ng-container>
+        <ng-container *ngIf="!editMap.get(data['id'])">
+            {{data.minKgf}}
+        </ng-container>
+      </td>  
+      <!-- 接收人员 -->
+      <td>
+        {{data.updateUser}}
+      </td>
+      <td>
+          {{data.updatedTime | date: 'yyyy/MM/dd'}}
+      </td>
+      <td>
+          {{data.createTime | date: 'yyyy/MM/dd'}}
+      </td>
+      <!-- Action列 对应的 编辑、删除功能 -->
+      <td *ngIf="role['update'] === true && !editMap.get(data['id'])&&!disableedit">
+        <span style="float: left;
+        padding-right: 8px;" (click)="editRow(data)"><i class="anticon anticon-edit"></i></span><nz-divider class="table-divider" nzType="vertical"></nz-divider>
+        <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="delRow(data.id)">
+            <a nz-popconfirm><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+        </nz-popconfirm>
+      </td>
+      <td *ngIf="role['update'] !== true">
+        暫無權限
+      </td>
+
+        <td *ngIf="role['update'] === true && editMap.get(data['id'])">
+          <span style="float: left;
+          padding-right: 8px;" (click)="saveRow(editItem, data)"><i class="anticon anticon-save"></i></span>
+          <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+          <span style="padding-left: 8px;cursor: pointer;" ><i class="anticon anticon-rollback" (click)="cancelEdit(data)" style="margin-left: 10px;"></i></span></td>
+          <td *ngIf="role['update'] !== true && !editMap.get(data['id'])&&disableedit">
+              <span style="float: left;
+              padding-right: 8px;cursor: no-drop" ><i class="anticon anticon-edit"></i></span><nz-divider class="table-divider" nzType="vertical"></nz-divider>
+              <span style="padding-left: 8px;cursor: no-drop"><i class="anticon anticon-delete" style="margin-left: 10px;"></i></span></td>
+              <td>
+                <span>
+                    <i nz-icon type="search" theme="outline" (click)="showLog(data.id)"></i>
+                </span>
+              </td>
+    </tr>
+    </tbody>
+    </nz-table>
+
+ <!-- log弹出框 -->
+ <nz-modal [(nzVisible)]="isVisible_log" nzTitle="log詳細" nzClosable="false" [nzFooter]="footer" nzWidth="85%" (nzOnCancel)="handleCancel_log()" (nzOnOk)="handleOk_log()">
+  <nz-table
+  #nzDatalog
+  nzBordered
+  nzShowQuickJumper
+  [nzData]="logInfos"
+  [nzPageSize]="10"
+  [nzWidthConfig] = "THwidth"
+  [(nzPageIndex)]="curPagelog"
+  [nzScroll]="{ x:'1000px'}">
+  <thead>
+    <tr style="font-size: 12px;">
+      <th>廠別</th>
+      <th>廠區</th>
+      <th>設備採編</th>
+      <th>點位</th>
+      <th>監控項目</th>
+      <th>機種</th>
+      <th>上限值(Kgf-cm/KPa)</th>
+      <th>下限值(Kgf-cm/KPa)</th>
+      <th>維護人</th>
+      <th>修改日期</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of nzDatalog.data;  let k = index;" style="font-size: 12px;">
+    <td>
+        {{data.site}}
+    </td>
+    <td>
+      {{data.plantId}}
+    </td>
+    <td>
+      {{data.machineSn}}
+    </td>
+    <td>
+      {{data.stance}}
+    </td>
+    <td>
+      {{data.monitorPro}}
+    </td>
+    <!-- 机种 -->
+    <td>
+      {{data.model}}
+    </td>    
+    <td>
+      {{data.maxKgf}}
+    </td>   
+    <td>
+      {{data.minKgf}}
+    </td>     
+    <!-- 接收人员 -->
+    <td>
+      {{data.updateUser}}
+    </td>
+    <td>
+        {{data.updatedTime | date: 'yyyy/MM/dd'}}
+    </td>
+    <td>{{data.action}}</td>
+      </tr>
+  </tbody>
+  </nz-table>
+</nz-modal>

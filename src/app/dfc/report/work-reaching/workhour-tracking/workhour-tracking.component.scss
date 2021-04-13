@@ -1,0 +1,45 @@
+.dfc-tip {
+  width: 100%;
+
+  .dfc-tip-row {
+    width: 100%;
+    height: 32px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+
+    div {
+      margin-right: 5px;
+    }
+  }
+}
+
+.dfc-query {
+  margin-top: 10px;
+  width: 100%;
+  overflow: hidden;
+
+  div {
+    min-height: 42px;
+    display: block;
+    float: left;
+  }
+
+  .dfc-query-btn {
+    margin-top: 10px;
+    margin-left: 20px;
+    width: 73px;
+
+    button {
+      width: 73px;
+    }
+  }
+}
+
+.workhour-track {
+
+  th,
+  td {
+    text-align: center;
+  }
+}

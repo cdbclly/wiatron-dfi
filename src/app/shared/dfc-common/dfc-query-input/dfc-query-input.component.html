@@ -1,0 +1,53 @@
+<div class="dfc-query-div" *ngIf="queryStyle['type'] === 'input'" #DfcInput [ngStyle]="queryStyle.divStyle">
+  <div class="dfc-query-span" #DfcInputSpan>
+    <span style="color:red" *ngIf="queryStyle.red">*</span>
+    <span>{{queryStyle.label}}</span>
+  </div>
+  <div class="dfc-query-content" [ngStyle]="queryStyle.style">
+    <input nz-input nzSize="default" *ngIf="!queryStyle.selectType" [ngStyle]="{'width': '100%'}"
+      [(ngModel)]="queryValue" (ngModelChange)="changeSelect()">
+    <nz-input-number *ngIf="queryStyle['selectType'] === 'number'" [ngStyle]="{'width': '100%'}" [nzMin]="0"
+      [(ngModel)]="queryValue" (ngModelChange)="changeSelect()"></nz-input-number>
+  </div>
+</div>
+<div class="dfc-query-div" *ngIf="queryStyle['type'] === 'select'" #DfcSelect [ngStyle]="queryStyle.divStyle">
+  <div class="dfc-query-span" #DfcSelectSpan>
+    <span style="color:red" *ngIf="queryStyle.red">*</span>
+    <span>{{queryStyle.label}}</span>
+  </div>
+  <div class="dfc-query-content" [ngStyle]="queryStyle.style">
+    <!-- 普通的下拉框, 需要传入Value和Label, 返回 -->
+    <nz-select *ngIf="queryStyle['selectType'] === 'simple'" [(ngModel)]="queryValue" nzAllowClear nzShowSearch
+      [nzDisabled]="querySelect.selectDisabled" (ngModelChange)="changeSelect()" [nzDropdownMatchSelectWidth]="false"
+      [ngStyle]="queryStyle.selectWidth">
+      <ng-container *ngFor="let list of querySelect.selectList">
+        <nz-option [nzValue]="list.Value" [nzLabel]="list.Label" [ngStyle]="queryStyle.optionWidth"></nz-option>
+      </ng-container>
+    </nz-select>
+    <!-- 带搜索的下拉框 -->
+    <nz-select *ngIf="queryStyle['selectType'] === 'search'" [(ngModel)]="queryValue" nzAllowClear nzShowSearch
+      [nzServerSearch]="true" [nzDisabled]="querySelect.selectDisabled" (nzOnSearch)="searchSelect($event)"
+      (ngModelChange)="changeSelect()" [nzDropdownMatchSelectWidth]="false" [ngStyle]="queryStyle.selectWidth">
+      <ng-container *ngFor="let list of querySelect.selectList">
+        <nz-option *ngIf="!querySelect.isLoading" [nzValue]="list.Value" [nzLabel]="list.Label"
+          [ngStyle]="queryStyle.optionWidth"></nz-option>
+      </ng-container>
+      <nz-option *ngIf="querySelect.isLoading" nzDisabled nzCustomContent>
+        <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+      </nz-option>
+    </nz-select>
+    <!-- 多选下拉框, 带搜索 -->
+    <nz-select *ngIf="queryStyle['selectType'] === 'multiple'" [nzMode]="'multiple'" [(ngModel)]="queryValue"
+      nzAllowClear nzShowSearch [nzServerSearch]="true" [nzDisabled]="querySelect.selectDisabled"
+      (nzOnSearch)="searchSelect($event)" (ngModelChange)="changeSelect()" [nzDropdownMatchSelectWidth]="false"
+      [ngStyle]="queryStyle.selectWidth">
+      <ng-container *ngFor="let list of querySelect.selectList">
+        <nz-option *ngIf="!querySelect.isLoading && list" [nzValue]="list.Value" [nzLabel]="list.Label"
+          [ngStyle]="queryStyle.optionWidth"></nz-option>
+      </ng-container>
+      <nz-option *ngIf="querySelect.isLoading" nzDisabled nzCustomContent>
+        <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+      </nz-option>
+    </nz-select>
+  </div>
+</div>

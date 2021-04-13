@@ -1,0 +1,9 @@
+<div class="dfc-btn-upload">
+  <nz-input-group  nzSearch [nzAddOnAfter]="suffixIconButton">
+    <input type="text" (click)="fileUpload.click()" nz-input readonly="true" [(ngModel)]="inputShow">
+  </nz-input-group>
+  <ng-template #suffixIconButton>
+    <i (click)="upload()" style="cursor: pointer;" nz-icon type="upload"></i>
+  </ng-template>
+  <input type="file" hidden="true" #fileUpload (change)="handleUploadFile($event.target)" id="file-upload">
+</div>

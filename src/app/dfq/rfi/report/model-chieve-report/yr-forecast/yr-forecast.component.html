@@ -1,0 +1,172 @@
+<div class="dfc-tip">
+  <div class="dfc-tip-row">
+    <div class="square-green"></div>
+    {{ 'dfq.report-green' | translate }}
+  </div>
+  <div class="dfc-tip-row">
+    <div class="square-red"></div>
+    {{ 'dfq.report-red' | translate }}
+  </div>
+  <div class="dfc-tip-row">
+    <div class="square-yellow"></div>
+    {{ 'dfq.report-yellow' | translate }}
+  </div>
+  <div class="dfc-tip-row">
+    <div class="square-grey"></div>
+    {{ 'dfq.report-gray' | translate }}
+  </div>
+</div>
+
+<div class="TipsForm" *ngIf="showColorNumber">
+  <table>
+    <thead>
+      <tr>
+        <th width="80" height="40" style="text-align:center">{{ 'dfq.report-item' | translate }}</th>
+        <th width="80" height="40" style="text-align:center"><span class="green-circle"
+            style="display: inline-block;"></span></th>
+        <th width="80" height="40" style="text-align:center"><span class="red-circle"
+            style="display: inline-block;"></span></th>
+        <th width="80" height="40" style="text-align:center"><span class="orange-circle"
+            style="display: inline-block;"></span></th>
+        <th width="80" height="40" style="text-align:center"><span class="gray-circle"
+            style="display: inline-block;"></span></th>
+        <th width="80" height="40" style="text-align:center">{{ 'dfq.report-sum' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td width="80" height="40" style="text-align:center">
+          {{ 'dfq.report-data' | translate }}
+        </td>
+        <td width="80" height="40" (click)="colorClick('Green')" style="text-align:center;cursor:pointer">
+          <span style="border-bottom:2px solid white"> {{rfiWorkProgressRgb['Green']}}</span>
+        </td>
+        <td width="80" height="40" (click)="colorClick('Red')" style="text-align:center;cursor:pointer">
+          <span style="border-bottom:2px solid white;"> {{rfiWorkProgressRgb['Red']}}</span>
+        </td>
+        <td width="80" height="40" (click)="colorClick('Yellow')" style="text-align:center;cursor:pointer">
+          <span style="border-bottom:2px solid white"> {{rfiWorkProgressRgb['Yellow']}}</span>
+        </td>
+        <td width="80" height="40" (click)="colorClick('Gray')" style="text-align:center;cursor:pointer">
+          <span style="border-bottom:2px solid white"> {{rfiWorkProgressRgb['Gray']}}</span>
+        </td>
+        <td width="80" height="40" (click)="colorClick('totalColor')" style="text-align:center;cursor:pointer">
+          <span style="border-bottom:2px solid white"> {{rfiWorkProgressRgb['totalColor']}}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="dfc-query">
+  <div class="dfc-query-div">
+    <span style="color:red">*</span>
+    <span class="dfc-query-span">{{ 'dfq.dfq-plant' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedValue">
+      <ng-container *ngFor="let item of sitePlantNames">
+        <nz-option [nzLabel]="item" [nzValue]="item"></nz-option>
+      </ng-container>
+    </nz-select>
+  </div>
+  <div class="dfc-query-div">
+    <span class="dfc-query-span">BG</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectedbg">
+      <ng-container *ngFor="let item of bgs">
+        <nz-option [nzLabel]="item" [nzValue]="item"></nz-option>
+      </ng-container>
+    </nz-select>
+
+  </div>
+  <div style="margin: 10px;">
+    <span style="width: 80px;margin-right: 20px;">{{ 'dfq.report-achievement' | translate }}</span>
+    <nz-select style="width:500px;" nzMode="multiple" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+      [(ngModel)]="statusValue">
+      <ng-container *ngFor="let list of colorList">
+        <nz-option nzCustomContent style="width: 150px;" [nzValue]="list.value" [nzLabel]="list.label">
+          <div [ngSwitch]="list.value" [ngClass]="list.class" style="display: inline-block;">
+          </div>
+        </nz-option>
+      </ng-container>
+    </nz-select>
+  </div>
+  <div class="dfc-query-btn">
+    <button nz-button nzType="primary" (click)="query()">Query</button>
+  </div>
+</div>
+<div>
+  <label class="dfq-btn-download">
+    <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+  </label>
+</div>
+<nz-spin nzSimple [nzSpinning]="loadModel">
+  <nz-table *ngIf="tableFlag" class="workhour-forecast" #rfiReportTable nzBordered [nzData]="rfiTableList"
+    [nzShowSizeChanger]="true" [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th nzShowExpand>{{ 'dfq.report-expand' | translate }}</th>
+        <th>{{ 'dfq.dfq-plant' | translate }}</th>
+        <th>BU</th>
+        <th>{{ 'dfq.dfq-customer' | translate }}</th>
+        <th>{{ 'dfq.dfq-product' | translate }}</th>
+        <th>Project Code</th>
+        <th>Project Name</th>
+        <th>PLM Status</th>
+        <th>{{ 'dfq.report-target-yield-rate-completed-sign-off' | translate }}</th>
+        <th>RFQ D.D</th>
+        <th>{{ 'dfq.report-light-result' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="rfiReportTable.data">
+        <tr>
+          <td nzShowExpand [(nzExpand)]="data.expand"></td>
+          <td>{{ data.sitePlant}}</td>
+          <td>{{ data.businessUnit }}</td>
+          <td>{{ data.customer }}</td>
+          <td>{{ data.product }}</td>
+          <td>{{ data.project }}</td>
+          <td>{{ data.model }}</td>
+          <td>{{ data.PLMStatus }} </td>
+          <td><a (click)="toYrGenerateSign(data)"
+              [ngStyle]="{'border-bottom':'1px solid black'}">{{ data.status === '1'? 'Y':'N' }}</a>
+          </td>
+          <td>{{ data.rfqDueDate | date: 'yyyy/MM/dd'}}</td>
+          <!-- 點擊顏色跳轉 -->
+          <td (click)="toNewModelMaintain(data)" style="cursor:pointer"
+            [ngStyle]="{'background': data.color === 'Green'? 'rgb(60, 255, 76)': data.color === 'Red'? 'rgb(255, 68, 68)': data.color === 'Yellow'? 'rgb(248, 252, 55)': data.color === 'Gray'? '#b9b6b6': 'rgb(201, 67, 201)'}">
+            {{ data.describe }}
+          </td>
+        </tr>
+        <tr [nzExpand]="data.expand">
+          <td></td>
+          <td colspan="7">
+            <nz-table class="innerTable" #innerTable [nzData]="data.innerData" nzSize="middle"
+              [nzShowPagination]="false">
+              <thead>
+                <tr>
+                  <th>Model Name</th>
+                  <th>{{ 'dfq.report-target-yield-rate-completed-send-sign' | translate }}</th>
+                  <th>{{ 'dfq.report-target-yield-rate-completed-sign-off' | translate }}</th>
+                </tr>
+              </thead>
+    <tbody>
+      <tr *ngFor="let data of innerTable.data">
+        <td> {{ data.model  }} </td>
+        <td> <a (click)="toYrGenerate(data)"
+            [ngStyle]="{'border-bottom':'1px solid black'}">{{ data.status === 0 || data.status === 1 ? 'Y':'N' }} </a>
+        </td>
+        <td> <a (click)="toYrGenerateSign(data)"
+            [ngStyle]="{'border-bottom':'1px solid black'}">{{ data.status ==='1'? 'Y':'N'}}</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  </td>
+  </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+</nz-spin>

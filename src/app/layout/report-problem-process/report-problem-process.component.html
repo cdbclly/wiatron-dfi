@@ -1,0 +1,23 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{ 'dfi-monthly-meeting.reflect-issue' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<br>
+<div>
+  <div class="uploadFile-cls">
+    <app-upload-file [uploadType]="'png'" (uploadFile)="preview($event)"></app-upload-file>
+  </div>
+  <nz-divider></nz-divider>
+</div>
+<div class="imgfather-cls">
+  <div *ngIf="isPreview" id="button">
+    <label style="font-size: large; text-align: center;">{{ 'dfi-monthly-meeting.picture-preview' | translate }}</label>
+    <button nz-button nzType="primary"
+      (click)="cancel(uploadFile)">{{ 'dfi-monthly-meeting.cancel-upload' | translate }}</button>
+    <button nz-button nzType="primary"
+      (click)="upload(uploadFile)">{{ 'dfi-monthly-meeting.confirm-upload' | translate }}</button>
+    <img [src]="temImgUrl">
+  </div>
+  <div class="img-cls" *ngIf="!isPreview">
+    <img width="100%" [attr.src]="filePath">
+  </div>
+</div>

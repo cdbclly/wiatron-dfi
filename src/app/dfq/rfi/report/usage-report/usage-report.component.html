@@ -1,0 +1,128 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.report-use-ratio' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.report-use-ratio' | translate }}
+</div>
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label style="width: 97px; text-align: right" nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="site cannot be empty">
+      <nz-select style="width: 180px" nzShowSearch formControlName="plantSelectValue" [(ngModel)]="plantSelectValue"
+        (ngModelChange)="getModel()">
+        <ng-container *ngFor="let list of listOfPlantSelectOption">
+          <nz-option [nzValue]="(list.siteId+'-'+list.id)" [nzLabel]="(list.siteId+'-'+list.id)"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>BU</nz-form-label>
+    <nz-form-control nzErrorTip="BU cannot be empty">
+      <nz-select style="width: 180px" nzShowSearch nzAllowClear formControlName="buSelectValue"
+        [(ngModel)]="buSelectValue" (ngModelChange)="getModel()">
+        <ng-container *ngFor="let list of listOfBuSelectOption">
+          <nz-option [nzValue]="list.id" [nzLabel]="list.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="customer cannot be empty">
+      <nz-spin nzSimple [nzSpinning]="loadModel">
+        <nz-select style="width: 180px" nzShowSearch nzAllowClear formControlName="customerSelectValue"
+          [(ngModel)]="customerSelectValue">
+          <ng-container *ngFor="let list of listOfCustomerSelectOption">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-spin>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="modelType cannot be empty">
+      <nz-spin nzSimple [nzSpinning]="loadModel">
+        <nz-select style="width: 180px" nzShowSearch nzAllowClear formControlName="modelTypeSelectValue"
+          [(ngModel)]="modelTypeSelectValue" (ngModelChange)="modelChange()">
+          <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-spin>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label style="width: 97px; text-align: right">Project Code</nz-form-label>
+    <nz-form-control nzErrorTip="projectCode cannot be empty">
+      <nz-spin nzSimple [nzSpinning]="loadModel">
+        <nz-select style="width: 900px" nzShowSearch nzAllowClear nzMode="multiple"
+          formControlName="modelFamilySelectValue" [(ngModel)]="modelFamilySelectValue"
+          (ngModelChange)="changeModelFamily($event)">
+          <ng-container *ngFor="let list of listOfModelNameSelectOption">
+            <nz-option [nzValue]="list.project" [nzLabel]="list.project"></nz-option>
+          </ng-container>
+        </nz-select>
+      </nz-spin>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label style="width: 97px; text-align: right">機種</nz-form-label>
+    <nz-form-control nzErrorTip="projectName cannot be empty">
+      <nz-select style="width: 900px" nzShowSearch nzAllowClear nzMode="multiple" [nzDisabled]="true"
+        formControlName="modelNameSelectValue" [(ngModel)]="modelNameSelectValue">
+        <ng-container *ngFor="let list of listOfModelNameSelectOption">
+          <nz-option [nzValue]="list.model" [nzLabel]="list.model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [disabled]="queryFlag">查詢</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-divider></nz-divider>
+
+<div *ngIf="tableShow">
+  <div class="download">
+    <button nz-button [nzType]="'primary'" [nzLoading]="down" title="下載" nzShape="circle" (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+  </div>
+  <br>
+  <nz-table #filterTable nzBordered="true" id="yrReport" [nzData]="showData" nzShowPagination="false"
+    [nzPageSize]="999">
+    <thead>
+      <tr>
+        <th>廠別</th>
+        <th nzShowFilter [(nzFilters)]="customers" (nzFilterChange)="filter($event, [], [], [])">客戶別</th>
+        <th nzShowFilter [(nzFilters)]="products" (nzFilterChange)="filter([], $event, [], [])">產品</th>
+        <th nzShowFilter [(nzFilters)]="projects" (nzFilterChange)="filter([], [], $event, [])">Project Code</th>
+        <th nzShowFilter [(nzFilters)]="models" (nzFilterChange)="filter([], [], [], $event)">機種</th>
+        <th nzShowSort [(nzSort)]="sortValue" (nzSortChange)="sort(searchValue)">良率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of filterTable.data, let i=index">
+        <td>{{data.site+'-'+data.plant}}</td>
+        <td>{{data.customer}}</td>
+        <td>{{data.product}}</td>
+        <td>{{data.project}}</td>
+        <td>{{data.model}}</td>
+        <td *ngIf="down">
+          {{ data.status == 1? ((data.improvedYieldRate*100)==100 ? '100' : ( (data.improvedYieldRate*100).toString().split('.')[0].length===
+          1 ? (data.improvedYieldRate*100).toString().substring(0,4) : (data.improvedYieldRate*100).toString().substring(0,
+          5))) : '未使用'}}
+        </td>
+        <td *ngIf="!down">{{data.status == 1? (data.improvedYieldRate | percent) : '未使用'}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

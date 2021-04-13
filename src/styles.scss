@@ -1,0 +1,314 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* AdminLTE CSS */
+@import url(assets/bower_components/bootstrap/dist/css/bootstrap.min.css);
+@import url(assets/bower_components/font-awesome/css/font-awesome.min.css);
+@import url(assets/bower_components/Ionicons/css/ionicons.min.css);
+@import url(assets/bower_components/jvectormap/jquery-jvectormap.css);
+@import url(assets/dist/css/AdminLTE.css);
+@import url(assets/dist/css/skins/_all-skins.css);
+
+/* Below is DFI global CSS*/
+$primary-color: #333;
+$text-color: #fff;
+
+body {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+}
+
+h2 {
+  margin: 12px 0;
+  font-size: 20px;
+  font-family: inherit;
+}
+
+a {
+  color: #595959;
+}
+
+a:hover {
+  color: #595959;
+}
+
+::placeholder {
+  color: #cbcbcb;
+  opacity: 1;
+  /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #cbcbcb;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #cbcbcb;
+}
+
+.content-wrapper {
+  background-color: #e6e6e6;
+}
+
+.content-header {
+  padding: 0px;
+}
+
+@media (min-width: 768px) {
+
+  .fixed .content-wrapper,
+  .fixed .right-side {
+    padding-top: 55px;
+  }
+
+  .content-header {
+    max-height: calc(100vh - 55px);
+    overflow: auto;
+  }
+}
+
+@media (max-width: 767px) {
+
+  .fixed .content-wrapper,
+  .fixed .right-side {
+    padding-top: 105px;
+  }
+
+  .content-header {
+    max-height: calc(100vh - 105px);
+    overflow: auto;
+  }
+}
+
+.main-header .sidebar-toggle:before {
+  font-size: 18px;
+  content: "\f03b";
+}
+
+.sidebar-collapse .main-header .sidebar-toggle:before {
+  font-size: 18px;
+  content: "\f03c";
+}
+
+.ant-table-placeholder {
+  z-index: 0;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.ant-avatar-sm.ant-avatar-icon {
+  margin-right: 7px;
+}
+
+.ant-table-small>.ant-table-content>.ant-table-scroll>.ant-table-body>table>.ant-table-thead>tr>th,
+.ant-table-small>.ant-table-content>.ant-table-body>table>.ant-table-thead>tr>th,
+.ant-table-thead>tr>th {
+  background: $primary-color;
+  color: $text-color;
+}
+
+.ant-table-tbody tr:nth-child(odd) td {
+  background-color: #ffffff;
+}
+
+.ant-table-tbody tr:nth-child(even) td {
+  background-color: #f0f0f0;
+}
+
+.ant-pagination-item-active {
+  background: $primary-color;
+}
+
+.ant-pagination-item-active a,
+.ant-pagination-item-active a:hover,
+.ant-pagination-item-active:hover a {
+  color: $text-color;
+}
+
+@mixin circle($color) {
+  margin: 0 auto;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  background: $color;
+}
+
+.orange-circle {
+  @include circle(rgb(248, 252, 55));
+}
+
+.green-circle {
+  @include circle(rgb(60, 255, 76));
+}
+
+.red-circle {
+  @include circle(rgb(255, 68, 68));
+}
+
+.red1-circle {
+  @include circle(red);
+}
+
+.blue-circle {
+  @include circle(blue);
+}
+
+.gray-circle {
+  @include circle(#b9b6b6);
+}
+
+.orange1-circle {
+  @include circle(rgb(255, 148, 96));
+}
+
+.purple-circle {
+  @include circle(rgb(201, 67, 201));
+}
+
+.ant-modal-title {
+  font-weight: bold;
+}
+
+.ant-modal-header {
+  text-align: center;
+  border-bottom: none;
+}
+
+.ant-modal-body {
+  text-align: left;
+  font-size: 18px;
+  padding: 10px;
+
+  .field {
+    font-size: 14px;
+  }
+}
+
+.ant-modal-footer {
+  text-align: center;
+  border-top: none;
+  padding-bottom: 25px;
+}
+
+.ant-modal-content {
+  position: relative;
+  background-color: #fff;
+  border: 0;
+  border-radius: 6px;
+  background-clip: padding-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vertical-center-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vertical-center-modal .ant-modal {
+  top: 0;
+}
+
+.anticon-edit,
+.anticon-copy,
+.anticon-mail,
+.anticon-save {
+  font-size: 20px;
+  font-weight: bold;
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
+.query {
+  input {
+    display: inline-block;
+    width: 210px;
+  }
+
+  span {
+    margin-right: 10px;
+  }
+
+  button {
+    margin-left: 20px;
+  }
+}
+
+.ant-divider {
+  background: #d4d4d4;
+  margin: 15px 0;
+}
+
+.tableContainer {
+  margin-top: 15px;
+}
+
+.ant-tabs-bar {
+  border-color: #a6a6a6;
+}
+
+.mustItem {
+  color: red;
+}
+
+.ant-checkbox-disabled+span {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-message-notice-content {
+  background: rgba(56, 56, 56, 1);
+  color: #fff;
+  font-size: 16px;
+}
+
+.ant-input-group>.ant-input:last-child,
+.ant-input-group-addon:last-child {
+  background-color: #333;
+  color: #fff;
+}
+
+
+// 图例方块
+@mixin square($color) {
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  background: $color;
+}
+
+.square-green {
+  @include square(rgb(60, 255, 76));
+}
+
+.square-red {
+  @include square(rgb(255, 68, 68));
+}
+
+.square-yellow {
+  @include square(rgb(248, 252, 55));
+}
+
+.square-grey {
+  @include square(#b9b6b6);
+}
+
+.square-purple {
+  @include square(rgb(201, 67, 201));
+}
+
+.square-orange {
+  @include square(rgb(255, 119, 28));
+}
+
+.center-line {
+  margin-top: 10px;
+  color: rgba(80, 80, 80, 1);
+  background-color: rgba(212, 212, 212, 1);
+  width: 100%;
+  height: 1px;
+}

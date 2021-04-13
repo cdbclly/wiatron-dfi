@@ -1,0 +1,20 @@
+<div class="query-row">
+  <div class="field">
+    <span style="color: red;margin: 0px">*</span>
+    <span>Action</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="action">
+      <nz-option *ngFor="let action of actions" [nzLabel]="action" [nzValue]="action"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1" *ngIf="flag">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-product' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="product">
+      <nz-option *ngFor="let product of products" [nzLabel]="product.id" [nzValue]="product.id"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px;" (click)="query()"
+    [nzLoading]="isLoading">{{ 'mrr.mrr-query' | translate }}</button>
+</div>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

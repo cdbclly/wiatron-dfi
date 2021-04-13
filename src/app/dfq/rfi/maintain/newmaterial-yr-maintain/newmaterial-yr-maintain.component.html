@@ -1,0 +1,147 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-data-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'dfq.rfi-new-material-yield-ate-maintenance'|translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{'dfq.rfi-new-material-yield-ate-maintenance'|translate }}</div>
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="queryMaterial()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="site cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectSite" [(ngModel)]="selectSite"
+        (ngModelChange)="siteChange()">
+        <ng-container *ngFor="let site of sites">
+          <nz-option [nzValue]="site" [nzLabel]="site"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="customer cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectCustomer" [(ngModel)]="selectCustomer"
+        (ngModelChange)="customerChange()">
+        <ng-container *ngFor="let customer of customers">
+          <nz-option [nzValue]="customer" [nzLabel]="customer"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="product cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectProduct" [(ngModel)]="selectProduct"
+        (ngModelChange)="productChange()">
+        <ng-container *ngFor="let product of products">
+          <nz-option [nzValue]="product" [nzLabel]="product"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="projectName cannot be empty">
+      <nz-select style="width: 400px" nzShowSearch formControlName="selectProjectName" [(ngModel)]="selectProjectName"
+        (ngModelChange)="change()">
+        <ng-container *ngFor="let modelId of modelIds">
+          <nz-option [nzValue]="modelId" [nzLabel]="modelId"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Project Code</nz-form-label>
+    <nz-form-control nzErrorTip="projectCode cannot be empty">
+      <nz-select style="width: 400px" [nzDisabled]="true" formControlName="projectId" [(ngModel)]="projectId">
+        <ng-container>
+          <nz-option [nzValue]="projectId" [nzLabel]="projectId"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading"
+        [disabled]="!validateForm.valid">{{ 'dfq.dfq-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-divider></nz-divider>
+
+<div class="rfi-table" *ngIf="tableshow">
+  <nz-table #editRowTable nzBordered [nzData]="selectTable" [nzFrontPagination]="false" [nzShowPagination]="false">
+    <thead>
+      <tr>
+        <th>{{ 'dfq.dfq-plant' | translate }}</th>
+        <th>{{ 'dfq.dfq-customer' | translate }}</th>
+        <th>{{ 'dfq.dfq-product' | translate }}</th>
+        <th>{{ 'dfq.dfq-model' | translate }}</th>
+        <th>{{ 'dfq.dfq-material' | translate }}</th>
+        <th>{{ 'dfq.dfq-project' | translate }}</th>
+        <th>{{ 'dfq.rfi-rd-design-yield' | translate }}</th>
+        <th>{{ 'dfq.rfi-qa-maintains-actual-yield' | translate }}</th>
+        <th>PIC</th>
+        <th>{{ 'dfq.dfq-sign-status' | translate }}</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of editRowTable.data; let i = index">
+        <td>{{ data.site }}</td>
+        <td>{{ data.customer }}</td>
+        <td>{{ data.product }}</td>
+        <td>{{ data.modelId }}</td>
+        <td>{{ data.material.name }}</td>
+        <td>
+          <a (click)="showFactor(i)">{{'dfq.rfi-details'|translate}}</a>
+        </td>
+        <td>{{ data.yieldRate | percent }}</td>
+        <td>
+          <ng-container *ngIf="!editCache[data.id].edit; else yieldRateInputTpl">
+            {{ data.QAyieldRate | percent}}
+          </ng-container>
+          <ng-template #yieldRateInputTpl>
+            <nz-input-number [(ngModel)]="editCache[data.id].data.QAyieldRate" [nzMin]="0" [nzMax]="100"
+              [nzPlaceHolder]="'Please enter a number from 0 to 100'"></nz-input-number>
+          </ng-template>
+        </td>
+        <td>{{data.pic | userEnname | async}}</td>
+        <td>{{ data.status | flowStatus }}</td>
+        <td>
+          <span *ngIf="!data.isRfqProject">
+            <nz-spin nzSimple *ngIf="!canEdit"></nz-spin>
+            <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
+              <a (click)="startEdit(data.id)" *ngIf="canEdit">
+                <i nz-icon type="edit" theme="outline"></i>
+              </a>
+            </ng-container>
+            <ng-template #saveTpl>
+              <a (click)="saveEdit(data.id)" *ngIf="canEdit">
+                <i nz-icon type="save" theme="outline"></i>
+              </a>
+            </ng-template>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible" [nzClosable]="false" [nzFooter]="null" (nzOnCancel)="handleCancel()">
+  <nz-table nzBordered [nzData]="factorTypes" [nzFrontPagination]="false" [nzShowPagination]="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>{{ 'dfq.dfq-project' | translate }}</th>
+        <th>{{ 'dfq.rfi-factor' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let factorType of factorTypes">
+        <td>{{ factorType.name }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

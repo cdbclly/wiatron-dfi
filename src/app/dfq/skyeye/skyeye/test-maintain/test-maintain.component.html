@@ -1,0 +1,209 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye品質監控管理系統</nz-breadcrumb-item>
+  <nz-breadcrumb-item>品質監控資料維護</nz-breadcrumb-item>
+  <nz-breadcrumb-item>測試工具版本維護</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  測試工具版本維護
+</div>
+
+
+<div class="query-row">
+  <div class="field1">
+    <span style="width: 29%;">
+      <span style="color: red;">*</span>
+      <span>Site</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+      <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span style="width: 28%;">
+      <span style="color: red">*</span>
+      <span>Plant</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('stage')">
+      <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span>Stage</span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_stage" (ngModelChange)="getOptions('model')">
+      <nz-option *ngFor="let stage of objectKeys(stageGroup)" [nzLabel]="stage" [nzValue]="stage"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <span>Model</span>
+    <nz-select nzShowSearch nzAllowClear nzMode="multiple" [(ngModel)]="cur_model" (ngModelChange)="getOptions('query')">
+      <nz-option *ngFor="let model of objectKeys(modelGroup)" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<button nz-button [nzType]="'primary'" title="上传模板下载" nzShape="circle" (click)="downloadTemp()"
+  style="margin-bottom: 15px; margin-right: 10px;">
+  <i nz-icon type="file-excel" theme="outline"></i>
+</button>
+<button nz-button [nzType]="'primary'" *ngIf="ckpiInfos && ckpiInfos.length > 0" title="下载" nzShape="circle"
+  (click)="downloadData()" style="margin-bottom: 15px;">
+  <i nz-icon type="download" theme="outline"></i>
+</button>
+<div class="btn-upload" *ngIf="role['insert'] === true">
+  <label class="upload">
+    <input id="upload" type="file" (change)="handleFileInput($event.target)">
+    <div class="fakeInput">
+      <span *ngIf="uploadFileName">{{uploadFileName}}</span>
+      <span *ngIf="!uploadFileName">選擇Excel檔案</span>
+    </div>
+  </label>
+
+  <label style="padding:4px 15px;" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+    title="上傳" (click)="uploadPre()">
+    <i class="anticon anticon-upload"></i>
+  </label>
+</div>
+<div class="upload-progress" [hidden]="showProgress">
+  <nz-progress [nzPercent]="progressBar" nzSize="small" [nzStatus]="proStatus"></nz-progress>
+</div>
+
+
+<nz-table #nzData nzBordered nzShowQuickJumper [nzData]="ckpiInfos" [nzPageSize]="10" [nzWidthConfig]="THwidth"
+  [(nzPageIndex)]="curPage" [nzScroll]="nzScroll">
+  <thead>
+    <tr style="font-size: 12px;">
+      <!-- <th>編號</th> -->
+      <th>廠別</th>
+      <th>廠區</th>
+      <th>機種</th>
+      <th>站别</th>
+      <th>工单</th>
+      <th>维护人</th>
+      <th>修改日期</th>
+      <th>初始日期</th>
+      <th nzRight="40px">Action</th>
+      <th nzRight="0px">log</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of nzData.data;  let i = index;" style="font-size: 12px;">
+      <!-- <td>{{(curPage - 1) * 10 + i + 1}}</td> -->
+      <td>
+        {{data.site}}
+      </td>
+      <td>
+        {{data.plant}}
+      </td>
+      <td>
+        <ng-container>
+          {{data.modelname}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.stationtype}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container *ngIf="editMap.get(data['groupId'])">
+          <!-- <input type="text" nz-input [(ngModel)]="editItem['monumber']"> -->
+          <textarea type="text" nz-input [(ngModel)]="editItem['monumber']"></textarea>
+        </ng-container>
+        <span style="
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        "  title={{data.monumber}}
+        >
+        <ng-container *ngIf="!editMap.get(data['groupId'])">
+          {{data.monumber}}
+        </ng-container>
+        </span>
+        <div class="showInfo" *ngIf="mousekey === i ? isShow:''">
+          {{data.monumber}}
+        </div>
+      </td>
+      <td>{{data.updatedUser}}</td>
+      <td>{{data.updatedTime | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>{{data.createdTime | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+
+      <!-- Action列 对应的 编辑、删除功能 -->
+      <td *ngIf="role['update'] === true && !editMap.get(data['groupId'])&&!disableedit">
+        <span style="float: left;
+        padding-right: 8px;" (click)="editRow(data)"><i class="anticon anticon-edit"></i></span>
+        <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+        <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="delRow(data.groupId)">
+          <a nz-popconfirm><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+        </nz-popconfirm>
+      </td>
+      <td *ngIf="role['update'] !== true">
+        暫無權限
+      </td>
+
+      <td *ngIf="role['update'] === true && editMap.get(data['groupId'])">
+        <span style="float: left;
+          padding-right: 8px;" (click)="saveRow(editItem, data)"><i class="anticon anticon-save"></i></span>
+        <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+        <span style="padding-left: 8px;cursor: pointer;"><i class="anticon anticon-rollback" (click)="cancelEdit(data)"
+            style="margin-left: 10px;"></i></span>
+      </td>
+      <td *ngIf="role['update'] !== true && !editMap.get(data['groupId'])&&disableedit">
+        <span style="float: left;
+              padding-right: 8px;cursor: no-drop"><i class="anticon anticon-edit"></i></span>
+        <nz-divider class="table-divider" nzType="vertical"></nz-divider>
+        <span style="padding-left: 8px;cursor: no-drop"><i class="anticon anticon-delete"
+            style="margin-left: 10px;"></i></span>
+      </td>
+      <td>
+        <span>
+          <i nz-icon type="search" theme="outline" (click)="showLog(data.groupId)"></i>
+        </span>
+      </td>
+
+    </tr>
+  </tbody>
+</nz-table>
+
+<!-- log弹出框 -->
+<nz-modal [(nzVisible)]="isVisible_log" nzTitle="log詳細" nzClosable="false" [nzFooter]="footer" nzWidth="85%"
+  (nzOnCancel)="handleCancel_log()" (nzOnOk)="handleOk_log()">
+  <nz-table #nzDatalog nzBordered nzShowQuickJumper [nzData]="logInfos" [nzPageSize]="10" [nzWidthConfig]="THwidth"
+    [(nzPageIndex)]="curPagelog" [nzScroll]="nzScroll">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th>廠別</th>
+        <th>廠區</th>
+        <th>機種</th>
+        <th>站别</th>
+        <th>工单</th>
+        <th>維護人</th>
+        <th>修改日期</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzDatalog.data;  let k = index;" style="font-size: 12px;">
+        <!-- <td>{{(curPagelog - 1) * 10 + k + 1}}</td> -->
+        <td>{{data.site}}</td>
+        <td>{{data.plant}}</td>
+        <td>{{data.modelname}}</td>
+        <td>{{data.stationtype}}</td>
+        <td>{{data.monumber}}</td>
+        <td>{{data.updatedUser}}</td>
+        <td>{{data.updatedTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+        <td>{{data.actions}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

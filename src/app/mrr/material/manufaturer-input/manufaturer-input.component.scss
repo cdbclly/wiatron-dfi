@@ -1,0 +1,46 @@
+$centerHeight: calc(100vh - 95px);
+
+.mrr-material-all {
+  height: $centerHeight;
+  width: 100%;
+}
+
+.Manufacturer-table {
+  margin: 10px 0px;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.echart {
+  background-color: rgba(255, 255, 255, 1);
+  margin-top: 10px;
+}
+
+.dfc-btn {
+  margin-top: 10px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-right {
+    position: absolute;
+    right: 0;
+    height: 100%;
+  }
+
+  .dfc-btn-left {
+    height: 100%;
+
+    button {
+      margin-right: 10px;
+    }
+  }
+}

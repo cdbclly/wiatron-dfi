@@ -1,0 +1,386 @@
+<div class="dfc-query">
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="selectValue.plant"
+      [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="selectValue.custom"
+      [querySelect]="querySelect.custom" (queryValueChange)="changeCustomAndModelType()"
+      (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="selectValue.modelType"
+      [querySelect]="querySelect.modelType" (queryValueChange)="changeCustomAndModelType()"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.cFlow" [(queryValue)]="selectValue.cFlow"
+      [querySelect]="querySelect.cFlow" (queryValueChange)="changeCFlow()"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="selectValue.proName"
+      [querySelect]="querySelect.proName" (searchSelectChange)="proNameSearch($event)"
+      (queryValueChange)="changeProName($event)"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="selectValue.proCode"
+      [querySelect]="querySelect.proCode" (searchSelectChange)="proCodeSearch($event)"></app-dfc-query-input>
+  </div>
+  <div>
+    <app-dfc-query-input [queryStyle]="queryStyle.model" [(queryValue)]="selectValue.model"
+      [querySelect]="querySelect.model" (searchSelectChange)="modelSearch($event)"></app-dfc-query-input>
+  </div>
+  <div class="dfc-query-btn">
+    <button nz-button style="width: 83px;" nzType="primary" [nzLoading]="queryLoading"
+      (click)="query()">{{'mrr.mrr-query' | translate}}</button>
+    <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+  </div>
+</div>
+<div class="workHour-table">
+  <nz-table id="downdata" #dfcSummaryWorkHourTable [nzWidthConfig]="nzWidthConfig" [nzData]="dataSet"
+    [nzScroll]="nzScrollRep" [nzPageSize]="10" [nzFrontPagination]=tablePaging nzBordered>
+    <thead>
+      <tr>
+        <th rowspan="2">{{'mrr.vendor-extension' | translate}}</th>
+        <th rowspan="2">{{'mrr.mrr-site' | translate}}</th>
+        <th rowspan="2">{{'mrr.mrr-customer' | translate}}</th>
+        <th rowspan="2">{{'mrr.mrr-product' | translate}}</th>
+        <th rowspan="2">Project Code</th>
+        <th rowspan="2">Project Name</th>
+        <th rowspan="2">Model Name</th>
+        <th rowspan="2">Current Stage</th>
+        <th rowspan="2">MP Date</th>
+        <th rowspan="2">FCST(K/{{'military-order.month' | translate}})</th>
+        <th rowspan="1">RFQ</th>
+        <th rowspan="1">{{'report.model-workhour-goal' | translate}}</th>
+        <th rowspan="1" [attr.colspan]="c2.col">C2
+          <button nz-button nzType="primary" (click)="expandColumn(c2)"><i nz-icon type="ellipsis"></i></button>
+        </th>
+        <th rowspan="1" [attr.colspan]="c3.col">C3
+          <button nz-button nzType="primary" (click)="expandColumn(c3)"><i nz-icon type="ellipsis"></i></button>
+        </th>
+        <th rowspan="1" [attr.colspan]="c4.col">C4
+          <button nz-button nzType="primary" (click)="expandColumn(c4)"><i nz-icon type="ellipsis"></i></button>
+        </th>
+        <th rowspan="1" [attr.colspan]="c5.col">C5
+          <button nz-button nzType="primary" (click)="expandColumn(c5)"><i nz-icon type="ellipsis"></i></button>
+        </th>
+        <th rowspan="1" [attr.colspan]="c6.col">C6
+          <button nz-button nzType="primary" (click)="expandColumn(c6)"><i nz-icon type="ellipsis"></i></button>
+        </th>
+      </tr>
+      <tr>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <ng-container *ngIf="c2.expand">
+          <th *ngFor="let process of processHeaders">
+            {{process['Name']}}
+          </th>
+        </ng-container>
+        <th>Gap</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <ng-container *ngIf="c3.expand">
+          <th *ngFor="let process of processHeaders">
+            {{process['Name']}}
+          </th>
+        </ng-container>
+        <th>Gap</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <ng-container *ngIf="c4.expand">
+          <th *ngFor="let process of processHeaders">
+            {{process['Name']}}
+          </th>
+        </ng-container>
+        <th>Gap</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <ng-container *ngIf="c5.expand">
+          <th *ngFor="let process of processHeaders">
+            {{process['Name']}}
+          </th>
+        </ng-container>
+        <th>Gap</th>
+        <th>{{'report.total-workhour' | translate}}</th>
+        <ng-container *ngIf="c6.expand">
+          <th *ngFor="let process of processHeaders">
+            {{process['Name']}}
+          </th>
+        </ng-container>
+        <th>Gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-row [ngForOf]="dfcSummaryWorkHourTable.data">
+        <tr>
+          <!-- 如果為 groupModel 則顯示展開的加號 -->
+          <td *ngIf="!row[2]"></td>
+          <td nzShowExpand [(nzExpand)]="row[0]" *ngIf="row[2]" (nzExpandChange)="nzExpandChange($event,row)"></td>
+          <ng-container *ngFor="let col of row; let i = index;">
+            <ng-container *ngIf="isColIndex(i)">
+              <!-- 基礎類型直接顯示 -->
+              <ng-container *ngIf="!isObjectType(col)">
+                <td>{{col}}</td>
+              </ng-container>
+              <!-- 引用類型繼續展開 -->
+              <ng-container *ngIf="isObjectType(col)">
+                <ng-container *ngFor="let data of col">
+                  <!-- 渲染RFQ階段 -->
+                  <ng-container *ngIf="data.isRFQ">
+                    <td [ngStyle]="data.style">{{data.cost}}</td>
+                    <td>{{data.target}}</td>
+                  </ng-container>
+                  <!-- 渲染C0-C6階段 -->
+                  <ng-container *ngIf="!data.isRFQ">
+                    <td [ngStyle]="data.style">{{data.cost}}</td>
+                    <!-- 渲染每個階段的製程 data.process.expand.expand 跟隨表頭的控制-->
+                    <ng-container *ngIf="data.process?.expand?.expand">
+                      <ng-container *ngFor="let item of data?.process.arr; index as i">
+                        <ng-container *ngIf="data.process.click">
+                          <!--渲染可點擊的-->
+                          <td *ngIf="processHeaders.length > 0 && (data.groupModelType === 1)">
+                            <a [routerLink]="['/dashboard/dfc/workhour-report']"
+                              [queryParams]="{stage: data.stage, process: processHeaders[i].ProcessCode, modelID: data.modelID}"
+                              [ngStyle]="item.style" style="text-decoration: underline" target="_blank">
+                              {{item.cost}}
+                            </a>
+                          </td>
+                          <td *ngIf="processHeaders.length > 0 && (data.groupModelType === 2)">
+                            {{item.cost}}
+                          </td>
+                        </ng-container>
+                        <ng-container *ngIf="!data.process.click">
+                          <!--渲染不可點擊的-->
+                          <td>
+                            {{item.cost}}
+                          </td>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                    <td>{{data.gap}}</td>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+        <tr [nzExpand]="row[0]">
+          <td></td>
+          <td [attr.colspan]="innerTabelColspan">
+            <nz-table #innerTable [nzData]="row[1]" nzSize="middle" [nzShowPagination]="false">
+              <thead>
+                <tr>
+                  <th rowspan="2">Model Name</th>
+                  <th rowspan="2">Count</th>
+                  <th rowspan="2">FCST(K/{{'military-order.month' | translate}})</th>
+                  <th rowspan="1">RFQ</th>
+                  <th rowspan="1">{{'report.model-workhour-goal' | translate}}</th>
+                  <th rowspan="1" [attr.colspan]="c2.col">C2
+                    <button nz-button nzType="primary" (click)="expandColumn(c2)"><i nz-icon
+                        type="ellipsis"></i></button>
+                  </th>
+                  <th rowspan="1" [attr.colspan]="c3.col">C3
+                    <button nz-button nzType="primary" (click)="expandColumn(c3)"><i nz-icon
+                        type="ellipsis"></i></button>
+                  </th>
+                  <th rowspan="1" [attr.colspan]="c4.col">C4
+                    <button nz-button nzType="primary" (click)="expandColumn(c4)"><i nz-icon
+                        type="ellipsis"></i></button>
+                  </th>
+                  <th rowspan="1" [attr.colspan]="c5.col">C5
+                    <button nz-button nzType="primary" (click)="expandColumn(c5)"><i nz-icon
+                        type="ellipsis"></i></button>
+                  </th>
+                  <th rowspan="1" [attr.colspan]="c6.col">C6
+                    <button nz-button nzType="primary" (click)="expandColumn(c6)"><i nz-icon
+                        type="ellipsis"></i></button>
+                  </th>
+                </tr>
+                <tr>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <ng-container *ngIf="c2.expand">
+                    <th *ngFor="let process of processHeaders">
+                      {{process['Name']}}
+                    </th>
+                  </ng-container>
+                  <th>Gap</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <ng-container *ngIf="c3.expand">
+                    <th *ngFor="let process of processHeaders">
+                      {{process['Name']}}
+                    </th>
+                  </ng-container>
+                  <th>Gap</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <ng-container *ngIf="c4.expand">
+                    <th *ngFor="let process of processHeaders">
+                      {{process['Name']}}
+                    </th>
+                  </ng-container>
+                  <th>Gap</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <ng-container *ngIf="c5.expand">
+                    <th *ngFor="let process of processHeaders">
+                      {{process['Name']}}
+                    </th>
+                  </ng-container>
+                  <th>Gap</th>
+                  <th>{{'report.total-workhour' | translate}}</th>
+                  <ng-container *ngIf="c6.expand">
+                    <th *ngFor="let process of processHeaders">
+                      {{process['Name']}}
+                    </th>
+                  </ng-container>
+                  <th>Gap</th>
+                </tr>
+              </thead>
+    <tbody>
+      <tr *ngFor="let innerRow of innerTable.data">
+        <ng-container *ngFor="let innerCol of innerRow; let iCol = index;">
+          <!-- 基礎類型直接顯示 -->
+          <ng-container *ngIf="!isInnerType(iCol)">
+            <td>{{(innerCol.basicModel | dfcBasicModel | async)?.modelName}}</td>
+            <td>{{innerCol.count}}</td>
+            <td>{{(innerCol.basicModel | dfcBasicModel | async)?.FCST}}</td>
+          </ng-container>
+          <!-- 引用類型繼續展開 -->
+          <ng-container *ngIf="isInnerType(iCol)">
+            <ng-container *ngFor="let data of innerCol">
+              <!-- 渲染RFQ階段 -->
+              <ng-container *ngIf="data.isRFQ">
+                <td [ngStyle]="data.style">{{data.cost}}</td>
+                <td>{{data.target}}</td>
+              </ng-container>
+              <!-- 渲染C0-C6階段 -->
+              <ng-container *ngIf="!data.isRFQ">
+                <td [ngStyle]="data.style">{{data.cost}}</td>
+                <!-- 渲染每個階段的製程 data.process.expand.expand 跟隨表頭的控制-->
+                <ng-container *ngIf="data.process?.expand?.expand">
+                  <ng-container *ngFor="let item of data?.process.arr; index as i">
+                    <ng-container *ngIf="data.process.click">
+                      <!--渲染可點擊的-->
+                      <td *ngIf="processHeaders.length > 0">
+                        <a [routerLink]="['/dashboard/dfc/workhour-report']"
+                          [queryParams]="{stage: data.stage, process: processHeaders[i].ProcessCode, modelID: data.modelID}"
+                          [ngStyle]="item.style" style="text-decoration: underline" target="_blank">
+                          {{item.cost}}
+                        </a>
+                      </td>
+                    </ng-container>
+                    <ng-container *ngIf="!data.process.click">
+                      <!--渲染不可點擊的-->
+                      <td>
+                        {{item.cost}}
+                      </td>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+                <td>{{data.gap}}</td>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+  </td>
+  </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+</div>
+
+<nz-table hidden="true" id="dfcSummaryWorkDown" #dfcSummaryWorkHourDownTable [nzData]="dataSet"
+  [nzFrontPagination]=false nzBordered>
+  <thead>
+    <tr>
+      <th rowspan="2">{{'mrr.mrr-site' | translate}}</th>
+      <th rowspan="2">{{'mrr.mrr-customer' | translate}}</th>
+      <th rowspan="2">{{'mrr.mrr-product' | translate}}</th>
+      <th rowspan="2">Project Code</th>
+      <th rowspan="2">Project Name</th>
+      <th rowspan="2">Model Name</th>
+      <th rowspan="2">Current Stage</th>
+      <th rowspan="2">MP Date</th>
+      <th rowspan="2">FCST(K/{{'military-order.month' | translate}})</th>
+      <th rowspan="1">RFQ</th>
+      <th rowspan="1">{{'report.model-workhour-goal' | translate}}</th>
+      <th rowspan="1" [attr.colspan]="processHeaders.length + 2">C2
+      </th>
+      <th rowspan="1" [attr.colspan]="processHeaders.length + 2">C3
+      </th>
+      <th rowspan="1" [attr.colspan]="processHeaders.length + 2">C4
+      </th>
+      <th rowspan="1" [attr.colspan]="processHeaders.length + 2">C5
+      </th>
+      <th rowspan="1" [attr.colspan]="processHeaders.length + 2">C6
+      </th>
+    </tr>
+    <tr>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th *ngFor="let process of processHeaders">
+        {{process['Name']}}
+      </th>
+      <th>Gap</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th *ngFor="let process of processHeaders">
+        {{process['Name']}}
+      </th>
+      <th>Gap</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th *ngFor="let process of processHeaders">
+        {{process['Name']}}
+      </th>
+      <th>Gap</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th *ngFor="let process of processHeaders">
+        {{process['Name']}}
+      </th>
+      <th>Gap</th>
+      <th>{{'report.total-workhour' | translate}}</th>
+      <th *ngFor="let process of processHeaders">
+        {{process['Name']}}
+      </th>
+      <th>Gap</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of dfcSummaryWorkHourDownTable.data">
+      <!-- 如果為 groupModel 則顯示展開的加號 -->
+      <ng-container *ngFor="let col of row; let i = index;">
+        <ng-container *ngIf="isColIndex(i)">
+          <!-- 基礎類型直接顯示 -->
+          <ng-container *ngIf="!isObjectType(col)">
+            <td>{{col}}</td>
+          </ng-container>
+          <!-- 引用類型繼續展開 -->
+          <ng-container *ngIf="isObjectType(col)">
+            <ng-container *ngFor="let data of col">
+              <!-- 渲染RFQ階段 -->
+              <ng-container *ngIf="data.isRFQ">
+                <td [ngStyle]="data.style">{{data.cost}}</td>
+                <td>{{data.target}}</td>
+              </ng-container>
+              <!-- 渲染C0-C6階段 -->
+              <ng-container *ngIf="!data.isRFQ">
+                <td [ngStyle]="data.style">{{data.cost}}</td>
+                <!-- 渲染每個階段的製程 data.process.expand.expand 跟隨表頭的控制-->
+                <ng-container *ngFor="let item of data?.process.arr; index as i">
+                  <!--渲染可點擊的-->
+                  <td *ngIf="processHeaders.length > 0">
+                    {{item.cost}}
+                  </td>
+                </ng-container>
+                <td>{{data.gap}}</td>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </tr>
+  </tbody>
+</nz-table>

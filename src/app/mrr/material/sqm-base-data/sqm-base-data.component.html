@@ -1,0 +1,23 @@
+<div class="mrr-material-all">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-sqm-maintain' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.material-sqm-maintain' | translate }}</span>
+  </div>
+  <div class="mrr-tabset">
+    <nz-tabset [nzSelectedIndex]="selectedIndex">
+      <nz-tab [nzTitle]="'mrr.material-vendor-maintain-tab1' | translate">
+        <app-sqm-base-data-manu></app-sqm-base-data-manu>
+      </nz-tab>
+      <nz-tab [nzTitle]="'mrr.material-vendor-maintain-tab2' | translate" *ngIf="!isExt">
+        <app-sqm-base-data-parts></app-sqm-base-data-parts>
+      </nz-tab>
+      <nz-tab [nzTitle]="'mrr.material-vendor-maintain-tab3' | translate" *ngIf="!isExt">
+        <app-sqm-base-data-matm></app-sqm-base-data-matm>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.report-model-design-comparison' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.report-model-design-comparison' | translate }}
+</div>
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right" nzRequired>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="product cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectProduct" [(ngModel)]="selectProduct" (ngModelChange)="getMaterial(selectProduct)">
+        <ng-container *ngFor="let product of Products">
+          <nz-option [nzValue]="product.id" [nzLabel]="product.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right" nzRequired>{{ 'dfq.dfq-material' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="material cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectMaterial" [(ngModel)]="selectMaterial" (ngModelChange)="getSelect()">
+        <ng-container *ngFor="let material of Materials">
+          <nz-option [nzValue]="material.id" [nzLabel]="material.name"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right">{{ 'dfq.dfq-model' | translate }}1</nz-form-label>
+    <nz-form-control nzErrorTip="model cannot be empty">
+      <nz-select style="width: 250px" nzAllowClear nzShowSearch formControlName="selectModel1" [(ngModel)]="selectModel1" (ngModelChange)="getSelect()">
+        <ng-container *ngFor="let model of Models">
+          <nz-option [nzValue]="model" [nzLabel]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right">{{ 'dfq.dfq-model' | translate }}2</nz-form-label>
+    <nz-form-control nzErrorTip="model cannot be empty">
+      <nz-select style="width: 250px" nzAllowClear nzShowSearch formControlName="selectModel2" [(ngModel)]="selectModel2" (ngModelChange)="getSelect()">
+        <ng-container *ngFor="let model of Models">
+          <nz-option [nzValue]="model" [nzLabel]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right">{{ 'dfq.dfq-model' | translate }}3</nz-form-label>
+    <nz-form-control nzErrorTip="model cannot be empty">
+      <nz-select style="width: 250px" nzShowSearch formControlName="selectModel3" [(ngModel)]="selectModel3" (ngModelChange)="getSelect()">
+        <ng-container *ngFor="let model of Models">
+          <nz-option [nzValue]="model" [nzLabel]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label style="width: 70px; text-align: right">{{ 'dfq.dfq-model' | translate }}4</nz-form-label>
+    <nz-form-control nzErrorTip="model cannot be empty">
+      <nz-select style="width: 250px" nzAllowClear nzShowSearch formControlName="selectModel4" [(ngModel)]="selectModel4" (ngModelChange)="getSelect()">
+        <ng-container *ngFor="let model of Models">
+          <nz-option [nzValue]="model" [nzLabel]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!validateForm.valid">{{ 'dfq.rfi-compared' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-divider></nz-divider>
+
+<div class="btn" *ngIf="queryFlag">
+  <button nz-button [nzType]="'primary'" [nzLoading]="down" title="download" class="download" nzShape="circle" (click)="download()">
+    <i class="anticon anticon-download"></i>
+  </button>
+</div>
+
+<div class="rfi-table" *ngIf="queryFlag">
+  <nz-table [nzScroll]="{ x: '1800px' }" id="Report" #basicTable nzBordered [nzData]="queryData" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th nzWidth="100px" nzLeft="0px">{{ 'dfq.dfq-plant' | translate }}</th>
+        <th nzWidth="100px" nzLeft="100px">{{ 'dfq.dfq-customer' | translate }}</th>
+        <th nzWidth="100px" nzLeft="200px">{{ 'dfq.dfq-product' | translate }}</th>
+        <th nzWidth="100px" nzLeft="300px">{{ 'dfq.dfq-model' | translate }}</th>
+        <th nzWidth="100px" nzLeft="400px">{{ 'dfq.dfq-material' | translate }}</th>
+        <th *ngFor="let factorType of factorTypes">{{factorType.name}}</th>
+        <th nzWidth="100px" nzRight="0px">{{ 'dfq.dfq-yield' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of basicTable.data">
+        <td nzLeft="0px">{{ item.site }}</td>
+        <td nzLeft="100px">{{ item.customer }}</td>
+        <td nzLeft="200px">{{ item.product }}</td>
+        <td nzLeft="300px">{{ item.modelId }}</td>
+        <td nzLeft="400px">{{ item.materialName }}</td>
+        <td *ngFor="let data of  item.factors">{{(data | factor | async)?.name}}</td>
+        <td nzRight="0px" *ngIf="down">
+          {{ item.yieldRate | percent: 'twoDecimal'}}
+        </td>
+        <td nzRight="0px" *ngIf="!down">{{ item.yieldRate | percent }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

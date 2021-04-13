@@ -1,0 +1,79 @@
+<div class="dfc-query">
+  <div class="dfc-query-3mol">
+    <div>
+      <app-dfc-query-input [queryStyle]="querySelect.style" [(queryValue)]="querySelect.value"
+        [querySelect]="querySelect.select" (queryValueChange)="changePlant()"></app-dfc-query-input>
+    </div>
+    <div></div>
+  </div>
+  <div class="dfc-query-btn">
+    <button nz-button nzType="primary" (click)="query()">Query</button>
+  </div>
+</div>
+<div class="dfc-table">
+  <nz-table #plantTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true' [nzPageSize]="999"
+    [nzScroll]="nzScroll" [nzWidthConfig]="nzWidthConfig">
+    <thead>
+      <tr>
+        <th width="7%">No.</th>
+        <th width="7%">{{'dfc.dfc-site' | translate}}</th>
+        <th width="67%">MOH {{'dfc.dfc-parameter-item' | translate}}</th>
+        <th width="11%">{{'dfc.set-value' | translate}}</th>
+        <th width="8%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of plantTable.data">
+        <td>{{data.No}}</td>
+        <td>{{data.Plant}}</td>
+        <td *ngIf="!data.TypeFlag">{{data.MohParam}}</td>
+        <td *ngIf="data.TypeFlag">
+          <ng-container *ngIf="!editCache[data.No].edit">
+            {{data.TypeValue}}(CT/{{'dfc.dfc-Manpower' | translate}})--
+            <span [ngSwitch]="data.MohParam">
+              <span *ngSwitchCase="false">CT</span>
+              <span *ngSwitchCase="true">{{'dfc.dfc-Manpower' | translate}}</span>
+            </span>
+          </ng-container>
+          <ng-container *ngIf="editCache[data.No].edit">
+            {{data.TypeValue}}(CT/{{'dfc.dfc-Manpower' | translate}})
+            <nz-radio-group [(ngModel)]="editCache[data.No].data.MohParam">
+              <label nz-radio [nzValue]="false">CT</label>
+              <label nz-radio [nzValue]="true">{{'dfc.dfc-Manpower' | translate}}</label>
+            </nz-radio-group>
+          </ng-container>
+        </td>
+        <td style="text-align: left;">
+          <ng-container *ngIf="!editCache[data.No].edit">
+            {{data.SetValue}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.No].edit">
+            <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SetValue">
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngIf="!editCache[data.No].edit">
+            <div *ngIf="!actionEnabled || !Auth.update">
+              <a style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+            </div>
+            <div *ngIf="actionEnabled && Auth.update">
+              <a (click)="startEdit(data.No)" style="margin-left: 10px;">
+                <i class="anticon anticon-edit"></i>
+              </a>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="editCache[data.No].edit">
+            <a (click)="saveEdit(data.No)">
+              <i class="anticon anticon-save"></i>
+            </a>
+            <a style="margin-left:10px;" (click)="cancelEdit(data.No)">
+              <i class="anticon anticon-close-circle"></i>
+            </a>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

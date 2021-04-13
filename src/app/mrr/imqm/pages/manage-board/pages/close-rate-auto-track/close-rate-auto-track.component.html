@@ -1,0 +1,21 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-magBoard' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-kPIManagement' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-closeR-autoTrace' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-tabset [(nzSelectedIndex)]='curTabs'>
+    <nz-tab nzTitle="{{'imq-pop-table-detail' | translate}}" >
+        <app-auto-track-select [subject]="subject" (queryOps)="query($event)"></app-auto-track-select>
+    </nz-tab>
+    <nz-tab nzTitle="{{'imq-pop-table=formNo' | translate}}">
+        <app-auto-track-select-forms (queryNos)="query($event)"></app-auto-track-select-forms>
+    </nz-tab>
+  </nz-tabset>
+  <button nz-button [nzType]="'primary'" *ngIf="allFormsList && allFormsList.length > 0" title="{{'imq-download' | translate}}" nzShape="circle" (click)="downloadData()" style="margin-bottom: 15px;">
+    <i nz-icon type="download" theme="outline"></i>
+  </button>
+<app-forms-list [isEdit]="isEdit" [seriesTotalData]="allFormsList" (closeForm)="closeForm($event)"
+(rejectForm)="rejectForm($event)" (subTableDetail)="showDetail($event)"></app-forms-list>
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>

@@ -1,0 +1,18 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-maintenance' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-sysParsMaintenance' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<div style="margin-top: 12px;">
+  <span style="font-size:20px;">{{'imq-menu-sysParsMaintenance' | translate}}</span>
+</div>
+<nz-tabset [nzSelectedIndex]="selectedIndex">
+  <nz-tab nzTitle="{{'imq-plant' | translate}}">
+    <app-system-param-plant></app-system-param-plant>
+  </nz-tab>
+  <nz-tab nzTitle="{{'imq-pop-table-detail' | translate}}">
+    <app-system-param-detail></app-system-param-detail>
+  </nz-tab>
+</nz-tabset>

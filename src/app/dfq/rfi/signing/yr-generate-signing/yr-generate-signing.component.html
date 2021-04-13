@@ -1,0 +1,152 @@
+<div class="divAll">
+  <div class="divshare">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>RFI {{ 'dfq.dfq-sign-off' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item (click)="closeDetial()">
+        <a>{{ 'dfq.rfi-target-yield-generation' | translate }} {{ 'dfq.dfq-sign-off' | translate }}  </a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngIf="detialsShow">{{ 'dfq.rfi-target-yield-rate-approval-details' | translate }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div class="content" *ngIf="!detialsShow">
+      {{ 'dfq.rfi-target-yield-generation' | translate }} {{ 'dfq.dfq-sign-off' | translate }}
+    </div>
+    <div class="content" *ngIf="detialsShow">
+      {{ 'dfq.rfi-target-yield-rate-approval-details' | translate }}
+    </div>
+  </div>
+
+  <div class="div1" *ngIf="!detialsShow">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label style="width: 103px; text-align: right" nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="site cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch formControlName="selectSite" [(ngModel)]="selectSite"
+            (ngModelChange)="getModels()">
+            <ng-container *ngFor="let site of Site">
+              <nz-option [nzValue]="site" [nzLabel]="site"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label style="width: 70px; text-align: right">{{ 'dfq.dfq-customer' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="customer cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectCustomer"
+            [(ngModel)]="selectCustomer" (ngModelChange)="getModels()">
+            <ng-container *ngFor="let customer of Customer">
+              <nz-option [nzValue]="customer" [nzLabel]="customer"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="product cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectProduct"
+            [(ngModel)]="selectProduct" (ngModelChange)="getModels()">
+            <ng-container *ngFor="let product of Product">
+              <nz-option [nzValue]="product" [nzLabel]="product"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="projectName cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectModel"
+            [(ngModel)]="selectModel">
+            <ng-container *ngFor="let model of Model">
+              <nz-option [nzValue]="model" [nzLabel]="model"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-sign-status' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="sigingStatus cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectSiging"
+            [(ngModel)]="selectSiging">
+            <ng-container *ngFor="let siging of Siging">
+              <nz-option [nzValue]="siging" [nzLabel]="siging"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading" [disabled]="!validateForm.valid">{{ 'dfq.dfq-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+  </div>
+  <br>
+  <br>
+  <div class="div2" *ngIf="!detialsShow">
+    <div class="table-cls" *ngIf="tableShow">
+      <nz-table id="ModelMaterialUpload" #editRowTable nzBordered [nzData]="selecTable" [nzShowPagination]="false">
+        <thead>
+          <tr>
+            <th>{{ 'dfq.dfq-plant' | translate }}</th>
+            <th>{{ 'dfq.dfq-customer' | translate }}</th>
+            <th>{{ 'dfq.dfq-product' | translate }}</th>
+            <th>Project Name</th>
+            <th>Project Code</th>
+            <th>C {{ 'dfq.dfq-stage' | translate }}</th>
+            <th>{{ 'dfq.dfq-design-yield' | translate }}</th>
+            <th>{{ 'dfq.dfq-sign-status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of selecTable">
+            <td>
+              <ng-container>
+                {{ data.site }}-{{ data.plant}}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.customer }}
+              </ng-container>
+            </td>
+            <td>
+              {{ data.product }}
+            </td>
+            <td>
+              <ng-container>
+                {{ data.model }}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.project }}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                RFQ
+              </ng-container>
+            </td>
+            <td>
+              <a class="link-cls" (click)="showYieDetail(data)">
+                {{data.originalYieldRate |percent}}
+              </a>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.status | flowStatus }}
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div class="div3" *ngIf="detialsShow">
+    <!-- <app-target-yield-signing [data]="data"></app-target-yield-signing> -->
+    <app-new-signing-details [data]="data"></app-new-signing-details>
+  </div>
+</div>

@@ -1,0 +1,171 @@
+<div class="mrr-doc-all" #MrrDocUpload>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.document-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.document-file-upload' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      {{breadcrumb === '通用標準文件' ? ('mrr.document-common' | translate) : breadcrumb === '外觀標準文件' ? ('mrr.document-exterior' | translate) : ('mrr.document-mechanism' | translate)}}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span
+      style="font-size:20px;">{{breadcrumb === '通用標準文件' ? ('mrr.document-common' | translate) : breadcrumb === '外觀標準文件' ? ('mrr.document-exterior' | translate) : ('mrr.document-mechanism' | translate)}}</span>
+  </div>
+  <div class="mrr-doc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="mrr-doc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">{{ 'mrr.mrr-query' | translate }}</button>
+    </div>
+  </div>
+  <div class="mrr-doc-line"></div>
+  <div class="mrr-doc-btn">
+    <div class="mrr-doc-btn-add">
+      <button nz-button [nzType]="'primary'" [disabled]="!addUploadButtonFlag" title="新增" nzShape="circle"
+        (click)="mrrDocUpload.click()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+      <label *ngIf="fileSetTipsFlag" style="margin-left: 20px;">{{ 'mrr.document-upload-file' | translate }}</label>
+      <input id="mrr-doc-upload" type="file" multiple="multiple" #mrrDocUpload
+        (change)="handleUploadFiles($event.target)">
+    </div>
+  </div>
+  <div class="mrr-doc-table" *ngIf="tableFlag">
+    <nz-table #plantTable nzBordered nzShowQuickJumper [nzData]="showDatas" [nzHideOnSinglePage]='true'
+      [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th width="10%">{{ 'mrr.document-serial-number' | translate }}</th>
+          <th width="20%">
+            {{breadcrumb === '通用標準文件' ? ('mrr.document-common' | translate) : breadcrumb === '外觀標準文件' ? ('mrr.document-exterior' | translate) : ('mrr.document-mechanism' | translate)}}
+          </th>
+          <th width="60%">{{ 'mrr.document-fileList' | translate }}</th>
+          <th width="10%">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="tableFlag">
+          <tr *ngFor="let datas of plantTable.data; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{datas.fileName}}</td>
+            <td style="text-align: left;">
+              <nz-checkbox-wrapper style="width: 100%;" (nzOnChange)="checkBox($event, i)">
+                <div nz-row>
+                  <div *ngFor="let item of documents" nz-col nzSpan="6"><label nz-checkbox
+                      [nzValue]="item.productDocumentId">{{item.document.documentName}}</label></div>
+                </div>
+              </nz-checkbox-wrapper>
+            </td>
+            <td>
+              <a (click)="deleteFlie(i)" style="margin-left: 10px;">
+                <i class="anticon anticon-delete"></i>
+              </a>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
+  <div class="mrr-doc-btn">
+    <div class="mrr-doc-btn-right">
+      <button nz-button nzType="primary" [disabled]="!tableFlag" [nzLoading]="isLoadingOne"
+        (click)="uploadFiles()">{{ 'mrr.mrr-confirm-upload' | translate }}</button>
+    </div>
+  </div>
+  <!-- 文件查看 -->
+  <div class="mrr-doc-line" *ngIf="viewDataSet.length > 0"></div>
+  <div class="mrr-doc-table" *ngIf="viewDataSet.length > 0">
+    <div class="mrr-doc-table-title">
+      <span>Document List</span>
+    </div>
+    <div class="mrr-doc-btn">
+      <div class="mrr-doc-btn-left">
+        <button nz-button nzType="primary" *ngIf="!editByPass" (click)="byPassEdit()">
+          <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+        </button>
+        <button nz-button nzType="primary" *ngIf="editByPass" (click)="byPassSave()">
+          <i class="anticon anticon-save"></i>{{ 'mrr.mrr-saveData' | translate }}
+        </button>
+        <button nz-button nzType="default" *ngIf="editByPass" (click)="byPassCancel()">
+          <i class="anticon anticon-close-circle"></i>{{ 'mrr.mrr-cancelEdit' | translate }}
+        </button>
+      </div>
+    </div>
+    <nz-table #uploadInfoTable nzBordered nzShowQuickJumper [nzData]="viewDataSet" [nzHideOnSinglePage]='true'
+      [nzPageSize]="999">
+      <thead>
+        <tr>
+          <th width="10%">{{ 'mrr.document-serial-number' | translate }}</th>
+          <th width="12%">{{ 'mrr.nudd-fileName' | translate }}</th>
+          <th width="12%">{{ 'mrr.document-fileType' | translate }}</th>
+          <th width="13%">{{ 'mrr.document-demand-stage' | translate }}</th>
+          <th width="10%">by Pass</th>
+          <th width="10%">{{ 'mrr.document-actual-stage' | translate }}</th>
+          <th width="12%">{{ 'mrr.document-lastest-updatetime' | translate }}</th>
+          <th width="15%">{{ 'mrr.document-pic' | translate }}</th>
+          <th width="10%">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="uploadInfoTable.data" let-i="index">
+          <ng-template ngIf [ngIf]="data.modelDocument.length > 0">
+            <tr *ngFor="let modelDoc of data.modelDocument; let j=index">
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">{{i+1}}</td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">{{data.documentName}}</td>
+              <td style="text-align: left;" [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                {{data.typeName}}
+              </td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                <nz-checkbox-group [(ngModel)]="data.stageCheckBox" [nzDisabled]="true"></nz-checkbox-group>
+              </td>
+              <td [attr.rowspan]="data.modelDocument.length" *ngIf="j === 0">
+                <nz-switch [(ngModel)]="modelDoc.byPass" [nzDisabled]="!editByPass" nzCheckedChildren="No upload"
+                  nzUnCheckedChildren="Need to upload"></nz-switch>
+              </td>
+              <td>{{modelDoc.currentStage}}</td>
+              <td [ngStyle]="modelDoc.ex && {'color': 'red'}">
+                {{(modelDoc.uploadDate | date: 'yyyy-MM-dd HH:mm:ss')}}
+              </td>
+              <td>
+                <a target="_blank" [href]="(modelDoc.uploadUser | member: 'mrrDocView' | async)?.email">
+                  {{ (modelDoc.uploadUser | member: 'mrrDocView' | async)?.show}}
+                </a>
+              </td>
+              <td>
+                <a *ngIf="modelDoc && ( data.documentName !== 'ID Book' || (data.documentName == 'ID Book') && canReadIDbook ) "
+                  target="_blank" [href]="downloadPath + (modelDoc.filepath) ">
+                  <i class="anticon anticon-download"></i>
+                </a>
+                <a *ngIf="modelDoc && data.documentName === 'ID Book' && !canReadIDbook" (click)="alert()">
+                  <i class="anticon anticon-download"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template ngIf [ngIf]="data.modelDocument.length === 0">
+            <tr>
+              <td>{{i+1}}</td>
+              <td>{{data.documentName}}</td>
+              <td style="text-align: left;">
+                {{data.typeName}}
+              </td>
+              <td>
+                <nz-checkbox-group [(ngModel)]="data.stageCheckBox" [nzDisabled]="true"></nz-checkbox-group>
+              </td>
+              <td>
+              </td>
+              <td></td>
+              <td></td>
+              <td>{{ 'mrr.nudd-not-upload' | translate }}</td>
+              <td></td>
+            </tr>
+          </ng-template>
+        </ng-template>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

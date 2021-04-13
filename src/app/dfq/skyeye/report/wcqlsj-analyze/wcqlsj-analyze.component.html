@@ -1,0 +1,225 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky Eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>螺絲機監控</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  螺絲機監控
+</div>
+<div class="query-row" style="margin-bottom: 25px;">
+  <!-- 厂别 -->
+<div class="field1">
+  <span style="width:  27%;">
+    <span style="color: red">*</span>
+    <span>廠別</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('plant')">
+    <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" ></nz-option>
+  </nz-select>
+</div>
+  <!-- 厂区 -->
+<div class="field1" (click)="getOptList('plant')">
+  <span style="width:  27%;">
+    <span style="color: red">*</span>
+    <span>廠區</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('project')">
+    <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+  </nz-select>
+</div>
+<div class="field1" (click)="getOptList('upn')">
+  <span style="width: 26%;">
+  <span style="color: red">*</span>
+  <span>線別</span>
+  </span>
+  <nz-select style="width: 60%;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="cur_stationline" (ngModelChange)="getOptions('stationline')">
+    <nz-option *ngFor="let stationline of slGroup" [nzLabel]="stationline" [nzValue]="stationline"></nz-option>
+  </nz-select>
+</div>
+
+<div class="field1" >
+  <span style="width: 30%;">
+  <span style="color: red">*</span>
+  <span>机器型号</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_stationtype" (ngModelChange)="getOptions('stationtype')">
+    <nz-option *ngFor="let stationtype of stGroup" [nzLabel]="stationtype" [nzValue]="stationtype"></nz-option>
+  </nz-select>
+</div>
+</div>
+<div class="query-row">
+<div class="field1" style="margin-bottom: 5px;">
+    <span style="width: 27%;">
+    <span style="color: red">*</span>
+    <span>机器编号</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_tdname" (ngModelChange)="getOptions('tdname')">
+      <nz-option *ngFor="let tdname of tdGroup" [nzLabel]="tdname" [nzValue]="tdname"></nz-option>
+    </nz-select>
+</div>
+<div class="field1" style="margin-bottom: 5px;">
+  <span style="width: 27%;">
+  <span style="color: red">*</span>
+  <span>点位</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_stance" (ngModelChange)="getOptions('stance')">
+    <nz-option *ngFor="let stance of stanceGroup" [nzLabel]="stance" [nzValue]="stance"></nz-option>
+  </nz-select>
+</div>
+<div class="field1" style="margin-bottom: 5px;">
+  <span style="width: 27%;">
+  <span style="color: red">*</span>
+  <span>監控項目</span>
+  </span>
+  <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_monitorpro" (ngModelChange)="getOptions('monitorpro')">
+    <nz-option *ngFor="let monitorpro of monitorproGroup" [nzLabel]="monitorpro" [nzValue]="monitorpro"></nz-option>
+  </nz-select>
+</div>
+  <!-- 机种 -->
+  <div class="field1" (click)="getOptList('model')">
+    <span style="width:  30%;">
+      <span style="color: red">*</span>
+      <span>機種</span>
+    </span>
+    <nz-select style="width: 59%;height: 35px;" [(ngModel)]="cur_model" (ngModelChange)="getOptions('query')">
+      <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model" ></nz-option>
+    </nz-select>
+  </div>
+<button class="field1_2" nz-button nzType="primary" (click)="queryclick()" style="border-radius:6px" [disabled]="queryButton">Query</button>
+</div>
+<div class="query-row" style="border-bottom:1px solid rgb(151, 144, 144); margin-top: 2%;"></div>
+
+<div id="lineChartcpk" class="field9" style="width:100%;height:310px;background-color:#e6e6e6;margin-top: 10px;margin-left:0px;">
+  <p>CPK監控</p>
+  <div id="lineChart3" class="field9" style="width:100%;height:295px;background-color: white;margin-top: 5px;margin-left:0px;">
+  </div>
+</div>
+
+<div id="lineChart" class="field9" style="width:100%;height:600px;background-color:#e6e6e6;margin-top: 80px;margin-left:0px;">
+  <p>SPC監控</p>
+  <div id="lineChart1" class="field9" style="width:100%;height:295px;background-color: white;margin-top: 5px;margin-left:0px;">
+  </div>
+  <div id="lineChart2" class="field9" style="width:100%;height:295px;background-color: white;margin-top: 5px;margin-left:0px;">
+  </div>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible1" nzWidth="90%" nzTitle="" (nzOnCancel)="handleCancel1()" [nzClosable]="false" [nzFooter]=null (nzOnOk)="handleOk1()">
+  <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(spcrowdata, 'SPCRawData total')">下载</button>
+<div>
+  <nz-table
+    nzBordered
+    nzShowQuickJumper
+    [nzData]="spcrowdata"
+    [nzPageSize]="5000"
+    [nzWidthConfig] = "THwidth"
+    [(nzPageIndex)]="curPage"
+    [nzScroll]="nzScroll">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th>機種</th>
+        <th>線別</th>
+        <th>机台序列号</th>
+        <th>点位</th>
+        <th>监控项目</th>
+        <th>开始测试时间</th>
+        <th>结束测试时间</th>
+        <th>测试值</th>
+        <th>测试值上限</th>
+        <th>测试值下限</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of spcrowdata;  let i = index;" style="font-size: 12px;">
+      <td>{{data.modelname}}</td>
+      <td>{{data.stationline}}</td>
+      <td>{{data.unitserialnumber}}</td>
+      <td>{{data.stance}}</td>
+      <td>{{data.monitorpro}}</td>
+      <td>{{data.starttime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+      <td>{{data.stoptime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+      <td>{{data.mdresult}}</td>
+      <td>{{data.mdupperlimit}}</td>
+      <td>{{data.mdlowerlimit}}</td>           
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible2" nzWidth="50%" nzTitle="" (nzOnCancel)="handleCancel2()" [nzClosable]="false" [nzFooter]=null (nzOnOk)="handleOk2()">
+  <!-- <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(spcrowdata, 'SPCRawData total')">下载</button> -->
+<div>
+  <nz-table
+    nzBordered
+    nzShowQuickJumper
+    [nzData]="testresultdata"
+    [nzPageSize]="5000"
+    [nzWidthConfig] = "THwidth1"
+    [(nzPageIndex)]="curPage"
+    [nzScroll]="{ x: '500px' }">
+    <thead>
+      <tr style="font-size: 15px;text-align: center">
+        <th style="text-align: center">监控项目</th>
+        <th style="text-align: center">测试结果</th>
+        <th style="text-align: center">测试数量</th>
+        <th style="text-align: center">正态分布图</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of testresultdata;  let i = index;" style="font-size: 15px;text-align: center">
+      <td>{{data.project}}</td>
+      <td>{{data.testresult}}</td>
+      <td style="cursor:default;color: blue;" (click)="showCPKRawdataModal(cur_index)">{{data.testnum}}</td>
+      <td style="cursor:default;color: blue;" (click)="showCPKfbtModal(cur_index)">{{data.fbt}}</td>        
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible3" nzWidth="90%" nzTitle="" (nzOnCancel)="handleCancel3()" [nzClosable]="false" [nzFooter]=null (nzOnOk)="handleOk3()">
+  <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 88%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downcpkrawdata(cpkrawdata, 'cpkrawdata total')">下载</button>
+<div>
+  <nz-table
+    nzBordered
+    nzShowQuickJumper
+    [nzData]="cpkrawdata"
+    [nzPageSize]="5000"
+    [nzWidthConfig] = "THwidth"
+    [(nzPageIndex)]="curPage"
+    [nzScroll]="nzScroll">
+    <thead>
+      <tr style="font-size: 12px;">
+        <th>機種</th>
+        <th>線別</th>
+        <th>治具编号</th>
+        <th>机台序列号</th>
+        <th>开始测试时间</th>
+        <th>结束测试时间</th>
+        <th>测试值</th>
+        <th>测试值上限</th>
+        <th>测试值下限</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of cpkrawdata;  let i = index;" style="font-size: 12px;">
+      <td>{{data.modelname}}</td>
+      <td>{{data.stationline}}</td>
+      <td>{{data.stationid}}</td>
+      <td>{{data.sn}}</td>
+      <td>{{data.starttime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+      <td>{{data.stoptime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+      <td>{{data.mdresult}}</td>
+      <td>{{data.mdupperlimit}}</td>
+      <td>{{data.mdlowerlimit}}</td>           
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+</nz-modal>
+showfbt()
+<nz-modal [(nzVisible)]="isVisible4" nzWidth="90%" nzHeight="90%" nzTitle="" (nzOnCancel)="handleCancel4()" [nzClosable]="false" [nzFooter]=null (nzOnOk)="handleOk4()">
+<div (click)="showfbt()" id="lineChartCPKfbt" style="width:100%;height:500px;background-color: white;"> 
+  
+</div>
+</nz-modal>

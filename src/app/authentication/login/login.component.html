@@ -1,0 +1,28 @@
+<div class="wrapper">
+  <h1><img class="bg-logo" src="./assets/img/logo.svg" alt="DFI" /></h1>
+
+  <div class="login" *ngIf="!isExt">
+    <nz-select class="domain" nzPlaceHolder="Domain" nzShowSearch nzAllowClear autofocus [(ngModel)]="domain"
+      (keyup.enter)="login(domain, username, password)">
+      <nz-option *ngFor="let site of sites" [nzLabel]="site.id" [nzValue]="site.id"></nz-option>
+    </nz-select>
+    <input class="user" type="text" [(ngModel)]="username" (keyup.enter)="login(domain, username, password)"
+      placeholder="User ID" />
+    <input class="password" type="password" [(ngModel)]="password" (keyup.enter)="login(domain, username, password)"
+      placeholder="Password" />
+    <button nz-button [nzLoading]="isLoading" [disabled]="(!domain || !username || !password) && !loginUrl"
+      (click)="login(domain, username, password)" class="ripple" mat-ripple>
+      <span class="state">{{ 'login.login-in' | translate }}</span>
+    </button>
+  </div>
+  <div class="login" *ngIf="isExt">
+    <input class="user" type="text" [(ngModel)]="manuUser" (keyup.enter)="externalLogin(manuUser, manuPassword)"
+      placeholder="User ID" />
+    <input class="password" type="password" [(ngModel)]="manuPassword"
+      (keyup.enter)="externalLogin(manuUser, manuPassword)" placeholder="Password" />
+    <button nz-button [nzLoading]="isLoading" [disabled]="(!manuUser || !manuPassword)"
+      (click)="externalLogin(manuUser, manuPassword)" class="ripple" mat-ripple>
+      <span class="state">{{ 'login.login-in' | translate }}</span>
+    </button>
+  </div>
+</div>

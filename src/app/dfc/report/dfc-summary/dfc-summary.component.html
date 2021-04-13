@@ -1,0 +1,52 @@
+<div class="dfc-all" #DFCReportSummary>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>DFC Report</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Summary Report</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">Summary Report</span>
+  </div>
+  <div class="echarts-view">
+    <div class="color-legend">
+      <div *ngFor="let item of colorDescriptions">
+        <span [ngStyle]="item.style" class="span"></span>
+        {{item.text}}
+      </div>
+    </div>
+    <div class="echarts" nz-row>
+      <div nz-col nzSpan="7" echarts [options]="RFQEchartOption" (chartClick)="onChartEvent111($event, 'chartClick')">
+      </div>
+      <div nz-col nzSpan="7" echarts [options]="C0EchartOption" (chartClick)="onChartEvent222($event, 'chartClick')">
+      </div>
+      <div nz-col nzSpan="7" echarts [options]="MPEchartOption" (chartClick)="onChartEvent333($event, 'chartClick')">
+      </div>
+    </div>
+    <div class="text" nz-row>
+      <div nz-col nzSpan="7">RFQ</div>
+      <div nz-col nzSpan="7">C3-C5</div>
+      <div nz-col nzSpan="7">MP</div>
+    </div>
+  </div>
+  <nz-tabset (nzSelectChange)="toggleWorkAndMOH()" [(nzSelectedIndex)]=selectedTab>
+    <nz-tab [nzTitle]="'dashboard.workhour' | translate">
+      <app-summary-work-hour #summaryWorkHour [processHeaders]="processHeaders" [dataSet]="dataSet"
+        [selectValue]="workSelectValue" [querySelect]="workQuerySelect"
+        [queryLoading]="queryLoading.workhourQueryLoading" [tableHeight]="tableHeight"
+        (workHourChangePlant)="changePlant()" (workHourChangeCustomAndModelType)="changeCustomAndModelType()"
+        (workHourCustomSearch)="customSearch($event)" (workHourChangeCFlow)="changeCFlow()"
+        (workHourChangeProName)="changeProName($event)" (workHourProNameSearch)="proNameSearch($event)"
+        (workHourModelSearch)="modelSearch($event)" (workHourQuery)="queryWorkHour($event)"
+        (workHourDownload)="download()">
+      </app-summary-work-hour>
+    </nz-tab>
+    <nz-tab nzTitle="MOH">
+      <app-summary-moh [dataSet]="mohDataSet" [selectValue]="MOHSelectValue" [querySelect]="MOHQuerySelect"
+        [queryLoading]="queryLoading.mohQueryLoading" [tableHeight]="tableHeight" (mohChangePlant)="changePlant()"
+        (mohChangeCustomAndModelType)="changeCustomAndModelType()" (mohCustomSearch)="customSearch($event)"
+        (mohChangeProName)="changeProName($event)" (mohProNameSearch)="proNameSearch($event)"
+        (mohProNameSearch)="modelSearch($event)" (mohQuery)="mohQuery()" (mohDownload)="download()">
+      </app-summary-moh>
+    </nz-tab>
+  </nz-tabset>
+</div>

@@ -1,0 +1,64 @@
+<div class="dfc-all" #DFCStandardSignDetail>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-time-forecast'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a (click)="click()">{{'dfc.workhours-standard-document-query'|translate}}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.workhours-standard-document'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'dfc.workhours-standard-document'|translate}}</span>
+  </div>
+  <div class="dfc-sign">
+    <table class="tableall">
+      <tr>
+        <td class="td-title">Dept Code</td>
+        <td class="td-context">{{applicationData.deptCode}}</td>
+        <td class="td-title">Dept Name</td>
+        <td class="td-context">{{applicationData.deptName}}</td>
+        <td class="td-title">Applicant</td>
+        <td class="td-context">{{applicationData.applicant}}</td>
+        <td class="td-title">Apply Date</td>
+        <td class="td-context">{{applicationData.applyDate}}</td>
+      </tr>
+      <tr *ngIf="revokeFlag">
+        <td colspan='8'>
+          <button nz-button nzType="primary" (click)="revoke()">{{'dfc.withdraw'|translate}}</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="dfc-table">
+    <nz-table #dfcStandardSignTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+      [nzScroll]="nzScroll" [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th>{{'dfq.dfq-product'|translate}}</th>
+          <th>{{'mrr.nudd-process'|translate}}</th>
+          <th>{{'dfc.module'|translate}}</th>
+          <th>{{'dfq.dfq-material'|translate}}</th>
+          <th>{{'report.model-workhour-factor'|translate}}</th>
+          <th>{{'report.model-workhour-factor-detail'|translate}}</th>
+          <th>{{'dfc.forecast.action'|translate}}</th>
+          <th>{{'dfc.change-information'|translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of dfcStandardSignTable.data">
+          <td>{{data.modelType}}</td>
+          <td>{{data.process}}</td>
+          <td>{{data.module}}</td>
+          <td>{{data.material}}</td>
+          <td>{{data.factor}}</td>
+          <td>{{data.factorDetail}}</td>
+          <td>{{data.action}}</td>
+          <td>{{data.msg}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div>
+    <app-dfc-sign-history [dfcSignData]="signData" [dfcSignHitoryParam]="dfcSignHitoryParam" [tableHeight]="tableHeight"
+      (approveClick)="approveClick($event)"></app-dfc-sign-history>
+  </div>
+</div>

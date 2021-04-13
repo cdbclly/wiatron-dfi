@@ -1,0 +1,82 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Base Data</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'base-data.conversion-table-by-product'|translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content" style="font-size:20px">
+  {{'base-data.conversion-table-by-product'|translate}}
+</div>
+<div class="table-cls">
+  <div class="table-inner">
+    <div class="dfq-btn-add">
+      <button nz-button nzType="primary" title="add new" nzShape="circle" (click)="addPlmModel()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+      <label class="dfq-btn-download">
+        <button nz-button [nzType]="'primary'" title="download" [nzLoading]="downLoading" nzShape="circle"
+          (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </label>
+    </div>
+    <nz-table class="table" #basicTable [nzData]="dataSet" nzBordered [nzShowSizeChanger]="true" [nzPageSize]="6"
+      style="margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>PLM</th>
+          <th>{{'base-data.dfi-product-type'|translate}}</th>
+          <th>{{'base-data.manually-distinguish-types'|translate}}</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.plmProductType}}</td>
+          <td>
+            <ng-container *ngIf="!data.edit; else partEditTpl">
+              {{data.dfiProductType}}
+            </ng-container>
+            <ng-template #partEditTpl>
+              <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="data.dfiProductType"
+                (ngModelChange)="dfiProductTypeChange(data, $event)">
+                <ng-container *ngFor="let p of dfiParts">
+                  <nz-option [nzValue]="p" [nzLabel]="p"></nz-option>
+                </ng-container>
+              </nz-select>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="!data.edit; else isManualTP1">
+              {{data.isManuald}}
+            </ng-container>
+            <ng-template #isManualTP1>
+              <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="data.isManuald"
+                [disabled]="data.isIsManualDisabled">
+                <ng-container *ngFor="let m of manualOptions">
+                  <nz-option [nzValue]="m" [nzLabel]="m"></nz-option>
+                </ng-container>
+              </nz-select>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="!data.edit; else saveTpl">
+              <button class="editButton" (click)="startEdit(data)" [disabled]="data.isEditDisabled"
+                [ngStyle]="{'color': data.isEditDisabled === true ? '#B2B2B2': '#595959'}">
+                <i class="anticon anticon-edit"></i></button>
+            </ng-container>
+            <ng-template #saveTpl>
+              <a (click)="saveEdit(data)"><i class="anticon anticon-save"></i></a>&nbsp;&nbsp;&nbsp;
+              <a (click)="cancelEdit(data)"><i class="anticon anticon-close-circle"></i></a>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+
+    <nz-modal nzWidth="400px" nzOkText="Ok" nzCancelText="Cancel" class="model-cls" [(nzVisible)]="addOneFlag" [nzOkLoading]="confirmLoading"
+      (nzOnOk)="addOne()" (nzOnCancel)="cancelAddOne()" nzTitle="Add PLM" [nzMaskClosable]=false>
+      <label class="input-cls">
+        <span class="mustItem">*</span>PLM:&nbsp;
+        <input style="width: 170px;" nz-input [(ngModel)]="addPlm" />
+      </label>
+    </nz-modal>

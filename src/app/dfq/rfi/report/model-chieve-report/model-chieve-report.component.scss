@@ -1,0 +1,10 @@
+$centerHeight: calc(100vh - 95px);
+.dfc-all{
+	height: $centerHeight;
+    width: 100%;
+    z-index:0;
+   // position: absolute;
+}
+.dfc-tabset{
+  width: 100%;
+}

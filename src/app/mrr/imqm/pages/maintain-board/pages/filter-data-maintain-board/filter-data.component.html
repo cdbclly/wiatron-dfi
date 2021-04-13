@@ -1,0 +1,185 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-maintenance' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-filterMaintenance' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="margin-top: 12px;">
+  <span style="font-size:20px;">{{'imq-menu-filterMaintenance' | translate}}</span>
+</div>
+
+<!-- 筛选栏位 -->
+<app-filter-select [subject]="subject" [onlyShowRequired]="require" (queryOps)="query($event)"></app-filter-select>
+<div style="margin-bottom: 5px; position: relative;">
+  <button class="btn" [disabled]="checkedNumber === 0">
+    <nz-popconfirm nzTitle="Are you sure delete?" (nzOnConfirm)="deleteData()">
+      <a nz-popconfirm style="color:#ffffff">Delete</a>
+    </nz-popconfirm>
+  </button>
+
+  <button nz-button [nzType]="'primary'" title="{{'imq-create' | translate}}" nzShape="circle"
+    style="right: 10px; position:absolute" (click)="add()">
+    <i class="anticon anticon-plus"></i>
+  </button>
+</div>
+<nz-table #filterTable [nzData]="filterDataList" nzBoad (nzPageIndexChange)="refreshStatus()"
+  (nzPageSizeChange)="refreshStatus()">
+  <thead>
+    <tr>
+      <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+        (nzCheckedChange)="checkAll($event)">
+      </th>
+      <th nzWidth="6%">Site</th>
+      <th nzWidth="6%">{{'imq-plant' | translate}}</th>
+      <th nzWidth="10%">{{'imq-product' | translate}}</th>
+      <th nzWidth="10%">{{'imq-customer' | translate}}</th>
+      <th nzWidth="10%">{{'imq-model' | translate}}</th>
+      <th nzWidth="10%">{{'imq-supplier' | translate}}</th>
+      <th nzWidth="10%">{{'imq-proName' | translate}}</th>
+      <th nzWidth="15%">{{'imq-partNumber' | translate}}</th>
+      <th nzWidth="13%">
+        <span class="span-width2" style="width: 30%;">{{'imq-barcode' | translate}}</span>
+        <span style="margin-right: 4px;">All</span>
+        <nz-switch style=" border: 2px solid white; margin: 0 2px; border-radius: 15px;" [(ngModel)]="all_switchValue" [nzCheckedChildren]="trans['on']" [nzUnCheckedChildren]="trans['off']" (ngModelChange)="allSwitchValue(all_switchValue)"></nz-switch>
+      </th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of filterTable.data, let key = index">
+      <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refreshStatus()"
+        (nzCurrentPageDataChange)="currentPageDataChange($event)">
+      </td>
+      <td>
+        <div>
+          <div class="editable-cell-text-wrapper">
+            <ng-container>
+              {{data.site}}
+            </ng-container>
+          </div>
+        </div>
+      </td>
+      <td>
+        <ng-container>
+          {{data.plant}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.product}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.customer}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.model}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.vendor}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.productName}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          {{data.partNumber}}
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          <nz-switch [(ngModel)]="data.isBarcode" (ngModelChange)="switchValue(data, key)"></nz-switch>
+        </ng-container>
+      </td>
+      <td>
+        <ng-container>
+          <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="deleteData(data.id)">
+            <a nz-popconfirm><i class="anticon anticon-delete"></i></a>
+          </nz-popconfirm>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+
+
+
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="{{'imq-mt-createItem' | translate}}" [nzFooter]="modalButton"
+  (nzOnCancel)="handleModalCancel()">
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+  <div style="margin-left: 50px;">
+    <!-- site -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">site</span>
+      <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="add_site"
+        (ngModelChange)="selectItem('site')">
+        <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+      </nz-select>
+    </p>
+    <!-- plant -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-plant' | translate}}</span>
+      <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="add_plant"
+        (ngModelChange)="selectItem('plant')">
+        <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+      </nz-select>
+    </p>
+    <!-- 产品别 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-product' | translate }}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_productCate" (change)="addInput('productCate')" />
+
+    </p>
+    <!-- 客户别 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-customer'| translate}}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_customer" (change)="addInput('customer')" />
+    </p>
+    <!-- 机种 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-model' | translate}}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_model" (change)="addInput('model')" />
+    </p>
+    <!-- 供应商 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-supplier' | translate}}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_vendor" (change)="addInput('vendor')" />
+    </p>
+    <!-- 品名 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-proName' | translate}}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_proName" (change)="addInput('proName')" />
+    </p>
+    <!-- 料号 -->
+    <p>
+      <span style="color: red;">*</span>
+      <span class="span-width2">{{'imq-partNumber' | translate}}</span>
+      <input type="text" nz-input class="addInput" [(ngModel)]="add_materialNo" (change)="addInput('materialNo')" />
+    </p>
+    <!-- 有条码 -->
+    <p>
+      <span class="span-width2">{{'imq-barcode' | translate}}</span>
+      <nz-switch [(ngModel)]="add_switchValue" (ngModelChange)="addSwitchValue(add_switchValue)"></nz-switch>
+    </p>
+
+  </div>
+  <ng-template #modalButton>
+    <button nz-button nzType="primary" (click)="handleModalOk()" [disabled]="queryButton">{{'imq-confirm' | translate}}</button>
+  </ng-template>
+</nz-modal>

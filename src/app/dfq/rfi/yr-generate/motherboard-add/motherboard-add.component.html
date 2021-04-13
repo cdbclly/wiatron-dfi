@@ -1,0 +1,36 @@
+<nz-modal *ngIf="isVisiblePic" [(nzVisible)]="modalShow" [nzWidth]="800" (nzOnCancel)="handleCancel()" [nzFooter]="null"
+  [nzTitle]="material">
+  <button nz-button (click)="addRow()" nzType="primary">Add</button>
+  <button nz-popconfirm [nzLoading]="!isComplete" nzTitle="Are you sure save this?" (nzOnConfirm)="confirm()"
+    (nzOnCancel)="cancel()" nz-button style="float: right" nzType="primary">Save</button>
+  <nz-table id="report" #editRowTable nzBordered nzShowPagination="false" [nzData]="listOfData">
+    <thead>
+      <tr>
+        <th nzWidth="30%">Project Code</th>
+        <th> {{ 'dfq.dfq-partNumber' | translate }}</th>
+        <th>{{ 'dfq.rfi-usage-amount' | translate }}</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of editRowTable.data" class="editable-row">
+        <td>
+          {{ data.projectCode }}
+        </td>
+        <td>
+          <nz-select style="width:200px" nzShowSearch [(ngModel)]="data.partId">
+            <ng-container *ngFor="let part of parts">
+              <nz-option [nzValue]="part['partId']" [nzLabel]="part['partId']"></nz-option>
+            </ng-container>
+          </nz-select>
+        </td>
+        <td>
+          <input style="width:150px" nz-input [(ngModel)]="data.partNum" />
+        </td>
+        <td>
+          <a (click)="deleteRow(data.id)">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

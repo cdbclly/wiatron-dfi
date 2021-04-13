@@ -1,0 +1,47 @@
+<nz-modal *ngIf="isVisiblePic" [(nzVisible)]="modalShow" [nzWidth]="1000" (nzOnCancel)="handleCancel()"
+  [nzFooter]="null" [nzTitle]="material">
+  <nz-table #nzTable id="report" [nzData]="showData" [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th>{{ 'dfq.dfq-partNumber' | translate }}</th>
+        <th>{{ 'dfq.rfi-single-material-yield' | translate }}</th>
+        <th>{{ 'dfq.rfi-manufacturing-number' | translate }}</th>
+        <th>{{ 'dfq.rfi-adverse-number' | translate }}</th>
+        <th>{{ 'dfq.dfq-yield' | translate }}</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+        <td>
+          <ng-container *ngIf="!editCache[data.id].edit; else partId">
+            {{ data.partId }}
+          </ng-container>
+          <ng-template #partId>
+            <nz-select style="width: 166px;" nzShowSearch [(ngModel)]="editCache[data.id].data.partId">
+              <ng-container *ngFor="let list of showPart">
+                <nz-option [nzValue]="list.partId" [nzLabel]="list.partId"></nz-option>
+              </ng-container>
+            </nz-select>
+          </ng-template>
+        </td>
+        <td>{{data.yieldRate | percent:4}}</td>
+        <td>{{data.usageAmount}}</td>
+        <td>{{data.defectNum}}</td>
+        <td>{{data.totalYieldRate | percent:4}}</td>
+        <td>
+          <div class="editable-row-operations">
+            <ng-container *ngIf="!editCache[data.id].edit; else saveTpl">
+              <i class="anticon anticon-edit" (click)="startEdit(data.id)"></i>
+            </ng-container>
+            <ng-template #saveTpl>
+              <i class="anticon anticon-check" style="cursor: pointer" (click)="saveEdit(data.id)"></i>
+              &nbsp;
+              <i class="anticon anticon-close" style="cursor: pointer" (click)="cancelEdit(data.id)"></i>
+            </ng-template>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

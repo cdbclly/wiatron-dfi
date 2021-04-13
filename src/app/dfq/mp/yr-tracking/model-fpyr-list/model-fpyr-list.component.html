@@ -1,0 +1,65 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.mp-warning-tracking-system' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.mp-warning-tracking' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<form nz-form [nzLayout]="'inline'" [formGroup]="form" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select nzShowSearch formControlName="plant">
+        <nz-option *ngFor="let plant of plants" [nzValue]="plant.id" [nzLabel]="plant.id | plantName | async">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.mp-finished-product-type' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select nzShowSearch formControlName="mfgType">
+        <nz-option *ngFor="let mfgType of mfgTypes" [nzValue]="mfgType" [nzLabel]="mfgType"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select nzShowSearch nzAllowClear formControlName="model" style="width: 220px;"
+        (ngModelChange)="filter(form.value.model, form.value.status)">
+        <nz-option *ngFor="let model of models" [nzValue]="model" [nzLabel]="model"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-production-date' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-range-picker [nzDisabledDate]="disabledDate" formControlName="rangePicker"></nz-range-picker>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.mp-compliance-status' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select nzShowSearch nzAllowClear formControlName="status"
+        (ngModelChange)="filter(form.value.model, form.value.status)">
+        <nz-option *ngFor="let status of status" [nzValue]="status" [nzLabel]="status"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading"
+        [disabled]="!form.valid">{{ 'dfq.dfq-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-modal nzWidth="800px" [(nzVisible)]="isVisible" nzTitle="Message" [nzWidth]="282" (nzOnCancel)="handleCancel()"
+  [nzFooter]=null>
+  <div style="text-align: center">
+    <span>{{'dfq.mp-date-range' | translate}}</span>
+  </div>
+</nz-modal>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+<div class="section" *ngFor="let option of viewOptions">
+  <div echarts (chartClick)="onClickChartEvent(option)" class="chart" [options]="option"></div>
+  <div class="dfc-dashboard-chart"></div>
+</div>

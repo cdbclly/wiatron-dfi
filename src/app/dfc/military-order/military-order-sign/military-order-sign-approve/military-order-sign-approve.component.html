@@ -1,0 +1,271 @@
+<div class="dfc-btn" *ngIf="!flag && editFlag">
+  <div class="dfc-btn-left">
+    <button nz-button nzType="primary" *ngIf="!editCache.edit" [title]="'mrr.mrr-edit' | translate" nzShape="circle"
+      (click)="edit()">
+      <i nz-icon type="edit"></i>
+    </button>
+    <button nz-button nzType="primary" *ngIf="editCache.edit" [title]="'mrr.mrr-save' | translate" nzShape="circle"
+      (click)="save()">
+      <i nz-icon type="save"></i>
+    </button>
+    <button nz-button nzType="primary" *ngIf="editCache.edit" [title]="'mrr.mrr-cancel' | translate" nzShape="circle"
+      (click)="cancel()">
+      <i nz-icon type="close-circle"></i>
+    </button>
+  </div>
+  <div class="dfc-btn-right">
+    <app-upload-file class="dfc-btn-upload" [showLoading]="showLoading" [uploadType]="uploadType"
+      (uploadFile)="upload($event)"></app-upload-file>
+  </div>
+</div>
+<div class="dfc-btn" *ngIf="flag">
+  <div class="dfc-btn-right">
+    <div>{{'mrr.nudd-code'|translate}}：{{militaryCode}}</div>
+  </div>
+</div>
+<div class="dfc-table">
+  <table>
+    <tr>
+      <td>{{'mrr.mrr-customer'|translate}}</td>
+      <td colspan="3">{{table['customer']}}</td>
+      <td>{{'military-order.model-type'|translate}}</td>
+      <td>{{table['modelType']}}</td>
+      <td>{{'military-order.model-size'|translate}}</td>
+      <td>
+        <ng-container *ngIf="!editCache.edit">
+          {{table['size']}}
+        </ng-container>
+        <ng-container *ngIf="editCache.edit">
+          <input type="text" nz-input [(ngModel)]="editCache.data['size']">
+        </ng-container>
+      </td>
+      <td colspan="2" rowspan="4">
+        <img [attr.src]="table['imgSrc']">
+      </td>
+    </tr>
+    <tr>
+      <td>Project Code</td>
+      <td colspan="3">{{table['proCode']}}</td>
+      <td>Project Name</td>
+      <td colspan="3">{{table['proName']}}</td>
+    </tr>
+    <tr>
+      <td>Forecast(K/{{ 'military-order.month' | translate }})</td>
+      <td colspan="3">{{table['fcst']}}</td>
+      <td>Plant {{'military-order.scale'|translate}}(K/{{ 'military-order.month' | translate }})</td>
+      <td colspan="3">
+        <ng-container *ngIf="!editCache.edit">
+          {{table['plantCapacity']}}
+        </ng-container>
+        <ng-container *ngIf="editCache.edit">
+          <input type="text" nz-input [(ngModel)]="editCache.data['plantCapacity']">
+        </ng-container>
+      </td>
+    </tr>
+    <tr>
+      <td>C3 P/R {{'military-order.period'|translate}}</td>
+      <td>{{table['c3']}}</td>
+      <td>C4 P/R {{'military-order.period'|translate}}</td>
+      <td>{{table['c4']}}</td>
+      <td>C5 P/R {{'military-order.period'|translate}}</td>
+      <td>{{table['c5']}}</td>
+      <td>MP {{'military-order.time-point'|translate}}</td>
+      <td>{{table['mp']}}</td>
+    </tr>
+    <!-- 以下為 model -->
+    <tr>
+      <td>Model Name</td>
+      <td>PCBA {{'military-order.part-numbers'|translate}}</td>
+      <td>{{'military-order.goal'|translate}} MOH(USD)</td>
+      <td>{{'military-order.offer'|translate}} MOH</td>
+      <td>MOH Gap</td>
+      <td>{{'military-order.manu-time'|translate}}(s)</td>
+      <td>{{'military-order.goal-time'|translate}}(s)</td>
+      <td>{{'military-order.goal-period'|translate}}</td>
+      <td>FA Y.R Goal
+        <br *ngIf="militaryFlag">
+        <span *ngIf="militaryFlag && isMohFAYield"
+          class="dfc-military-isMohFAYield">({{'military-order.source-from'|translate}}: MOH
+          {{'military-order.param'|translate}})</span>
+        <span *ngIf="militaryFlag && !isMohFAYield"
+          class="dfc-military-isMohFAYield">({{'military-order.source-from'|translate}}:
+          {{'military-order.dfq-yr-forecast'|translate}})</span>
+      </td>
+      <td>{{'military-order.goal-period'|translate}}</td>
+    </tr>
+    <tr *ngFor="let model of table['modelList']; let i=index">
+      <td>{{model['modelName']}}</td>
+      <td>
+        <ng-container *ngIf="!editCache.edit">
+          {{model['parts']}}
+        </ng-container>
+        <ng-container *ngIf="editCache.edit">
+          <input type="text" nz-input [(ngModel)]="editCache.data['modelList'][i]['parts']">
+        </ng-container>
+      </td>
+      <td>{{model['mohTarget']}}</td>
+      <td *ngIf="DFiLeaderFlag">
+        <ng-container *ngIf="!editCache.edit">
+          {{model['quoat']}}
+        </ng-container>
+        <ng-container *ngIf="editCache.edit">
+          <input type="text" nz-input [(ngModel)]="editCache.data['modelList'][i]['quoat']">
+        </ng-container>
+      </td>
+      <td *ngIf="!DFiLeaderFlag">
+        <span *ngIf="model['quoat']">***</span>
+      </td>
+      <td *ngIf="DFiLeaderFlag">{{model['mohGap']}}</td>
+      <td *ngIf="!DFiLeaderFlag">
+        <span *ngIf="model['quoat']">***</span>
+      </td>
+      <td>{{model['workhourActual']}}</td>
+      <td>{{model['workhourTarget']}}</td>
+      <td>{{model['workhourStandardDay']}}</td>
+      <td>{{model['faYRGoal'] | percent}}</td>
+      <td>{{model['faYRGoalStandardDay']}}</td>
+    </tr>
+  </table>
+</div>
+<div class="dfc-sign" *ngIf="!flag && !militaryFlag && txt === '' &&  DFiLeaderFlag">
+  <button nz-popconfirm [nzTitle]="'military-order.modelYR-source-notice' | translate" (nzOnConfirm)="FAYied(false)"
+    (nzOnCancel)="FAYied(true)" nzPlacement="top" [nzCancelText]="'military-order.moh-param-item' | translate"
+    [nzOkText]="'military-order.dfq-yr-forecast' | translate" nz-button
+    nzType="primary">{{'military-order.start-sign' | translate}}</button>
+</div>
+<div class="dfc-sign" *ngIf="!flag && txt !== ''">
+  <span class="dfc-sign-txt">{{txt}}</span>
+</div>
+<div *ngIf="flag && militaryFlag">
+  <app-dfc-sign-history [dfcSignData]="signData" [dfcSignHitoryParam]="dfcSignHitoryParam" [tableHeight]="tabelHeight"
+    (down)="download()"></app-dfc-sign-history>
+</div>
+
+<!-- 打印預覽 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [(nzVisible)]="isPrintVisible" [nzWidth]="940" [nzCancelText]="null"
+  [nzOkText]="null" [nzFooter]="null" [nzClosable]="false" [nzMaskClosable]="true" (nzOnCancel)="cancelPrint()"
+  nzTitle="">
+  <div class="dfc-print">
+    <app-military-order-print [queryValue]="printValue"></app-military-order-print>
+  </div>
+</nz-modal>
+
+<!-- 點擊啟動軍令狀, 跳出彈框 -->
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="900" [(nzVisible)]="signStartUp.popVisible"
+  [nzTitle]="'military-order.start-military' | translate" (nzOnCancel)="cancelStart()" [nzFooter]="modalEditSaveFooter">
+  <div class="dfc-send">
+    <table>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.buPlantSelect.bu.style"
+            [(queryValue)]="signStartUp.buPlantSelect.bu.value" [querySelect]="signStartUp.buPlantSelect.bu.select"
+            (queryValueChange)="signStartUp.buPlantSelect.bu.change$.next(signStartUp.buPlantSelect.bu.value)"
+            (searchSelectChange)="signStartUp.buPlantSelect.bu.select.searchChange$.next($event)"></app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.buPlantSelect.plant.style"
+            [(queryValue)]="signStartUp.buPlantSelect.plant.value"
+            [querySelect]="signStartUp.buPlantSelect.plant.select"
+            (queryValueChange)="signStartUp.buPlantSelect.plant.change$.next(signStartUp.buPlantSelect.plant.value)"
+            (searchSelectChange)="signStartUp.buPlantSelect.plant.select.searchChange$.next($event)">
+          </app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['EE']"
+            [(queryValue)]="signStartUp.select.value['EE']" [querySelect]="signStartUp.select.list['EE']"
+            (searchSelectChange)="onSearch($event, 'EE')"></app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['IE']"
+            [(queryValue)]="signStartUp.select.value['IE']" [querySelect]="signStartUp.select.list['IE']"
+            (searchSelectChange)="onSearch($event, 'IE')"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['ME']"
+            [(queryValue)]="signStartUp.select.value['ME']" [querySelect]="signStartUp.select.list['ME']"
+            (searchSelectChange)="onSearch($event, 'ME')"></app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PE']"
+            [(queryValue)]="signStartUp.select.value['PE']" [querySelect]="signStartUp.select.list['PE']"
+            (searchSelectChange)="onSearch($event, 'PE')"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['SW']"
+            [(queryValue)]="signStartUp.select.value['SW']" [querySelect]="signStartUp.select.list['SW']"
+            (searchSelectChange)="onSearch($event, 'SW')"></app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PME']"
+            [(queryValue)]="signStartUp.select.value['PME']" [querySelect]="signStartUp.select.list['PME']"
+            (searchSelectChange)="onSearch($event, 'PME')"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['GSQM']"
+            [(queryValue)]="signStartUp.select.value['GSQM']" [querySelect]="signStartUp.select.list['GSQM']"
+            (searchSelectChange)="onSearch($event, 'GSQM')"></app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PSE']"
+            [(queryValue)]="signStartUp.select.value['PSE']" [querySelect]="signStartUp.select.list['PSE']"
+            (searchSelectChange)="onSearch($event, 'PSE')"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PM']"
+            [(queryValue)]="signStartUp.select.value['PM']" [querySelect]="signStartUp.select.list['PM']"
+            (searchSelectChange)="onSearch($event, 'PM')"></app-dfc-query-input>
+        </td>
+
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PQM']"
+            [(queryValue)]="signStartUp.select.value['PQM']" [querySelect]="signStartUp.select.list['PQM']"
+            (searchSelectChange)="onSearch($event, 'PQM')"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PM_HEAD']"
+            [(queryValue)]="signStartUp.select.value['PM_HEAD']" [querySelect]="signStartUp.select.list['PM_HEAD']">
+          </app-dfc-query-input>
+        </td>
+
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['DFI_LEADER']"
+            [(queryValue)]="signStartUp.select.value['DFI_LEADER']"
+            [querySelect]="signStartUp.select.list['DFI_LEADER']"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <app-dfc-query-input *ngIf="signStartUp.bg === 'CSBG'" [queryStyle]="signStartUp.select.style['BU_HEAD']"
+            [(queryValue)]="signStartUp.select.value['BU_HEAD']" [querySelect]="signStartUp.select.list['BU_HEAD']">
+          </app-dfc-query-input>
+        </td>
+        <td>
+          <app-dfc-query-input [queryStyle]="signStartUp.select.style['PLANT_MANAGER']"
+            [(queryValue)]="signStartUp.select.value['PLANT_MANAGER']"
+            [querySelect]="signStartUp.select.list['PLANT_MANAGER']"></app-dfc-query-input>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">{{'military-order.describe' | translate}}<textarea rows="2" nz-input
+            [(ngModel)]="signStartUp.describe" class="textarea"></textarea>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <ng-template #modalEditSaveFooter>
+    <button nz-button nzType="default" (click)="cancelStart()">Cancel</button>
+    <button nz-button nzType="primary" (click)="startUp()">{{'military-order.start' | translate}}</button>
+  </ng-template>
+</nz-modal>

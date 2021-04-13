@@ -1,0 +1,138 @@
+<div class="dfc-wh" #DFCWorkhourGap>
+  <div class='title'>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'dfc.model-performance-tracking'|translate}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{'authority-maintain.comparison-of-working-hours'|translate}}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'authority-maintain.comparison-of-working-hours'|translate}}</span>
+  </div>
+  <div class='body'>
+    <div class="dfc-query">
+      <div *ngFor="let key of typeObjectKeys(querySelect); let i=index;">
+        <app-dfc-query-input *ngIf="(i < 3)" [queryStyle]="querySelect[key].style"
+          [(queryValue)]="querySelect[key].value" [querySelect]="querySelect[key].select"
+          (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+          (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+      </div>
+    </div>
+    <div class="dfc-query">
+      <div *ngFor="let key of modelObjectKeys(querySelect); let i=index;">
+        <app-dfc-query-input *ngIf="(i > 2)" [queryStyle]="querySelect[key].style"
+          [(queryValue)]="querySelect[key].value" [querySelect]="querySelect[key].select"
+          (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+          (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+      </div>
+      <div class="dfc-query-btn">
+        <button nz-button nzType="primary" (click)="add()">{{'dfq.dfq-add'|translate}}</button>
+      </div>
+    </div>
+    <div class="dfc-line"></div>
+    <div class="query-table" #modalProCodeContent *ngIf='frist'>
+      <nz-table style="width: 602px;min-height: 204px;" #data nzBordered nzShowQuickJumper [nzData]="dataTable"
+        [nzPageSize]="20" nzSize="middle" [nzHideOnSinglePage]="true" [nzScroll]="nzScroll.upTable"
+        [nzWidthConfig]="nzWidthConfig.upTable">
+        <thead>
+          <tr>
+            <th width="8%">{{'dfq.dfq-plant'|translate}}</th>
+            <th width="8%">{{'dfq.dfq-customer'|translate}}</th>
+            <th width="8%">{{'dfq.dfq-product'|translate}}</th>
+            <th width="18%">Project Code</th>
+            <th width="18%">Project Name</th>
+            <th width="18%">Model</th>
+            <th width="8%">{{'dfq.dfq-cflow'|translate}}</th>
+            <th width="8%">{{'dfc.delete-or-not'|translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataTable; let i=index;">
+            <td>{{item.plant.Label}}</td>
+            <td>{{item.custom.Label}}</td>
+            <td>{{item.product.Label}}</td>
+            <td>{{item.ProjectCode.Label}}</td>
+            <td>{{item.ProjectName.Label}}</td>
+            <td>{{item.Model.Label}}</td>
+            <td>{{item.cFlow.Label}}</td>
+            <td>
+              <div>
+                <ng-container>
+                  <div>
+                    <a (click)="deleteProMember(item.key, i)" (click)="query()">
+                      <i class="anticon anticon-delete"></i>
+                    </a>
+                  </div>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+    <div class="btn2">
+      <button nz-button nzType="primary" (click)="query()">{{'dfc.compared'|translate}}</button>
+    </div>
+    <div *ngIf='echartFlag' class='echart' echarts [options]="option" class="dfc-query-echart"></div>
+    <div class="table" *ngIf='tableshow'>
+      <div class="download">
+        <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+      <nz-table id="downdata" #whQueryTable nzBordered nzShowQuickJumper [nzShowPagination]="false" [nzData]="dataTable"
+        [nzScroll]="nzScroll.downTable" [nzPageSize]="10" [nzWidthConfig]="nzWidthConfig.downTable">
+        <thead>
+          <tr class="table">
+            <th nzShowExpand>{{'dfq.report-expand'|translate}}</th>
+            <th>{{'dfq.dfq-plant'|translate}}</th>
+            <th>{{'dfq.dfq-plant'|translate}}</th>
+            <th>{{'dfq.dfq-product'|translate}}</th>
+            <th>Project Name</th>
+            <th>Model Name</th>
+            <th>{{'dfq.dfq-cflow'|translate}}</th>
+            <th *ngFor="let data of dataEx">{{data}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-template ngFor let-data [ngForOf]="whQueryTable.data">
+            <tr>
+              <td *ngIf="modelDataSet[data.Model.Value]['child'].length === 0"></td>
+              <td nzShowExpand [(nzExpand)]="data.expand" *ngIf="modelDataSet[data.Model.Value]['child'].length !== 0">
+              </td>
+              <td>{{data.plant.Label}}</td>
+              <td>{{data.custom.Label}}</td>
+              <td>{{data.product.Label}}</td>
+              <td>{{data.ProjectName.Label}}</td>
+              <td>{{data.Model.Label}}</td>
+              <td>{{data.cFlow.Label}}</td>
+              <td *ngFor="let modelData of modelDataSet[data.Model.Value]['timesData']">{{modelData | number: '0.2'}}
+              </td>
+            </tr>
+            <tr [nzExpand]="data.expand">
+              <td></td>
+              <td [attr.colspan]="(dataEx.length + 7)">
+                <nz-table #innerTable [nzData]="modelDataSet[data.Model.Value]['child']" nzSize="middle"
+                  [nzShowPagination]="false">
+                  <thead>
+                    <tr>
+                      <th>Model Name</th>
+                      <th>Count</th>
+                      <th *ngFor="let data of dataEx">{{data}}</th>
+                    </tr>
+                  </thead>
+        <tbody>
+          <tr *ngFor="let iData of innerTable.data">
+            <td>{{(iData.basicModel | dfcBasicModel | async)?.modelName}}</td>
+            <td>{{ iData.count }}</td>
+            <td *ngFor="let child of iData.list">{{child | number: '0.2'}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+      </td>
+      </tr>
+      </ng-template>
+      </tbody>
+      </nz-table>
+    </div>
+  </div>

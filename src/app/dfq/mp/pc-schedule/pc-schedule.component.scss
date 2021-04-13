@@ -1,0 +1,147 @@
+.body {
+  margin: 0 1%;
+
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+
+
+::ng-deep .dfq-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  margin-bottom: 10px;
+
+  .dfq-btn-add {
+    margin-left: 12px;
+    margin-bottom: 6px;
+    height: 100%;
+    float: left;
+    display: inline-flex;
+  }
+
+  .dfq-btn-del {
+    margin-left: 12px;
+    margin-bottom: 6px;
+    height: 100%;
+    float: left;
+    display: inline-flex;
+  }
+
+
+  .dfq-btn-right {
+    position: absolute;
+    right: 0;
+    float: left;
+    width: 650px;
+    height: 100%;
+    display: inline-flex;
+
+    .template {
+      margin-left: 200px;
+    }
+
+    .dfq-btn-updownload {
+      display: inline-flex;
+      height: 100%;
+      float: left;
+
+      .text {
+        float: right;
+        font-weight: 400;
+      }
+    }
+
+    .dfq-btn-download {
+      margin-left: 12px;
+      margin-bottom: 6px;
+      height: 100%;
+      float: left;
+    }
+
+    .upload {
+      margin-left: 0;
+    }
+  }
+
+}
+
+div.fakeInput {
+  margin-left: 10px;
+  display: inline-block;
+  width: 210px;
+  color: #505050;
+  background-color: white;
+  border-radius: 3px 0px 0px 3px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 150%;
+  border: #cccccc solid 1px;
+  text-align: left;
+  height: 32px;
+  cursor: pointer;
+
+  span {
+    padding-left: 10px;
+    vertical-align: sub;
+    color: #999;
+  }
+}
+
+
+.upload {
+  input {
+    display: none;
+  }
+
+  i {
+    vertical-align: bottom;
+  }
+}
+
+
+.table-cls {
+  th {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  td {
+    text-align: center;
+    margin: 0 auto;
+    // border: 1px solid black;
+  }
+}
+
+
+.model-input-cls {
+  width: 200px;
+}
+
+.input-cls {
+  display: inline-flex;
+  float: left;
+  margin-left: 20%;
+  width: 400px;
+  height: 60px;
+}
+
+.model-span-cls {
+  display: inline-flex;
+  float: left;
+  margin-left: 5%;
+  width: 80px;
+}
+
+.deleteIcon{
+  color: #ffffff
+}
+
+::ng-deep.ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+  background:white;
+  }

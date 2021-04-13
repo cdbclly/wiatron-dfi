@@ -1,0 +1,187 @@
+<div class="query-row">
+    <div class="field1" style="width: 28%;" *ngIf="isAllAuth">
+        <span class="span-width1">
+          <span style="color: red;">*</span>
+          <span>Site</span>
+        </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('cur_site')">
+          <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+        </nz-select>
+      </div>
+      <div class="field"  style="width: 28%;" *ngIf="isAllAuth">
+          <span class="span-width1">
+              <span style="color: red;">*</span>
+              <span>{{'imq-plant' | translate}}</span>
+            </span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('cur_plant')">
+          <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+        </nz-select>
+      </div>
+  <div class="field"  style="width: 28%;">
+    <span class="span-width1">
+      <span style="color: red;">*</span>
+      <span>{{'imq-yr-model' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_model" (ngModelChange)="getOptions('cur_model')">
+      <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field"  style="width: 28%;">
+    <span class="span-width2">{{'imq-partNumber' | translate}}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_partNo">
+      <nz-option *ngFor="let partNo of partNoGroup" [nzLabel]="partNo" [nzValue]="partNo"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+  </div>
+
+  <button nz-button [nzType]="'primary'" *ngIf="isAuthCreate" title="{{'imq-create' | translate}}" nzShape="circle" (click)="showModal()">
+      <i class="anticon anticon-plus"></i>
+  </button>
+  <nz-table
+      #editRowTable
+      nzBordered
+      [nzPageSize]="10"
+      [nzData]="wistronMailList">
+      <thead>
+        <tr>
+          <th nzWidth="5%">Site</th>
+          <th nzWidth="5%">{{'imq-plant' | translate}}</th>
+          <th nzWidth="15%">{{'imq-supplier' | translate}}</th>
+          <th nzWidth="10%">{{'imq-yr-model' | translate}}</th>
+          <th nzWidth="25%">{{'imq-partNumber' | translate}}</th>
+          <th nzWidth="15%">Mail</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of editRowTable.data">
+          <td>
+            <div class="editable-cell">
+              <div class="editable-cell-text-wrapper">
+                <ng-container>
+                  {{data.site}}
+                </ng-container>
+              </div>
+            </div>
+          </td>
+          <td>
+            <ng-container>
+              {{data.plant}}
+            </ng-container>
+          </td>
+          <td>
+            <ng-container>
+                {{data.vendor}}
+            </ng-container>
+          </td>
+          <td>
+            <ng-container>
+                {{data.model}}
+            </ng-container>
+          </td>
+          <td>
+            <ng-container>
+                {{data.partNumber}}
+            </ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="!editCache[data.id].edit">
+              {{data.eMail}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.id].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.id].data.eMail">
+            </ng-container>
+          </td>
+          <td>
+            <div class="editable-row-operations">
+              <ng-container *ngIf="!editCache[data.id].edit && isAuthEdit">
+                <a (click)="startEdit(data.id)"><i class="anticon anticon-edit"></i></a>
+                <span class="span-action">|</span>
+                <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="sureDelete(data.id)">
+                  <a nz-popconfirm><i class="anticon anticon-delete"></i></a>
+                </nz-popconfirm>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.id].edit">
+                <a (click)="saveEdit(data.id)"><i class="anticon anticon-save"></i></a>
+                <a style="padding-left: 30px;" (click)="cancelEdit(data.id)"><i class="anticon anticon-close-circle-o"></i></a>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="新增緯創Mail地址" (nzOnCancel)="handleCancel()" [nzFooter]="modalFooter"  (nzOnOk)="handleOk()">
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+      <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+          <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="site">Site</nz-form-label>
+              <nz-form-control [nzSm]="16" [nzXs]="24">
+                <nz-input-group>
+                    <nz-select nzShowSearch nzAllowClear style="width: 80%; margin-right:8px;"  formControlName="site" id="site" (ngModelChange)="getOptions('site', $event)">
+                        <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+                    </nz-select>
+                </nz-input-group>
+                <!-- <nz-form-explain *ngIf="validateForm.get('site').dirty && validateForm.get('site').errors">請選擇site</nz-form-explain> -->
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="plant">{{'imq-plant' | translate}}</nz-form-label>
+                <nz-form-control [nzSm]="16" [nzXs]="24">
+                  <nz-input-group>
+                      <nz-select nzShowSearch nzAllowClear style="width: 80%; margin-right:8px;" formControlName="plant" id="plant" (ngModelChange)="getOptions('plant', $event)">
+                          <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+                      </nz-select>
+                  </nz-input-group>
+                  <!-- <nz-form-explain *ngIf="validateForm.get('site').dirty && validateForm.get('site').errors">請選擇site</nz-form-explain> -->
+                </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="model">{{'imq-model' | translate}}</nz-form-label>
+            <nz-form-control [nzSm]="16" [nzXs]="24">
+              <nz-input-group>
+                  <nz-select nzShowSearch nzAllowClear style="width: 80%; margin-right:8px;" [(ngModel)]="new_model" formControlName="model" id="model" (ngModelChange)="getOptions('model', $event)">
+                      <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+                  </nz-select>
+              </nz-input-group>
+              <!-- <nz-form-explain *ngIf="validateForm.get('site').dirty && validateForm.get('site').errors">請選擇site</nz-form-explain> -->
+            </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="partNumber">{{'imq-partNumber' | translate}}</nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXs]="24">
+            <nz-input-group>
+                <nz-select nzShowSearch nzAllowClear style="width: 80%; margin-right:8px;" [(ngModel)]="new_partNo" formControlName="partNumber" id="partNumber" (ngModelChange)="getOptions('partNo', $event)">
+                    <nz-option *ngFor="let partNo of partNoGroup" [nzLabel]="partNo" [nzValue]="partNo"></nz-option>
+                </nz-select>
+            </nz-input-group>
+            <!-- <nz-form-explain *ngIf="validateForm.get('site').dirty && validateForm.get('site').errors">請選擇site</nz-form-explain> -->
+          </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngFor="let control of controlArray;let i = index">
+            <nz-form-label [nzSm]="6" [nzXs]="24" *ngIf="i==0" [nzFor]="control.controlInstance">{{'imq-mt-mailBox' | translate}}</nz-form-label>
+            <nz-form-control [nzSm]="16" [nzXs]="24" [nzOffset]="i==0?0:4" formGroupName="email">
+                <nz-select *ngIf="control.id===0" nzShowSearch nzAllowClear nzMode="multiple" style="width: 80%; margin-right:8px;" [attr.id]="control.id" [formControlName]="control.controlInstance">
+                    <nz-option *ngFor="let mail of mailGroup" [nzLabel]="mail" [nzValue]="mail"></nz-option>
+                </nz-select>
+                <input *ngIf="control.id!==0" nz-input style="width: 80%;margin-left: 40px;margin-right: 8px;" [attr.id]="control.id" [formControlName]="control.controlInstance">
+              <!-- <input nz-input style="width: 60%; margin-right:8px;" [attr.id]="control.id" [formControlName]="control.controlInstance"> -->
+              <i nz-icon type="minus-circle-o" class="dynamic-delete-button" (click)="removeField(control,$event)"></i>
+              <!-- <nz-form-explain *ngIf="getFormControl(control.controlInstance)?.dirty&&getFormControl(control.controlInstance)?.hasError('required')">
+                Please input passenger's name or delete this field.
+              </nz-form-explain> -->
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control [nzXs]="{span:24,offset:0}" [nzSm]="{span:20,offset:4}">
+              <button nz-button nzType="dashed" style="width:60%; margin-left:45px;" (click)="addField($event)"><i nz-icon type="plus"></i> Add mail</button>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control [nzXs]="{span:24,offset:0}" [nzSm]="{span:20,offset:4}">
+              <button nz-button nzType="primary">{{'imq-confirm' | translate}}</button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+</nz-modal>

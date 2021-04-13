@@ -1,0 +1,12 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+   <!-- <app-material-end-product #subMEndProduct (trdDetail)="showDefectLoss($event, 'Over Spec 分析')" [options]="{width: '100%', height: '14vw'}"></app-material-end-product> -->
+   <!-- 供应商材料二层弹出界面 左侧折线柱状图 -->
+   <app-material-end-product [barOptions]="barData" (trdDetail)="emitDefectLoss($event, 'Over Spec 分析')"></app-material-end-product>
+   <!-- 供应商材料二层弹出界面 右侧分析饼图 -->
+   <app-material-pie-product [pieOptions]="pieData"></app-material-pie-product>
+</nz-modal>
+
+<!-- 供应商材料二层弹出界面 左侧折线柱状图点击弹出的三层饼图  / 供应商良率趋势图点击弹出的饼图-->
+<nz-modal [(nzVisible)]="isVisibleSub" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="45%" (nzOnCancel)="handleCancelSub()" [nzClosable]="cancelOKSub" [nzFooter]="footerSub" (nzOnOk)="handleOkSub()">
+  <app-material-pie-product [pieOptions]="subPieData" [isYrTrend]="isYrTrend"></app-material-pie-product>
+ </nz-modal>

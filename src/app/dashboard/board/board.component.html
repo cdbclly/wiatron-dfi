@@ -1,0 +1,53 @@
+<div class="statistic">
+  <span class="blue">{{ 'dashboard.standardModel' | translate }}</span>
+  <span> / {{ 'dashboard.totalModel' | translate }}</span>
+</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <div class="title">DFC</div>
+        <span>KPI:{{ 'dashboard.workhour' | translate }}<br>
+          {{ 'dashboard.modelReachedRatio' | translate }}</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of dfcOptions">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height" (clickChart)="linkDFC($event)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>
+<app-rfq-workhour></app-rfq-workhour>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <div class="title">DFQ</div>
+        <span>KPI:{{ 'dashboard.mpYield' | translate }}<br>
+          {{ 'dashboard.modelReachedRatio' | translate }}</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of dfqOptions">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+        [height]="options.height" (clickChart)="linkDFQ($event)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>
+<div class="board-row">
+  <div class="board-row-dfc">
+    <div class="section">
+      <div style="width:160px">
+        <div class="title">MRR</div>
+        <span>KPI:{{ 'dashboard.handoverReached' | translate }}<br>
+          {{ 'dashboard.modelReachedRatio' | translate }}</span>
+      </div>
+    </div>
+    <div class="section" *ngFor="let options of mrrOptions">
+      <app-pie-chart [title]="options.title" [subtext]="options.subtext " [data]="options.data" [width]="options.width"
+        [height]="options.height" (clickChart)="linkMRR($event)">
+      </app-pie-chart>
+    </div>
+  </div>
+</div>

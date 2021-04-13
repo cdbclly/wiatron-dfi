@@ -1,0 +1,260 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.mp-warning-tracking-system' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.mp-yield-information-maintenance' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="plant cannot be empty">
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear formControlName="plant" [(ngModel)]="selectedPlant"
+        (ngModelChange)="getLines(selectedPlant, selectedMfgType)">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant.id" [nzLabel]="plant.id | plantName | async"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.mp-finished-product-type' | translate }}</nz-form-label>
+    <nz-form-control nzErrorTip="process cannot be empty">
+      <nz-select style="width: 150px" nzShowSearch nzAllowClear formControlName="mfgType" [(ngModel)]="selectedMfgType"
+        (ngModelChange)="getLines(selectedPlant, selectedMfgType)">
+        <ng-container *ngFor="let mfgType of mfgTypes">
+          <nz-option [nzValue]="mfgType" [nzLabel]="mfgType"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-date' | translate }}</nz-form-label>
+    <nz-form-control>
+      <ng-container style="width: 10px">
+        <nz-range-picker nzShowSearch nzAllowClear [(ngModel)]="selectedDateRange" formControlName="date"
+          (ngModelChange)="onChange($event)"></nz-range-picker>
+      </ng-container>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-line' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear formControlName="line" [(ngModel)]="selectedLine">
+        <ng-container *ngFor="let line of lines">
+          <nz-option [nzValue]="line.line" [nzLabel]="line.line"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear nzLoading formControlName="modelId"
+        [(ngModel)]="selectedModel" (nzOnSearch)="findBigData($event,'model')">
+        <ng-container *ngFor="let model of showModels">
+          <nz-option title="model" [nzLabel]="model" [nzValue]="model">Type at lease 3 letters to Search</nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading"
+        [disabled]="!validateForm.valid">{{ 'dfq.dfq-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-divider></nz-divider>
+<div>
+  <div class="dfq-btn">
+    <label class="dfq-btn-add">
+      <button nz-button [nzType]="'primary'" title="add one" nzShape="circle" (click)="addModel()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </label>
+
+    <label class="dfq-btn-del">
+      <button nz-button [disabled]="numberOfChecked === 0" [nzType]="'primary'" title="Delete Record" nzShape="circle"
+        (click)="delModel()">
+        <i class="anticon anticon-delete"></i>
+      </button>&nbsp;
+      <span *ngIf="numberOfChecked">{{ numberOfChecked }} data selected</span>
+    </label>
+
+    <div class="dfq-btn-right">
+      <label>
+        <button class="template" nz-button nzType="primary"
+          (click)="downDemo()">{{ 'dfq.rfi-download-template' | translate }}</button>
+      </label>
+      <div class="dfq-btn-updownload">
+        <nz-spin nzSimple [nzSpinning]="uploading">
+          <label class="upload">
+            <input id="upload" type="file" (change)="handleUploadFile($event.target)" />
+            <div class="fakeInput">
+              <span *ngIf="uploadFileName">{{ uploadFileName }}</span>
+              <span *ngIf="!uploadFileName">Select Excel file</span>
+            </div>
+          </label>
+          <label *ngIf="isUpoad" class="ant-btn ant-btn-primary ant-btn-icon-only ant-input-search-button upload"
+            title="上傳" (click)="upload()">
+            <i class="anticon anticon-upload"></i>
+          </label>
+        </nz-spin>
+        <label class="dfq-btn-download">
+          <button nz-button [nzType]="'primary'" *ngIf="isDownLoad" title="download" [nzLoading]="downLoading"
+            nzShape="circle" (click)="download()">
+            <i class="anticon anticon-download"></i>
+          </button>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-cls" *ngIf="isDisplayTable">
+    <nz-table #fixedTable [nzData]="listOfDisplayData" nzBordered id="ModelScheduleUpload"
+      [nzShowPagination]="isPagination" [nzShowSizeChanger]="true" [nzPageSize]="50">
+      <thead (nzSortChange)="sort($event)" nzSingleSort>
+        <tr>
+          <th nzShowCheckbox [(nzChecked)]="isAllDisplayDataChecked" [nzIndeterminate]="isIndeterminate"
+            (nzCheckedChange)="checkAll($event)"></th>
+          <th style="width: 200px;" nzShowSort nzSortKey="date">{{ 'dfq.dfq-date' | translate }}</th>
+          <th style="width: 200px;" nzShowFilter [(nzFilters)]="listOfLines" (nzFilterChange)="filter1($event)">{{ 'dfq.dfq-line' | translate }}</th>
+          <th style="width: 200px;" nzShowFilter [(nzFilters)]="listOfModels" (nzFilterChange)="filter2($event)">{{ 'dfq.dfq-model' | translate }}</th>
+          <!-- <th style="width: 200px;" nzShowFilter [(nzFilters)]="listOfShits" (nzFilterChange)="filter3($event)">班別</th> -->
+          <th style="width: 200px;" nzShowSort nzSortKey="planQty">{{ 'dfq.mp-yield' | translate }}</th>
+          <th style="width: 200px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of fixedTable.data">
+          <td nzShowCheckbox [(nzChecked)]="mapOfCheckedId[data.id]" [nzDisabled]="data.disabled"
+            (nzCheckedChange)="refreshStatus()"></td>
+          <td>{{data.date | date: 'yyyy/MM/dd'}}</td>
+          <td>{{data.line}}</td>
+          <td>{{data.model}}</td>
+          <!-- <td>{{data.shift}}</td> -->
+          <td>{{data.planQty}}</td>
+          <td>
+            <a>
+              <i nz-icon type="edit" theme="outline" (click)="editModal(data)"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- add -->
+<div>
+  <nz-modal nzWidth="500px" class="model-cls" [(nzVisible)]="addOneFlag" (nzOnOk)="addOne()" nzOkText='OK' nzCancelText='Cancel'
+    (nzOnCancel)="cancelAddOne()" nzTitle="Add yield information" [nzOkLoading]="isOkLoading" >
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.dfq-date' | translate }}:&nbsp;
+      <ng-container style="width: 170px">
+        <nz-date-picker nzShowSearch nzAllowClear [(ngModel)]="selectedDateAdd">
+        </nz-date-picker>
+      </ng-container>
+    </label><br>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.dfq-plant' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="selectedPlantAdd">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant.id" [nzLabel]="plant.siteId + '-' + plant.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.mp-finished-product-type' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="selectedMfgTypeAdd"
+        (ngModelChange)="getLines(selectedPlantAdd, selectedMfgTypeAdd)">
+        <ng-container *ngFor="let mfgType of mfgTypes">
+          <nz-option [nzValue]="mfgType" [nzLabel]="mfgType"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.dfq-line' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="selectedLineAdd">
+        <ng-container *ngFor="let line of lines">
+          <nz-option [nzValue]="line.line" [nzLabel]="line.line"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.dfq-model' | translate }}:&nbsp;
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="selectedModelAdd"
+        (nzOnSearch)="findBigData($event,'model')">
+        <ng-container *ngFor="let model of showModels">
+          <nz-option title="model" [nzLabel]="model" [nzValue]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="mustItem">*</span>{{ 'dfq.mp-yield' | translate }}:&nbsp;
+      <nz-input-number [nzPlaceHolder]="'1~10000'" [(ngModel)]="selectPlanQtyAdd" [nzMin]="1" [nzMax]="10000"
+        [nzStep]="1"></nz-input-number>
+    </label><br>
+  </nz-modal>
+</div>
+
+<!-- update -->
+<div>
+  <nz-modal nzWidth="500px" class="model-cls" nzOkText='OK' nzCancelText='Cancel' [(nzVisible)]="editOneFlag" (nzOnOk)="editOne()"
+    (nzOnCancel)="cancelEditOne()" nzTitle="Edit" [nzOkLoading]="isOkLoading2">
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.dfq-date' | translate }}:</span>
+      <ng-container style="width: 170px">
+        <nz-date-picker nzShowSearch nzAllowClear [(ngModel)]="editDate" nzPlaceHolder="Please select a date">
+        </nz-date-picker>
+      </ng-container>
+    </label><br>
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.dfq-plant' | translate }}: </span>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="editPlant">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant.id" [nzLabel]="plant.siteId + '-' + plant.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.mp-finished-product-type' | translate }}:</span>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="editMfgType"
+        (ngModelChange)="getLines(editPlant, editMfgType)">
+        <ng-container *ngFor="let mfgType of mfgTypes">
+          <nz-option [nzValue]="mfgType" [nzLabel]="mfgType"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.dfq-line' | translate }}: </span>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="editLine">
+        <ng-container *ngFor="let line of lines">
+          <nz-option [nzValue]="line.line" [nzLabel]="line.line"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.dfq-model' | translate }}: </span>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="editModel"
+        (nzOnSearch)="findBigData($event,'model')">
+        <ng-container *ngFor="let model of models">
+          <nz-option title="model" [nzLabel]="model" [nzValue]="model"></nz-option>
+        </ng-container>
+      </nz-select>
+    </label><br>
+    <label class="input-cls">
+      <span class="model-span-cls">{{ 'dfq.mp-yield' | translate }}: </span>
+      <nz-input-number [(ngModel)]="editPlanQty" [nzMin]="1" [nzStep]="1"></nz-input-number>
+    </label><br>
+  </nz-modal>
+</div>
+
+
+<!-- delete -->
+<div>
+  <nz-modal nzWidth="500px" class="model-cls" nzOkText='OK' nzCancelText='Cancel' (nzOnOk)="editOne()" (nzOnCancel)="cancelDelOne()"
+    [nzOkLoading]="isOkLoading3">
+  </nz-modal>
+</div>

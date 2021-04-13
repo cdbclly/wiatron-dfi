@@ -1,0 +1,508 @@
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-partNumber' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        formControlName="partNumber" (ngModelChange)="partNumbersChange$.query.next($event)">
+        <ng-container *ngFor="let list of partNumbers.query">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 150px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        formControlName="manufacturer" (ngModelChange)="manufacturerChange$.query.next($event)">
+        <ng-container *ngFor="let list of manufacturers.query">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 100px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        formControlName="plant" (ngModelChange)="plantsChange$.query.next($event)">
+        <ng-container *ngFor="let plant of plants.query">
+          <nz-option [nzValue]="plant.Value" [nzLabel]="plant.Value"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'mrr.mrr-customer' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 100px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [nzServerSearch]="true" formControlName="customer" (ngModelChange)="customerChange$.query.next($event)"
+        (nzOnSearch)="customerSearchChange$.query.next($event)">
+        <ng-container *ngFor="let customer of customers.query">
+          <nz-option [nzValue]="customer" [nzLabel]="customer"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Project Code</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [nzServerSearch]="true" formControlName="projectCode" (ngModelChange)="projectCodeChange$.query.next($event)"
+        (nzOnSearch)="projectCodeSearchChange$.query.next($event)">
+        <ng-container *ngFor="let list of projectCodes.query">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <br>
+  <nz-form-item>
+    <nz-form-label>Project Name</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [nzServerSearch]="true" formControlName="projectName" (ngModelChange)="projectNameChange$.query.next($event)"
+        (nzOnSearch)="projectNameSearchChange$.query.next($event)">
+        <ng-container *ngFor="let list of projectNames.query">
+          <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>{{ 'mrr.mrr-part' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        formControlName="part" (ngModelChange)="partChange$.query.next($event)">
+        <ng-container *ngFor="let list of parts.query">
+          <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'mrr.mrr-stage' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 100px" nzAllowClear formControlName="stage">
+        <ng-container *ngFor="let list of stages.query">
+          <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="queryLoading"
+        [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<div class="dfc-btn">
+  <div class="dfc-btn-right">
+    <button nz-button [nzType]="'primary'" (click)="addModalShow('add')">
+      <i class="anticon anticon-plus"></i>{{ 'mrr.material-add-model-PartNo' | translate }}
+    </button>
+    <nz-dropdown>
+      <button nz-button nz-dropdown [disabled]="btn.copy.disableFlag && !btn.copy.chooseStage" [nzType]="'primary'"
+        (click)="addModalShow('copy')">
+        <i
+          class="anticon anticon-copy"></i>{{ btn.copy.disableFlag ? ('mrr.material-copy-model-PartNo' | translate) : (!btn.copy.chooseStage ? ('mrr.material-copy-model-PartNo-select' | translate) : (('mrr.material-copy-model' | translate) + btn.copy.currentStage + ('mrr.material-to' | translate) + btn.copy.chooseStage + '-' + ('mrr.mrr-partNumber' | translate))) }}
+      </button>
+      <ul nz-menu>
+        <li nz-menu-item *ngFor="let item of btn.copy.menu">
+          <a (click)="btnCopyClick(item)">{{item}}</a>
+        </li>
+      </ul>
+    </nz-dropdown>
+
+    <button nz-button [disabled]="partsDataSet.length < 1" [nzType]="'primary'" (click)="addModalShow('order')">
+      <i class="anticon anticon-swap"></i>{{ 'mrr.material-adjust-process-order' | translate }}
+    </button>
+  </div>
+</div>
+<div class="modelPartNumber">
+  <nz-table #basicTable nzBordered nzShowQuickJumper [nzData]="partsDataSet" nzShowPagination="false"
+    nzFrontPagination="false" [nzWidthConfig]="nzWidthConfig">
+    <thead>
+      <tr>
+        <th colspan="14">{{ 'mrr.material-model-PartNo-maintain' | translate }}</th>
+      </tr>
+      <tr>
+        <th rowspan="2" width="5%">{{ 'mrr.mrr-plant' | translate }}</th>
+        <th rowspan="2" width="6%">{{ 'mrr.mrr-customer' | translate }}</th>
+        <th rowspan="2">Wistron {{ 'mrr.mrr-partNumber' | translate }}</th>
+        <th rowspan="2">{{ 'mrr.mrr-vendor' | translate }}</th>
+        <th rowspan="2">{{ 'mrr.material-vendorCode' | translate }}</th>
+        <th rowspan="2">Project Code</th>
+        <th rowspan="2">Project Name</th>
+        <th rowspan="2" width="5%">{{ 'mrr.mrr-stage' | translate }}</th>
+        <th rowspan="2" width="5%">{{ 'mrr.mrr-part' | translate }}</th>
+        <th colspan="2">Critical Process</th>
+        <th rowspan="2">{{ 'mrr.mrr-yieldRate' | translate }}</th>
+        <th rowspan="2" width="10%">{{ 'mrr.material-edit-yield' | translate }}</th>
+      </tr>
+      <tr>
+        <th width="8%">{{ 'mrr.material-number' | translate }}</th>
+        <th width="6%">Process</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data; let i = index;">
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.plant | site: {type: 'plant'} }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.customer }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength"><a style="text-decoration:underline"
+            (click)="showPartNumberPro(data)"><span nz-tooltip [nzTitle]="clickNotice">{{ data.partNumber }}</span></a>
+        </td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.manufacturer }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.vendorCode }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.projectCode }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.projectName }}</td>
+        <td *ngIf="data.rowspan" [attr.rowspan]="data.rowspanLength">{{ data.stage }}</td>
+        <td>{{ data.parts }}</td>
+        <td>{{ data.order }}</td>
+        <td>{{ data.operation }}</td>
+        <td>
+          <ng-container *ngIf="!editCache[data.order].edit; else yrInputTpl">
+            {{ data.sqmTargetYieldShow + '%'}}
+          </ng-container>
+          <ng-template #yrInputTpl>
+            <nz-input-number [(ngModel)]="editCache[data.order].data.sqmTargetYieldShow" [nzMin]="0" [nzMax]="100"
+              [nzStep]="0.1"></nz-input-number>%
+          </ng-template>
+        </td>
+        <td>
+          <div>
+            <ng-container *ngIf="!editCache[data.order].edit">
+              <i class="anticon anticon-edit" style="cursor: pointer" (click)="startEdit(data.order)"></i>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.order].edit">
+              <i class="anticon anticon-check" style="cursor: pointer" (click)="saveEdit(data, i)"></i>&nbsp;
+              <i class="anticon anticon-close" style="cursor: pointer" (click)="cancelEdit(data.order)"></i>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 新機種料號維護 -->
+<nz-modal nzWidth="52%" [nzTitle]="nzTitle" [(nzVisible)]="addModelFlag" [nzContent]="modalContent"
+  nzMaskClosable="false" [nzFooter]="modalFooter" (nzOnCancel)="addModelCancel()">
+  <ng-template #modalContent>
+    <form nz-form [formGroup]="modelValidateForm">
+      <nz-spin nzSimple [nzSpinning]="queryPartNumerLoading" [nzSize]="'large'">
+        <div class="add-content">
+          <div class="add-left">
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="selectPlant" nzRequired>{{ 'mrr.mrr-plant' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" formControlName="selectPlant">
+                  <ng-container *ngFor="let plant of plants.add">
+                    <nz-option [nzValue]="plant.Value" [nzLabel]="plant.Value"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="partNumber" nzRequired>{{ 'mrr.mrr-partNumber' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
+                  <input nz-input formControlName="partNumber" (ngModelChange)="partNumbersSearch$.add.next($event)"
+                    [nzAutocomplete]="auto" />
+                </nz-input-group>
+                <ng-template #suffixIconButton>
+                  <button nz-button nzType="primary" [nzLoading]="addModelPartLoading" nzSearch
+                    [disabled]="btn.type !== 'add' || !modelValidateForm.get('selectPlant').valid || !modelValidateForm.get('partNumber').valid"
+                    (click)="partNumbersChange$.add.next(modelValidateForm.value.partNumber)"><i nz-icon type="search"
+                      theme="outline"></i></button>
+                </ng-template>
+                <nz-autocomplete #auto>
+                  <nz-auto-option *ngFor="let list of partNumbers.add" [nzValue]="list">
+                    {{list}}
+                  </nz-auto-option>
+                </nz-autocomplete>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-divider [nzText]="title.vendorInfo" nzDashed="true" class="divider-set"></nz-divider>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="manufacturer" nzRequired>{{ 'mrr.mrr-vendor' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" [nzServerSearch]="true"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('partNumber').valid"
+                  formControlName="manufacturer" (ngModelChange)="manufacturerChange$.add.next($event)">
+                  <ng-container *ngFor="let list of manufacturers.add">
+                    <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="vendorCode" nzRequired>
+                {{ 'mrr.material-vendorCode' | translate }}</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear formControlName="vendorCode"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('partNumber').valid"
+                  (ngModelChange)="vendorCodeChange$.next($event)">
+                  <ng-container *ngFor="let list of vendorCodes.add">
+                    <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="vendorName">{{ 'mrr.material-supplier' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <input nz-input formControlName="vendorName">
+              </nz-form-control>
+            </nz-form-item>
+            <nz-divider [nzText]="title.modelInfo" nzDashed="true" class="divider-set"></nz-divider>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="checkBox">{{ 'mrr.material-model-from' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-radio-group formControlName="checkBox" (ngModelChange)="addModelRadioChange($event)"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('partNumber').valid || (addModelPartNumberData.AMPL.length < 1 && partNumberBtnClick)">
+                  <label nz-radio nzValue="p">PLM</label>
+                  <label nz-radio nzValue="m">{{ 'mrr.material-manual' | translate }}</label>
+                  <span style="color: red;font-size: 12px;" *ngIf="btn.type === 'add' && exitPartNumberFlag">
+                    ({{ 'mrr.material-select-moreModel' | translate }})
+                  </span>
+                </nz-radio-group>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="plant" nzRequired>{{ 'mrr.mrr-plant' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" [nzDisabled]="true"
+                  formControlName="plant" (ngModelChange)="plantsChange$.add.next($event)">
+                  <ng-container *ngFor="let plant of plants.add">
+                    <nz-option [nzValue]="plant.Value" [nzLabel]="plant.Value"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="customer" nzRequired>{{ 'mrr.mrr-customer' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" [nzServerSearch]="true"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('checkBox').valid"
+                  formControlName="customer" (ngModelChange)="customerChange$.add.next($event)"
+                  (nzOnSearch)="customerSearchChange$.add.next($event)">
+                  <ng-container *ngFor="let customer of customers.add">
+                    <nz-option [nzValue]="customer" [nzLabel]="customer"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="projectCode" nzRequired>Project Code</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" [nzServerSearch]="true"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('checkBox').valid"
+                  formControlName="projectCode" (ngModelChange)="projectCodeChange$.add.next($event)"
+                  (nzOnSearch)="projectCodeSearchChange$.add.next($event)">
+                  <ng-container *ngFor="let list of projectCodes.add">
+                    <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="projectName" nzRequired>Project Name</nz-form-label>
+              <nz-form-control [nzSm]="14" [nzXs]="24">
+                <nz-select nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false" [nzServerSearch]="true"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('checkBox').valid"
+                  formControlName="projectName" (ngModelChange)="projectNameChange$.add.next($event)"
+                  (nzOnSearch)="projectNameSearchChange$.add.next($event)">
+                  <ng-container *ngFor="let list of projectNames.add">
+                    <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="add-right">
+            <nz-form-item>
+              <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="stage" nzRequired>{{ 'mrr.mrr-stage' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-select nzAllowClear formControlName="stage"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('checkBox').valid"
+                  (ngModelChange)="stageChange$.next($event)">
+                  <ng-container *ngFor="let list of stages.add">
+                    <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSm]="4" [nzXs]="24" nzFor="part" nzRequired>{{ 'mrr.mrr-part' | translate }}
+              </nz-form-label>
+              <nz-form-control [nzSm]="10" [nzXs]="24">
+                <nz-select nzAllowClear [nzDropdownMatchSelectWidth]="false"
+                  [nzDisabled]="btn.type !== 'add' || !modelValidateForm.get('checkBox').valid" formControlName="part"
+                  (ngModelChange)="partChange$.add.next($event)">
+                  <ng-container *ngFor="let list of parts.add">
+                    <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-divider nzText="Critical Process" nzDashed="true" class="divider-set"></nz-divider>
+            <div class="field">
+              <span>{{ 'mrr.material-curProduct' | translate }}:
+                {{productId.add ? productId.add : ('mrr.material-blank' | translate)}}</span>
+              <button nz-button *ngIf="productId.add" nzType="primary" style="float: right;"
+                [disabled]="!modelValidateForm.get('stage').valid"
+                (click)="addModelUpdateList()">{{ 'mrr.material-load' | translate }} Critical
+                Process</button>
+              <a *ngIf="!productId.add" style="float: right;color: red;"
+                (click)="addModelClickLink()">{{ 'mrr.material-to-newModel' | translate }}</a>
+            </div>
+            <span><a *ngIf="btn.type === 'add' && productId.add && addModelList.transferList.length < 1"
+                style="float: right;color: red;font-size: 12px;" href="javascript:void(0)"
+                [routerLink]="['/dashboard/nudd/idbookmaintain']">{{ 'mrr.material-to-idBook' | translate }}</a></span>
+            <nz-transfer #nzTransferAddModel [nzDataSource]="productId.add ? addModelList.transferList : []"
+              [nzTitles]="['Unmaintained process', 'Process maintained']" nzShowSearch
+              [nzListStyle]="{'width': '63%', 'height.px': 300}" [nzOperations]="['Add to', 'Delete']"
+              [nzRender]="render" [nzFooter]="footer" (nzChange)="addModelTransferChange($event)">
+              <ng-template #render let-item>
+                <ng-container *ngIf="item.direction === 'right'; else addModelLeft">
+                  {{ item.order }}-{{ item.operation }}-{{ item.sqmTargetYield }}
+                </ng-container>
+                <ng-template #addModelLeft>
+                  {{ item.operation }}
+                </ng-template>
+              </ng-template>
+              <ng-template #footer let-direction>
+                <div *ngIf="direction === 'right'" style="float: right; margin: 5px;">
+                  <span class="add-right-span">{{ 'mrr.material-click-set' | translate }}></span>
+                  <button nzType="primary" nz-button (click)="addModelTransferEdit()" [nzSize]="'small'">
+                    <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+                  </button>
+                </div>
+              </ng-template>
+            </nz-transfer>
+          </div>
+        </div>
+      </nz-spin>
+    </form>
+  </ng-template>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="addModelCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="addModelSave()" [nzLoading]="saveProjectLoading">Save</button>
+  </ng-template>
+</nz-modal>
+
+<!-- Process序號/目標良率調整 -->
+<nz-modal nzWidth="30%" [nzTitle]="'mrr.material-order-yield' | translate" [(nzVisible)]="addOrderModelFlag"
+  [nzContent]="modal2Content" nzMaskClosable="false" [nzFooter]="modal2Footer" (nzOnCancel)="addOrderModelCancel()">
+  <ng-template #modal2Content>
+    <div class="modelPartNumber">
+      <nz-table #addOrderTable nzBordered [nzData]="addModelList.operationList" nzShowPagination="false"
+        nzFrontPagination="false" [nzWidthConfig]="addModelNzWidthConfig">
+        <thead>
+          <tr>
+            <th width="10%">{{ 'mrr.material-number' | translate }}</th>
+            <th width="8%">Process</th>
+            <th width="8%">{{ 'mrr.mrr-yieldRate' | translate }}</th>
+            <th width="10%">{{ 'mrr.material-order' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of addOrderTable.data; let i = index;">
+            <td>{{ data.order }}</td>
+            <td>
+              {{ data.operationId | operation: {key: 'operationId', list: addModelList.transferList, returnKey: 'operation'} }}
+            </td>
+            <td>
+              <nz-input-number [(ngModel)]="data.sqmTargetYieldShow" [nzMin]="0" [nzMax]="100" [nzStep]="0.1">
+              </nz-input-number>%
+            </td>
+            <td>
+              <nz-button-group>
+                <button nz-button title="Move up" nzType="primary" (click)="addOrderModelUpDown(i, (i-1))"
+                  [disabled]="i === 0"><i nz-icon type="up"></i></button>
+                <button nz-button title="Move down" nzType="primary" (click)="addOrderModelUpDown(i, (i+1))"
+                  [disabled]="i === (addOrderTable.data.length - 1)"><i nz-icon type="down"></i></button>
+              </nz-button-group>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-template>
+  <ng-template #modal2Footer>
+    <button nz-button nzType="default" (click)="addOrderModelCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="addOrderModelSave()">Save</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 料號 與 機種 綁定情況 -->
+<nz-modal nzWidth="30%" [nzTitle]="'mrr.material-modelPartNo-bindCon' | translate" [(nzVisible)]="partNumProFlag"
+  [nzContent]="modal3Content" [nzFooter]="modal3Footer" (nzOnCancel)="partNumProModelCancel()">
+  <ng-template #modal3Content>
+    <div class="partNumberPro-table">
+      <nz-table #partNumberProTable nzBordered [nzData]="partNumProDataSet" nzShowPagination="false"
+        nzFrontPagination="false" [nzScroll]="{ y: '400px' }">
+        <thead>
+          <tr>
+            <th nzWidth="25%">ProjectCode</th>
+            <th nzWidth="25%">ProjectName</th>
+            <th nzWidth="25%">{{ 'mrr.material-bindOn' | translate }}</th>
+            <th nzWidth="25%">{{ 'mrr.material-bindBy' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of partNumberProTable.data; let i = index;">
+            <td>{{ data.projectCode }}</td>
+            <td>{{ data.projectName }}</td>
+            <td>{{ data.createDate }}</td>
+            <td>{{ data.createBy }}</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align: center;">
+              <button nz-button nzType="primary" (click)="partNumProModelAdd()">Add Project in this PartNumber</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </ng-template>
+  <ng-template #modal3Footer>
+    <button nz-button nzType="default" (click)="partNumProModelCancel()">Cancel</button>
+  </ng-template>
+</nz-modal>
+
+<!-- 料號 與 機種 綁定情況-新增機種 -->
+<nz-modal nzWidth="30%" [nzTitle]="'mrr.material-newModel' | translate" [(nzVisible)]="partNumberProAddFlag"
+  [nzContent]="modal4Content" [nzFooter]="modal4Footer" (nzOnCancel)="partNumProModelAddCancel()">
+  <ng-template #modal4Content>
+    <div style="font-size: 14px; margin-bottom: 10px;">
+      {{ 'mrr.mrr-plant' | translate }}:
+      {{ (!validateForm.value.plant && !currentPlant) ? '' : (validateForm.value.plant ? (validateForm.value.plant | site: {type: 'plant'}) : (currentPlant | site: {type: 'plant'})) }}
+      {{ 'mrr.mrr-product' | translate }}:
+      {{ productId.query }}
+    </div>
+    <div>
+      <nz-select style="width: 100%" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+        [nzServerSearch]="true" [(ngModel)]="partNumberProAddSelect.value"
+        (nzOnSearch)="partNumberProAddSelect.search$.next($event)">
+        <ng-container *ngFor="let list of partNumberProAddSelect.list">
+          <nz-option [nzValue]="list.projectCode" [nzLabel]="(list.projectCode + ' - ' + list.projectName)"></nz-option>
+        </ng-container>
+      </nz-select>
+    </div>
+  </ng-template>
+  <ng-template #modal4Footer>
+    <button nz-button nzType="default" (click)="partNumProModelAddCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="partNumProModelAddSave()">Save</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,238 @@
+<div class="mrr-material-all" *ngIf="page === 0">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-vendor-select' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.material-vendor-select' | translate }}</span>
+  </div>
+  <div style="margin-top: 20px;">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-partNumber' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="partNumber"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="partNumberChange$.next($event)"
+            (nzOnSearch)="partNumberSearch$.next($event)">
+            <ng-container *ngFor="let list of partNumbers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 140px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="manufacturer" (ngModelChange)="manufacturerChange$.next($event)">
+            <ng-container *ngFor="let list of manufacturers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" nzAllowClear nzShowSearch formControlName="plant"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="plantChange$.next($event)">
+            <ng-container *ngFor="let list of plants">
+              <nz-option [nzValue]="list.Value" [nzLabel]="list.Value"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-customer' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 120px" nzAllowClear nzShowSearch formControlName="customer"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="customerChange$.next($event)">
+            <ng-container *ngFor="let list of customers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label>Project Code</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="projectCode"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="projectCodeChange$.next($event)"
+            (nzOnSearch)="projectCodeSearch$.next($event)">
+            <ng-container *ngFor="let list of projectCodes">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Project Name</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="projectName" (ngModelChange)="projectNameChange$.next($event)"
+            (nzOnSearch)="projectNameSearch$.next($event)">
+            <ng-container *ngFor="let list of projectNames">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-part' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="part"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="partChange$.next($event)">
+            <ng-container *ngFor="let list of parts">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.name"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-stage' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" formControlName="stage" [nzDropdownMatchSelectWidth]="false">
+            <ng-container *ngFor="let list of stages">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.material-vendorCode' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" formControlName="vendor" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="vendorChange$.next($event)">
+            <ng-container *ngFor="let list of vendors">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.id" nzCustomContent>
+                {{ list.name }}</nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-manufacture-date' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-range-picker formControlName="rangePicker" [nzStyle]='{"width": "240px"}'></nz-range-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input hidden formControlName="partNumberVendor" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading"
+            [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="center-line"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-left">
+      <button nz-button [nzType]="'primary'" [title]="downloadNotice" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+    <div class="dfc-btn-right">
+      <button nz-button nzType="primary" (click)="toYieldRateInput()">
+        {{ 'mrr.mrr-add' | translate }}
+      </button>
+    </div>
+  </div>
+  <div class="Manufacturer-table">
+    <nz-table *ngIf="!downFlag" #basicTable nzBordered nzShowQuickJumper [nzData]="manufacturerInputData"
+      [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.material-manufacture-date' | translate }}</th>
+          <th>{{ 'mrr.mrr-plant' | translate }}</th>
+          <th>{{ 'mrr.mrr-customer' | translate }}</th>
+          <th>Wistron {{ 'mrr.mrr-partNumber' | translate }}</th>
+          <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th>Project Code</th>
+          <th>Project Name</th>
+          <th>{{ 'mrr.mrr-stage' | translate }}</th>
+          <th>{{ 'mrr.mrr-part' | translate }}</th>
+          <th>{{ 'mrr.mrr-yieldRate' | translate }}</th>
+          <th>{{ 'mrr.material-enterData-for-day' | translate }}</th>
+          <th>{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.dateCode | date: 'yyyy/MM/dd' }}</td>
+          <td>{{ !!data.plant ? (data.plant | site: {type: 'plant'}) : ''}}</td>
+          <td>{{ data.customer }}</td>
+          <td>{{ data.partNumber }}</td>
+          <td>{{ data.manufacturer }}</td>
+          <td>{{ data.projectCode }}</td>
+          <td>{{ data.projectName }}</td>
+          <td>{{ data.stage }}</td>
+          <td>{{ data.part }}</td>
+          <td [ngStyle]="data.yieldColor">
+            {{ !!data.materialActualYield || data.materialActualYield === 0 ? (Mathround(data.materialActualYield * 10000) / 100) + '%' : '廠商未填寫'}}
+          </td>
+          <td>{{ data.vendorSubmitDate ? (data.vendorSubmitDate | date: 'yyyy-MM-dd HH:mm:ss') : '---'}}</td>
+          <td>
+            <button nz-button nzType="primary" (click)="toYieldRateInput(data)">
+              GO
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <nz-table *ngIf="downFlag" id="singleVendorYrTable" #basicTable nzBordered [nzData]="manufacturerInputData"
+      [nzShowPagination]="false" [nzFrontPagination]="false">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.material-manufacture-date' | translate }}</th>
+          <th>{{ 'mrr.mrr-plant' | translate }}</th>
+          <th>{{ 'mrr.mrr-customer' | translate }}</th>
+          <th>Wistron {{ 'mrr.mrr-partNumber' | translate }}</th>
+          <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+          <th>Project Code</th>
+          <th>Project Name</th>
+          <th>{{ 'mrr.mrr-stage' | translate }}</th>
+          <th>{{ 'mrr.mrr-part' | translate }}</th>
+          <th>{{ 'mrr.mrr-yieldRate' | translate }}</th>
+          <th>{{ 'mrr.material-enterData-for-day' | translate }}</th>
+          <th>{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.dateCode | date: 'yyyy/MM/dd' }}</td>
+          <td>{{ !!data.plant ? (data.plant | site: {type: 'plant'}) : ''}}</td>
+          <td>{{ data.customer }}</td>
+          <td>{{ data.partNumber }}</td>
+          <td>{{ data.manufacturer }}</td>
+          <td>{{ data.projectCode }}</td>
+          <td>{{ data.projectName }}</td>
+          <td>{{ data.stage }}</td>
+          <td>{{ data.part }}</td>
+          <td [ngStyle]="data.yieldColor">
+            {{ !!data.materialActualYield || data.materialActualYield === 0 ? (Mathround(data.materialActualYield * 10000) / 100) + '%' : '廠商未填寫'}}
+          </td>
+          <td>{{ data.vendorSubmitDate ? (data.vendorSubmitDate | date: 'yyyy-MM-dd HH:mm:ss') : '---'}}</td>
+          <td>
+            <button nz-button nzType="primary" (click)="toYieldRateInput(data)">
+              GO
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div class="center-line"></div>
+  <div class="echart">
+    <div echarts *ngIf="echartFlag" class="chart" [options]="singlePartYrOption"></div>
+  </div>
+</div>
+<app-manufaturer-input-keyin *ngIf="page === 1" [page]="page" (pageRoute)="pageRoute($event)" [pageData]="pageData">
+</app-manufaturer-input-keyin>

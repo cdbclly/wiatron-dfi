@@ -1,0 +1,178 @@
+body {
+  margin: 0 8px;
+  width: 100%;
+}
+
+.content {
+  margin: 0 -15px;
+  min-height: 0px;
+  font-size: 20px;
+  a {
+    i {
+      padding-left: 1%;
+      cursor: pointer;
+    }
+  }
+}
+.linkhook {
+  font-size: 20px;
+}
+.query-row {
+  margin-bottom: 150px;
+  // min-width: 1330px;
+
+  .field1 {
+    display: inline-block;
+    width: 20%;
+
+    span {
+      width: 5px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field2 {
+    display: inline-block;
+
+    span {
+      width: 120px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field {
+    display: inline-block;
+    width: 20%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field3 {
+    display: inline-block;
+
+    span {
+      width: 375px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field5 {
+    display: inline-block;
+
+    span {
+      width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field4 {
+    display: inline-block;
+
+    span {
+      width: 50px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field6 {
+    display: inline-block;
+    margin-right: 15px;
+
+    span {
+      width: 20px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+nz-select {
+  width: 80%;
+  margin-right: 20px;
+}
+.line-chart{
+  height: 18vw;
+  width: 100%;
+  margin-top: 2vw;
+}
+th {
+  border: 1px solid black;
+  padding: 3px;
+  text-align: center;
+  background-color: rgb(205, 205, 205);
+}
+ td {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 12px;
+}
+table {
+  background-color: white;
+  color: black;
+  margin: 0 auto;
+  width: 100%;
+}
+.shadow_bg {
+  position: relative;
+  width:100%;
+  height: 88vh;
+  background:rgba(0, 0, 0, 0.5);
+}
+.machineNos {
+  border-bottom: 1px solid black;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0.2vw;
+}
+.suggest {
+  height: 40px;
+  margin-top: 20px;
+  margin-left: 5px;
+  width: 50%;
+  background-color: #333;
+  line-height: 40px;
+  font-size: 17px;
+  font-weight: 550;
+  color: white;
+  padding-left: 15px;
+}
+.box-table {
+  height: 300px;
+  overflow: auto;
+  // overflow-x: hidden;
+}
+.test-num {
+  color: blue;
+  font-weight: 500;
+  cursor: pointer;
+}
+:host ::ng-deep .scrollable-container {
+  height: 100px;
+  overflow-y: scroll;
+}
+
+:host ::ng-deep .background {
+  padding-top: 60px;
+}

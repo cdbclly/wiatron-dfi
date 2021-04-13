@@ -1,0 +1,5 @@
+<div class="echartsModal">
+  <ng-container *ngFor="let option of echartsOptionArr; let i = index">
+    <div echarts [options]="option" (chartClick)="emitClick($event, option)"></div>
+  </ng-container>
+</div>

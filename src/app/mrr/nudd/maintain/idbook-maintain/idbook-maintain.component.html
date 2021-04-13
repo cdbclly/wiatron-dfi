@@ -1,0 +1,18 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-idBook' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'mrr.nudd-idBook' | translate }}
+</div>
+<app-idbookform (queryForm)="queryForm($event)"></app-idbookform>
+<app-mappingmaintain *ngIf="mappingShow" [SQMLeaderUse]="SQMLeaderUse" [enableUse]="enableUse" [data]="data"
+  [formData]="formData">
+</app-mappingmaintain>
+<app-processmaintain *ngIf="processShow" [SQMLeaderUse]="SQMLeaderUse" [enableUse]="enableUse" [data]="data"
+  [formData]="formData">
+</app-processmaintain>
+<app-yrmaintain *ngIf="yrShow" [SQMLeaderUse]="SQMLeaderUse" [enableUse]="enableUse" [data]="data"
+  [formData]="formData"></app-yrmaintain>

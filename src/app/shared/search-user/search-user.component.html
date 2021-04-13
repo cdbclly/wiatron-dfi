@@ -1,0 +1,17 @@
+<nz-select 
+  style="width:100%" 
+  [(ngModel)]="member" 
+  nzPlaceHolder="search user's english name"
+  [nzDisabled]="disabled"
+  [nzServerSearch]="true" 
+  (nzOnSearch)="onSearch($event)" 
+  (ngModelChange)="selectUser($event)"
+  nzAllowClear
+  nzShowSearch>
+  <ng-container *ngFor="let member of members">
+    <nz-option *ngIf="!isLoading" [nzValue]="member" [nzLabel]="member.EName"></nz-option>
+  </ng-container>
+  <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+    <i class="anticon anticon-spin anticon-loading"></i>
+  </nz-option>
+</nz-select>

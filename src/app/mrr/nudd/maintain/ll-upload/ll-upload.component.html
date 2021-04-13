@@ -1,0 +1,80 @@
+<div>
+  <div class="title">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-maintain' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-ll-upload' | translate }}</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div class="content">
+    {{ 'mrr.nudd-ll-upload' | translate }}
+  </div>
+  <app-ll-upload-query (formData)="OnInitTable($event)"></app-ll-upload-query>
+  <div class="body" *ngIf="queryFlag">
+    <div style="margin: 0px 10px 5px 10px" *ngIf="enableUse">
+      <button nz-button [nzType]="'primary'" nzShape="circle" (click)="showModal(null,null)">
+        <i nz-icon type="plus" theme="outline"></i>
+      </button>
+    </div>
+    <div class="project-table">
+      <nz-table #nzTable [nzData]="table" nzShowPagination="false" (ngModelChange)="hello()" [nzPageSize]="500">
+        <thead>
+          <tr>
+            <th>List</th>
+            <th>{{ 'mrr.nudd-number' | translate }}</th>
+            <th>{{ 'mrr.nudd-year' | translate }}</th>
+            <th>{{ 'mrr.nudd-fileName' | translate }}</th>
+            <th *ngIf="SQMLeaderUse">{{ 'mrr.mrr-action' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of nzTable.data;let i = index">
+            <td>{{i+1}}</td>
+            <td>{{data.designItemId}}</td>
+            <td>{{data.year}}</td>
+            <td>{{data.fileName}}</td>
+            <td *ngIf="SQMLeaderUse">
+              <div>
+                <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(data)"></i>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div>
+    <nz-modal nzWidth="400px" [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+      <ng-template #modalTitle>
+        {{ addLL.id ? ('mrr.nudd-update-LessonLearned' | translate) : ('mrr.nudd-new-LessonLearned' | translate) }}
+      </ng-template>
+      <ng-template #modalContent>
+        <div class="input">
+          <span>{{ 'mrr.nudd-number' | translate }}</span>
+          <input nz-input="" placeholder="" [disabled]="true" [(ngModel)]="addLL.designItemId"
+            class="ng-pristine ng-valid ant-input ng-touched int">
+        </div>
+        <div class="input">
+          <span>{{ 'mrr.nudd-year' | translate }}</span>
+          <nz-year-picker [(ngModel)]="addLL.year" nzPlaceHolder="Select year" class="int"></nz-year-picker>
+        </div>
+        <div class="input">
+          <span>{{ 'mrr.nudd-fileUpload' | translate }}</span>
+          <nz-upload [(nzFileList)]="file" [nzBeforeUpload]="beforeUpload" [nzLimit]="1" nzListType="picture">
+            <button nz-button style="width: 150px">
+              <i nz-icon type="upload"></i><span>Select File</span>
+            </button>
+          </nz-upload>
+        </div>
+      </ng-template>
+      <ng-template #modalFooter>
+        <button nz-button [nzType]="'primary'" [disabled]="file.length == 0 || addFileFlag" [nzLoading]="uploading"
+          (click)="handleUpload()" style="margin-top: 16px">
+          {{ uploading ? ('mrr.nudd-fileUploading' | translate) : ('mrr.nudd-uploadFile' | translate) }}
+        </button>
+      </ng-template>
+    </nz-modal>
+  </div>
+</div>

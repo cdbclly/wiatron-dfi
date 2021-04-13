@@ -1,0 +1,135 @@
+<div class="divALL">
+  <div class="div1" *ngIf="getSigner">
+    <table class="tableall">
+      <tr>
+        <td class="td-title">{{ 'dfq.dfq-plant' | translate }}</td>
+        <td class="td-context">{{editmodelMaterial.site+'-'+editmodelMaterial.plant}}</td>
+        <td class="td-title">{{ 'dfq.dfq-customer' | translate }}</td>
+        <td class="td-context">{{editmodelMaterial.customer}}</td>
+        <td class="td-title">{{ 'dfq.dfq-product' | translate }}</td>
+        <td class="td-context">{{editmodelMaterial.product}}</td>
+        <td class="td-title">Projec Code</td>
+        <td class="td-context">{{editmodelMaterial.model}}</td>
+      </tr>
+      <tr>
+        <td class="td-title">{{ 'dfq.rfi-sign-sender' | translate }}</td>
+        <td class="td-context">{{createBy | userEnname | async}}</td>
+        <td class="td-title">{{ 'dfq.rfi-signing-time' | translate }}</td>
+        <td class="td-context">{{createOn | datetime}}</td>
+      </tr>
+    </table>
+    <nz-divider></nz-divider>
+  </div>
+  <div class="div2">
+    <div class="body-bottom">
+      <span *ngIf="isSigning">{{ 'dfq.dfq-signing-off' | translate }}...</span>
+      <button *ngIf="!isSigning && canSendSign && (noFlowIdDataLength===0 || noFlowIdDataLength===null)"
+        (click)="sendSign()" nz-button [nzType]="'primary'">
+        {{ 'dfq.dfq-send-sign' | translate }}
+      </button>
+      <span *ngIf="!isSigning && canSendSign && noFlowIdDataLength>0">{{ 'dfq.rfi-materials-sent' | translate }}!</span>
+    </div>
+    <div class="table-cls">
+      <nz-table id="ModelMaterialUpload" *ngIf="tableShow" nzPageSize="10" #editRowTable nzBordered
+        [nzData]="editmodelMaterial" nzSimple="simple">
+        <thead>
+          <tr>
+            <th>{{ 'dfq.dfq-plant' | translate }}</th>
+            <th>{{ 'dfq.dfq-model' | translate }}</th>
+            <th>{{ 'dfq.dfq-material' | translate }}</th>
+            <th>{{ 'dfq.dfq-project' | translate }}</th>
+            <th>{{ 'dfq.dfq-yield' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of editRowTable.data;let i = index">
+            <td>
+              <ng-container>
+                {{ editmodelMaterial.product }}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.modelId }}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.material.name }}
+              </ng-container>
+            </td>
+            <td>
+              <a style="border-bottom: 1px solid black;" (click)="showFactor(data.id,data.materialId)">{{'dfq.rfi-details'|translate}}</a>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.yieldRate | percent }}
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div class="div3" *ngIf="getSigner">
+    <nz-divider></nz-divider>
+    <div class="table-cls">
+      <nz-table #editRowTable nzBordered [nzData]="showData" nzShowPagination="false">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Approved by</th>
+            <th>Approved date</th>
+            <th>Approved status</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of editRowTable.data">
+            <td>{{data.role}}</td>
+            <td>{{data.userId | userEnname | async}}</td>
+            <td>
+              {{ data.updateOn===null  ? '':  (data.updateOn | datetime)}}
+            </td>
+            <td>
+              <span *ngIf="signClosed">{{data.isAgree==0 ? 'Reject' : ( data.isAgree== 1 ? 'Approve' :'')}}</span>
+              <nz-select *ngIf="!signClosed" style="width:120px" [disabled]="data.userId!==userId || youFinish"
+                [(ngModel)]="data.isAgree">
+                <nz-option nzValue="1" nzLabel="Approve"></nz-option>
+                <nz-option nzValue="0" nzLabel="Reject"></nz-option>
+              </nz-select>
+            </td>
+            <td>
+              <textarea nz-input id="comments" [(ngModel)]="data.comment"
+                [disabled]="data.userId!==userId || youFinish"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <br>
+      <button class="btn-cls" nz-button nzType="primary" [disabled]="youFinish" (click)="submitSign()"
+        [nzLoading]="isLoading">
+        {{ 'dfq.rfi-submit-sign-off' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<nz-modal *ngIf="modalVisible" [nzWidth]="800" [(nzVisible)]="modalVisible" [nzClosable]="false" [nzFooter]="null"
+  (nzOnCancel)="handleCancel()">
+  <nz-table nzBordered #modalTable [nzData]="modalData.factorTypes" [nzFrontPagination]="false"
+    [nzShowPagination]="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th style="width:400px">{{ 'dfq.dfq-project' | translate }}</th>
+        <th style="width:400px">{{ 'dfq.rfi-factor' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let factorType of modalTable.data,let j=index">
+        <td>{{ factorType.name }}</td>
+        <td>{{ (this.modalData.factors[j] | factor | async)?.name }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

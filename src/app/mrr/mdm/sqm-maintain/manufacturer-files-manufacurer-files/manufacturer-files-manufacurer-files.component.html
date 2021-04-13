@@ -1,0 +1,97 @@
+<div class="file-maintain">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-title' | translate }} ({{ 'mrr.vendor-maintain' | translate }})
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+</div>
+<div class="uploadrate">
+  <div class="passRate" style="background-color: #CBCBCB; width: 140px; margin-right: 5px;">
+    {{ 'mrr.vendor-cur-upload-rate' | translate }}：</div>
+  <div class="passRate" style="background-color: #383838; color: #ffffff; width: 65px;">{{routData.uploadCompleteRate}}
+  </div>
+  <div class="passRate2">
+    <div style="background-color: #CBCBCB; width: 140px; margin-right: 5px;">
+      {{ 'mrr.vendor-cur-review-rate' | translate }}：</div>
+    <div style="background-color: #383838; color: #ffffff; width: 65px;">{{routData.passRate}}</div>
+  </div>
+</div>
+<table class="topTable">
+  <thead>
+    <tr>
+      <th>ProjectCode</th>
+      <th>{{ 'mrr.mrr-partNumber' | translate }}</th>
+      <th>{{ 'mrr.mrr-vendor' | translate }}</th>
+      <th>{{ 'mrr.mrr-stage' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{routData.projectCode}}</td>
+      <td>{{routData.part_no}}</td>
+      <td>{{routData.manufacturer}}</td>
+      <td>{{routData.stage}}</td>
+    </tr>
+  </tbody>
+</table>
+<div style="font-size: 16px; font-weight: bold; margin-top: 20px;">{{ 'mrr.vendor-sop' | translate }}
+  <a><i class="anticon anticon-download" (click)="downSqmSop()" style="font-size: 16px;"></i></a></div>
+
+<!-- table -->
+<div class="table" style="margin-top: 5px;">
+  <nz-table class="nz-table" #editRowTable nzBordered [nzShowSizeChanger]="true" [nzPageSize]="6" [nzData]="showData">
+    <thead>
+      <tr>
+        <th>{{ 'mrr.document-file-view' | translate }}</th>
+        <th>{{ 'mrr.vendor-fileList' | translate }}</th>
+        <th>{{ 'mrr.vendor-upload-time' | translate }}</th>
+        <th>{{ 'mrr.nudd-fileUpload' | translate }}</th>
+        <th>{{ 'mrr.vendor-review-status' | translate }}</th>
+        <th>{{ 'mrr.vendor-fail-reason' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of editRowTable.data">
+        <td>
+          <label
+            *ngIf="data.fileName && !data.pass || data.isDisplayDownload || data.status === 'FAILED', else showBlack">
+            <button class="loadIcon" (click)="downLoad(data)">
+              <i class="anticon anticon-download"></i></button>
+          </label>
+          <ng-template #showBlack><label></label></ng-template>
+        </td>
+        <td style="text-align: left;"><i class="anticon anticon-folder-open"></i>&nbsp;&nbsp;{{data.documentName}}</td>
+        <td *ngIf="data.uploadDate === ('mrr.vendor-review-status' | translate) ; else displayDate" style="color: red;">
+          {{data.uploadDate}}</td>
+        <ng-template #displayDate>
+          <td>{{data.uploadDate}}</td>
+        </ng-template>
+        <td style="width: 220px;">
+          <label
+            *ngIf="data.pass || (data.uploadDate && data.path && data.status === 'PASS') || isDisplayUpload, else displayTP"></label>
+          <ng-template #displayTP>
+            <label class="upload">
+              <input id="upload" type="file" (change)="handleUploadFile(data,$event.target)" />
+              <div class="fakeInput">
+                <i style="font-size: 18px; color: #999999;" class="anticon anticon-upload"></i>
+                <span *ngIf="!data.fileName || data.status === 'FAILED'">Select File</span>
+                <span *ngIf="data.displayFileName">{{ data.displayFileName }}</span>
+              </div>
+            </label>
+          </ng-template>
+        </td>
+        <td style="width: 280px;">
+          <nz-radio-group [(ngModel)]="data.status">
+            <label class="groupRadios" nz-radio nzValue="UNCHECKED"
+              [nzDisabled]="data.disEditStatus">{{ 'mrr.vendor-to-be-confirm' | translate }}</label>
+            <label class="groupRadios" nz-radio nzValue="FAILED"
+              [nzDisabled]="data.disEditStatus">{{ 'mrr.vendor-fail' | translate }}</label>
+            <label class="groupRadios" nz-radio nzValue="PASS"
+              [nzDisabled]="data.disEditStatus">{{ 'mrr.vendor-pass' | translate }}</label>
+          </nz-radio-group>
+        </td>
+        <td>{{data.rejectReason}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

@@ -1,0 +1,37 @@
+<div class="query-row">
+  <div class="field1">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-product' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="form.product" (ngModelChange)="getdimension(form.product)">
+      <nz-option *ngFor="let product of products" [nzLabel]="product.id" [nzValue]="product.id"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.nudd-type' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="form.dimension" (ngModelChange)="getProcessType(form.dimension)">
+      <nz-option *ngFor="let dimension of dimensions" [nzLabel]="dimension.name" [nzValue]="dimension.id"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.nudd-craft' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="form.processType"
+      (ngModelChange)="getDesignItems(form.processType)">
+      <nz-option *ngFor="let processType of processTypes" [nzLabel]="processType.name" [nzValue]="processType.id">
+      </nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.nudd-item' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="form.designItem">
+      <nz-option *ngFor="let designItem of designItems" [nzLabel]="designItem.name" [nzValue]="designItem.id">
+      </nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px;" (click)="query()"
+    [nzLoading]="isLoading">{{ 'mrr.mrr-query' | translate }}</button>
+</div>
+
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

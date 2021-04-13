@@ -1,0 +1,352 @@
+$centerHeight: calc(100vh - 95px);
+.dfc-all{
+	height: $centerHeight;
+	width: 100%;
+}
+
+// .dfc-query{
+// 	// margin-top:17px;
+//   // width: 100%;
+// 	// height: 32px;
+// 	// display: flex;
+//   // align-items: center;
+// 	// span{
+// 	// 	font-size:14px;
+// 	// 	font-weight: normal;
+//   // }
+
+
+//   .dfc-query-first{
+//     width: calc(100% - 83px);
+//     display: flex;
+//     align-items: center;
+//     nz-select{
+//       margin-left: 10px;
+//       width: 70%;
+//       font-size: 14px;
+//       text-align: left;
+//       color: rgba(80, 80, 80, 1);
+//       background-color: rgba(255, 255, 255, 1);
+//       border: rgba(204, 204, 204, 1) solid 0px;
+//     }
+//     div{
+//       width: 20%;
+
+//     }
+//   }
+//   .dfc-query-second{
+//     width: calc(100% - 83px);
+//     display: flex;
+//     align-items: center;
+//     nz-select{
+//       margin-left: 10px;
+//       width: 210px;
+//       font-size: 14px;
+//       text-align: left;
+//       color: rgba(80, 80, 80, 1);
+//       background-color: rgba(255, 255, 255, 1);
+//       border: rgba(204, 204, 204, 1) solid 0px;
+//     }
+//     div{
+//       margin-right: 20px;
+//         .dfc-query-span{
+//           text-align: right;
+//           display: inline-block;
+//         }
+//     }
+//   }
+//   .dfc-query-btn{
+//       width: 83px;
+//       button{
+//         margin-left: 10px;
+//         width: 73px;
+//       }
+//   }
+
+// }
+.dfc-query{
+	margin-top:10px;
+  width: 100%;
+  overflow: hidden;
+  div{
+    min-height: 42px;
+    display: block;
+    float: left;
+  }
+  .dfc-query-btn{
+    margin-top:10px;
+    margin-right: 10px;
+    width: 73px;
+    button{
+        width: 73px;
+    }
+  }
+}
+
+
+.dfc-line{
+	margin-top: 19px;
+	color: rgba(80, 80, 80, 1);
+	background-color: rgba(212, 212, 212, 1);
+	width: 100%;
+	height: 1px;
+}
+
+.dfc-txt{
+	margin-top:20px;
+	width: 100%;
+	display: flex;
+    align-items: center;
+	span{
+		font-weight: normal;
+		font-size: 14px;
+		color: rgba(80, 80, 80, 1);
+	}
+	span:nth-child(2n+1){
+		margin-left: 20px;
+	}
+	span:nth-child(2n){
+		color: rgba(0, 0, 0, 0.65);
+		font-weight: bolder;
+	}
+	span:first-child{
+		margin-left: 0px;
+	}
+
+}
+
+.dfc-rfq{
+	margin-top:20px;
+	width: 100%;
+	height: 32px;
+	div{
+    width: 35%;
+    min-width: 300px;
+		display: inline-block;
+		span{
+			font-size:14px;
+			font-weight: normal;
+			color: rgba(80, 80, 80, 1);
+		}
+		span:nth-child(2n+1){
+			margin-left: 20px;
+		}
+		span:nth-child(2n){
+			color: rgba(0, 0, 0, 0.65);
+			font-weight: bolder;
+		}
+		nz-select{
+			margin-left: 10px;
+			// width: 130px;
+			font-size: 14px;
+			text-align: left;
+			color: rgba(80, 80, 80, 1);
+			background-color: rgba(255, 255, 255, 1);
+			border: rgba(204, 204, 204, 1) solid 0px;
+		}
+	}
+	.dfc-rfq-btn{
+    width: 25%;
+    min-width: 83px;
+
+        button{
+            margin-left: 10px;
+            width: 73px;
+        }
+	}
+}
+
+.dfc-btn{
+	margin-top:20px;
+	width: 100%;
+	height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+	.dfc-btn-delete{
+		float: left;
+  }
+  .dfc-btn-span{
+    display: flex;
+		align-items: center;
+    span{
+      font-size: 10px;
+      color: red;
+    }
+  }
+	.dfc-btn-right{
+		position: absolute;
+		right: 0;
+		float: right;
+		// width: 330px;
+		height: 100%;
+		.dfc-btn-upload{
+      margin-left: 12px;
+			height: 100%;
+			// width: 282px;
+			float: left;
+		}
+		.dfc-btn-download{
+			margin-left: 12px;
+			height: 100%;
+			width: 36px;
+			float: right;
+		}
+  }
+}
+
+.dfc-table{
+	margin-top:9px;
+	width: 100%;
+    // height: calc(100vh - 261px);
+	// overflow-x: auto;
+	input{
+		height: 20px;
+		text-align: right;
+		// width: 80%;/
+	}
+}
+
+.dfc-delAfter-icon{
+	height: 100px;
+	width: 100%;
+	color: rgba(0, 169, 157, 1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	i {
+		font-size: 76px;
+	}
+}
+.dfc-delAfter-text{
+	width: 238px;
+	height: 46px;
+	margin-left: 22px;
+	padding: 10px;
+	text-align: center;
+	span{
+		color:rgba(80, 80, 80, 1);
+		font-size: 18px;
+	}
+}
+
+.dfc-add-list{
+    width: 100%;
+    max-height: 440px;
+    overflow-x: auto;
+	div{
+		width: 100%;
+		height: 40px;
+		padding: 5px;
+		font-size: 14px;
+		text-align: right;
+    }
+    td{
+        text-align: left;
+        input{
+            width: 270px;
+            color: rgba(80, 80, 80, 1);
+            background-color: rgba(255, 255, 255, 1);
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 150%;
+            border: rgba(204, 204, 204, 1) solid 1px;
+            text-align: left;
+		}
+		nz-input-number{
+            width: 270px;
+            font-size: 14px;
+            text-align: left;
+            color: rgba(80, 80, 80, 1);
+            background-color: rgba(255, 255, 255, 1);
+        }
+        nz-select{
+            width: 270px;
+            font-size: 14px;
+            text-align: left;
+            color: rgba(80, 80, 80, 1);
+            background-color: rgba(255, 255, 255, 1);
+        }
+        // .dfc-add-project-input{
+        //     width: 135px;
+        //     color: rgba(80, 80, 80, 1);
+        //     background-color: rgba(255, 255, 255, 1);
+        //     border-radius: 3px;
+        //     font-size: 14px;
+        //     font-weight: normal;
+        //     line-height: 150%;
+        //     border: rgba(204, 204, 204, 1) solid 1px;
+        //     text-align: left;
+        // }
+    }
+}
+
+label.upload {
+	margin: 0;
+  }
+
+  .upload {
+	input {
+	  display: none;
+	}
+
+	i {
+	  vertical-align: bottom;
+	}
+  }
+
+  div.fakeInput {
+	margin-left: 10px;
+	display: inline-block;
+	width: 210px;
+	color: #505050;
+	background-color: white;
+	border-radius: 3px 0px 0px 3px;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 150%;
+	border: #cccccc solid 1px;
+	text-align: left;
+	height: 32px;
+	cursor: pointer;
+
+	span {
+	  padding-left: 10px;
+	  vertical-align: sub;
+	  color: #999;
+	}
+  }
+
+  .spin {
+	position: fixed;
+	top: 100px;
+	left: 49%;
+  }
+
+  .ant-btn.upload{
+	border-radius: 0 4px 4px 0;
+  }
+
+.dfc-icon-tip {
+	position: relative;
+	display: inline-block;
+	.dfc-icon-tip-txt {
+	  font-size: 12px;
+	  color: #fff;
+	  border: 1px solid #505050;
+	  padding-left: 1px;
+	  margin-top: -25px;
+	  width: 32px;
+	  background-color: rgba(90, 90, 90, 0.3);
+	  z-index: -1;
+	  position: absolute;
+	  border-radius: 3px;
+	}
+}
+
+.dfc-icon-tip:hover {
+	.dfc-icon-tip-txt {
+	  z-index: 99;
+	}
+}

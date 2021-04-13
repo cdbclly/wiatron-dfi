@@ -1,0 +1,139 @@
+.title {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px
+}
+
+.body {
+  width: 100%;
+  height: 100%;
+}
+
+.body-title {
+  padding: 15px;
+  padding-left: 0px;
+  font-size: 20px;
+}
+.field1{
+  display: inline-block;
+  margin-top: 10px;
+}
+.field1 span{
+  margin-right: 10px;
+}
+nz-select {
+  width: 300px;
+  margin-right: 15px;
+}
+.select{
+  width: 200px;
+}
+.time{
+  width:120px;
+}
+.section {
+  width: 1200px;
+  height: 200px;
+  display: inline-flex;
+  // align-items: center;
+  // justify-content: center;
+  text-align: center;
+  margin-left: 10px;
+  // background: red;
+}
+.overall {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.overall table {
+  margin: 0 auto;
+  width: 80%;
+  color: white;
+  font-size: 18px;
+}
+
+.overall table th {
+  border: 1px solid white;
+  background: #333;
+  color: white;
+  height: 50px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.overall table td {
+  height: 40px;
+  border: 1px solid white;
+  text-align: center;
+  background: #757575;
+}
+.circle {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.red {
+  background: red;
+}
+
+.green {
+  background-color: #1EFD0C;
+}
+
+.signing {
+  width: 300px;
+}
+
+.modelTable {
+  margin: 0 auto;
+  overflow: auto;
+  width: 95%;
+}
+
+.modelTable table {
+  width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.modelTable table th {
+  background: #333;
+  border: 1px solid #333;
+  color: white;
+  text-align: center;
+  font-weight: 500;
+  height: 50px;
+}
+
+.modelTable table td {
+  border: 1px solid black;
+}
+
+.download {
+  float: right;
+  margin-right: 3%;
+  margin-bottom: 5px;
+}
+
+th {
+  font-size: 18px;
+}
+
+td {
+  font-size: 18px;
+}
+
+.model-name {
+  font-size: 18px;
+}
+.item {
+  th {
+    text-align: center;
+  }
+  td {
+    text-align: center;
+  }
+}

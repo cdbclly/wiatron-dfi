@@ -1,0 +1,62 @@
+.dfc-line{
+	margin-top: 19px;
+	color: rgba(80, 80, 80, 1);
+	background-color: rgba(212, 212, 212, 1);
+	width: 100%;
+	height: 1px;
+}
+
+.dfc-sign{
+  width: 100%;
+  margin-top: 15px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  // position: relative;
+  button{
+    margin: auto;
+  }
+  .dfc-sign-txt{
+    color: red;
+    font-size: 14px;
+  }
+  div{
+    width: 33.33%;
+  }
+  .dfc-btn-center{
+    display: flex;
+    align-items: center;
+  }
+  .dfc-btn-right{
+    // position: absolute;
+    // margin-right: 0;
+    text-align: right;
+    button{
+      margin: 10px;
+    }
+  }
+}
+.dfc-approve{
+  width: 100%;
+  margin-top: 15px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  div{
+    width: 33.33%;
+    text-align: center;
+    span{
+      font-size:18px;
+      font-weight: bolder;
+    }
+    button{
+      float: right;
+    }
+  }
+
+}
+
+.dfc-approve-table{
+	margin-top: 10px;
+	width: 100%;
+}

@@ -1,0 +1,194 @@
+$centerHeight: calc(100vh - 95px);
+
+.dfc-all {
+  width: 100%;
+  height: $centerHeight;
+}
+
+.dfc-query {
+  margin-top: 10px;
+  width: 100%;
+  overflow: hidden;
+
+  div {
+    min-height: 42px;
+    display: block;
+    float: left;
+  }
+
+  .dfc-query-btn {
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 73px;
+
+    button {
+      width: 73px;
+    }
+  }
+}
+
+.dfc-line {
+  margin-top: 19px;
+  color: rgba(80, 80, 80, 1);
+  background-color: rgba(212, 212, 212, 1);
+  width: 100%;
+  height: 1px;
+}
+
+.kanban-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dfc-query-5mol {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+  display: flex;
+
+  .div1 {
+
+    width: 15%;
+  }
+
+  .div2 {
+    width: 25%;
+  }
+}
+
+.kanban-cFlow {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.dfc-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 36px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .dfc-btn-left {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin-right: 30px;
+  }
+
+  .dfc-btn-center {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-size: 14px;
+      font-weight: normal;
+      color: rgba(80, 80, 80, 1);
+    }
+
+    div {
+      margin-left: 10px;
+      margin-right: 5px;
+    }
+  }
+
+  .dfc-btn-right {
+    position: absolute;
+    right: 0;
+    float: right;
+    width: 340px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    .dfc-btn-upload {
+      height: 100%;
+      width: 242px;
+      display: inline-block;
+    }
+
+    .dfc-btn-download {
+      margin-left: 12px;
+      height: 100%;
+      width: 36px;
+      display: inline-block;
+    }
+
+    .dfc-btn-email {
+      margin-left: 12px;
+      height: 100%;
+      width: 36px;
+      display: inline-block;
+    }
+
+    label.upload {
+      margin: 0;
+    }
+
+    .upload {
+      input {
+        display: none;
+      }
+
+      i {
+        vertical-align: bottom;
+      }
+    }
+
+    div.fakeInput {
+      margin-left: 10px;
+      display: inline-block;
+      width: 200px;
+      color: #505050;
+      background-color: white;
+      border-radius: 3px 0px 0px 3px;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 150%;
+      border: #cccccc solid 1px;
+      text-align: left;
+      height: 32px;
+      cursor: pointer;
+
+      span {
+        padding-left: 10px;
+        vertical-align: sub;
+        color: #999;
+      }
+    }
+
+    .ant-btn.upload {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  .spin {
+    position: fixed;
+    top: 100px;
+    left: 49%;
+  }
+}
+
+.table {
+  width: 100%;
+
+  th {
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
+  }
+}
+
+.table2 {
+  margin-top: 10%
+}
+
+.dfc-btn-left {
+  margin-top: 80px;
+  display: flex;
+  align-items: center;
+  float: left;
+  margin-right: 30px;
+}

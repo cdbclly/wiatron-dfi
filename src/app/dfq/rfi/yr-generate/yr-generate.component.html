@@ -1,0 +1,265 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-target-yield-generation' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.rfi-target-yield-generation' | translate }}
+</div>
+
+<app-query-form [tableShow]="tableShow" [plants]="plants" [bus]="bus" [modelTypes]="modelTypes"
+  (queryFrom)="queryFrom($event)" [enableProduce]="enableProduce" [params]="param">
+</app-query-form>
+<nz-divider></nz-divider>
+<div *ngIf="tableShow">
+  <div echarts class="echart" [options]="targetYrOptions"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-center">
+      <span>Status:</span>
+      <div class="green-circle"></div><span>Close</span>
+      <div class="orange-circle"></div><span>Ongoing</span>
+      <div class="red-circle"></div><span>Open</span>
+    </div>
+    <div class="dfc-btn-right">
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" [nzLoading]="downing" title="下載" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+        &nbsp;
+        <button *ngIf="allClose || finish" [disabled]="!sendEnable" [nzLoading]="sendLoading" (click)="sendSign()"
+          nz-button [nzType]="'primary'">
+          {{ 'dfq.dfq-send-sign' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- [nzScroll]="{x:'160%'}" -->
+  <nz-spin nzSimple *ngIf="!deleteShow">
+  </nz-spin>
+  <nz-table nzShowSizeChanger [nzBordered]="true" [nzScroll]="{ x: '150%' }" #nzTable id="yrReport" [nzData]="showData"
+    [(nzPageSize)]="pageSize">
+    <thead (nzSortChange)="tableSort($event)" nzSingleSort>
+      <tr>
+        <th nzCustomFilter nzShowSort nzSortKey="materialName" nzShowFilter [nzFilters]="filterMaterial"
+          (nzFilterChange)="filter($event,  searchPic,  searchDueday)" style="width:8%;" nzLeft="0%" rowspan="2"
+          (click)="searMaterial()">{{ 'dfq.dfq-material' | translate }}
+          <label class="search-cls"><i class="anticon anticon-search"></i></label>
+          <div class="search-box" *ngIf="showSelect">
+            <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
+            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+              Search
+            </button>
+            <button nz-button nzSize="small" (click)="reset()">Reset</button>
+          </div>
+        </th>
+        <th style="width:12%;" colspan="2">{{ 'dfq.dfq-yield' | translate }}</th>
+        <th style="width:4%;" rowspan="2">{{ 'dfq.rfi-yield-comparison' | translate }}</th>
+        <th rowspan="2">{{ 'dfq.rfi-discussion-result' | translate }}</th>
+        <th nzShowSort nzSortKey="yieldRate" rowspan="2" style="width:9%;">{{ 'dfq.rfi-discuss-improved-yield' | translate }}</th>
+        <th rowspan="2" style="width:5%;" nzShowFilter [nzFilters]="filterPic"
+          (nzFilterChange)="filter(searchMaterial, $event, searchDueday)">Pic</th>
+        <th rowspan="2" style="width:4%;">Status</th>
+        <th nzShowSort nzSortKey="duedate" nzShowFilter [nzFilters]="filterDueday"
+          (nzFilterChange)="filter(searchMaterial, searchPic, $event)" rowspan="2" style="width:7%;">Due Day</th>
+        <th colspan="5" style="width:35%;">{{ 'dfq.rfi-improve-opportunities' | translate }}</th>
+        <th nzRight="0%" rowspan="2" *ngIf="!finish &&!downing" style="width:7vw;">Action</th>
+      </tr>
+      <tr>
+        <th nzShowSort nzSortKey="originalYieldRate" style="width:6%;">{{ 'dfq.rfi-initial-yield' | translate }}</th>
+        <th nzShowSort nzSortKey="bestYield" style="width:6%;">{{ 'dfq.rfi-best-yield' | translate }}</th>
+        <th nzShowSort nzSortKey="dif" style="width:6%;">{{ 'dfq.rfi-best-yield-difference' | translate }}</th>
+        <th nzShowSort nzSortKey="yrInf" style="width:6%;">{{ 'dfq.rfi-yield-effect' | translate }}(USD)</th>
+        <th nzShowSort nzSortKey="workhour" style="width:6%;">{{ 'dfq.rfi-working-hours-effect' | translate }}(S)</th>
+        <th nzShowSort nzSortKey="workhour" style="width:6%;">{{ 'dfq.rfi-working-hours-effect' | translate }}(USD)</th>
+        <th nzShowSort nzSortKey="actualInf" style="width:6%;">{{ 'dfq.rfi-actual-impact' | translate }}(USD)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+        <td nzLeft="0%" *ngIf="data.material.name !=='MB'"
+          (click)="showblankModal(data.materialId,data,data.material.name)"><a
+            [ngStyle]="{'border-bottom':data.originalId ===data.id ? '1px solid black' : ''}">{{ data.material.name }}</a>
+        </td>
+        <td nzLeft="0%" *ngIf="data.material.name ==='MB'"> {{ data.material.name }}</td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId ===data.id && !downing ">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else yield">
+            {{ data.originalYieldRate==0 ? '0.00%' : (data.originalYieldRate | percent) }}
+          </ng-container>
+          <ng-template #yield>
+            <nz-input-number [(ngModel)]="editCache[data.indexId].data.originalYieldRate" [nzMin]="0" [nzMax]="100"
+              [nzPlaceHolder]="'请输入0~100'" [nzStep]="0.01"></nz-input-number>
+          </ng-template>
+        </td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId ===data.id&& downing ">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else yield">
+            {{ data.originalYieldRate==0 ? '0' : (data.originalYieldRate *100) }}
+          </ng-container>
+        </td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId !==data.id&& !downing ">
+          {{ data.originalYieldRate | percent}}
+        </td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId !==data.id && downing">
+          {{ data.originalYieldRate*100}}
+        </td>
+        <td *ngIf="data.material.name ==='MB'&& !downing &&data.status!=2" (click)="showMB(data.id,data.discussionId)">
+          <a style="border-bottom: 1px solid black;"> {{data.originalYieldRate | percent}}</a> </td>
+        <td *ngIf="data.material.name ==='MB' && downing &&data.status!=2" (click)="showMB(data.id,data.discussionId)">
+          <a style="border-bottom: 1px solid black;"> {{data.originalYieldRate*100}}</a> </td>
+        <td *ngIf="data.material.name ==='MB' && downing &&data.status==2">
+          {{data.originalYieldRate*100}} </td>
+        <td *ngIf="data.material.name ==='MB' && !downing &&data.status==2">
+          {{data.originalYieldRate | percent}}</td>
+        <!-- <td *ngIf="data.material.name ==='MB' && data.originalYieldRate==0" (click)="showMBAdd(data.id)">
+          <a style="border-bottom: 1px solid black;"> {{data.originalYieldRate | percent}}</a> </td> -->
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'&& !downing">
+          {{ data.status==2 ? (data.bestYieldRate | percent) : (data.bestYield==='0' ? (trans['noMatch']|translate) : (!data.bestYield  ? (trans['unmaintainedYield']|translate) : (data.bestYield | percent))) }}
+        </td>
+        <td *ngIf="data.material.name !=='MB'&& downing">
+          {{ data.status==2 ? (data.bestYieldRate *100) : (data.bestYield==='0' ? (trans['noMatch']|translate) : (!data.bestYield  ? (trans['unmaintainedYield']|translate) : (data.bestYield*100))) }}
+        </td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">
+          <button [nzType]="'primary'" nz-button
+            [disabled]="data.originalYieldRate==0 || data.status==2 || editCache[data.indexId].edit"
+            (click)="showYrCompare(data.materialId,data,data.material.name)">{{ 'dfq.rfi-compared' | translate }}</button>
+        </td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else discussion">
+            {{ data.discussion }}
+          </ng-container>
+          <ng-template #discussion>
+            <textarea nz-input [(ngModel)]="editCache[data.indexId].data.discussion"></textarea>
+            <!-- <input type="text" nz-input [(ngModel)]="editCache[data.indexId].data.discussion" /> -->
+          </ng-template>
+        </td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId !==data.id  &&data.yieldRate ==0 && !downing">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else changeYield">
+            <span style="border-bottom: 1px solid black;cursor: pointer;"
+              (click)="showChangeCompare(data.material.id,data.material.name)">{{ data.yieldRate ? (data.yieldRate | percent) : (data.yieldRate ==0 ? '0.00%' : '未改善' )}}</span>
+          </ng-container>
+          <ng-template #changeYield>
+            <nz-input-number *ngIf="editCache[data.indexId].data.yieldRate||editCache[data.indexId].data.yieldRate==0"
+              [(ngModel)]="editCache[data.indexId].data.yieldRate" [nzMin]="0" [nzMax]="100"
+              [nzPlaceHolder]="'Please enter a number from 0 to 100'" [nzStep]="0.01"></nz-input-number>
+          </ng-template>
+        </td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId !==data.id  &&data.yieldRate !=0 && !downing">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else changeYield">
+            <span style="border-bottom: 1px solid black;cursor: pointer;"
+              (click)="showChangeCompare(data.material.id,data.material.name)">{{ data.yieldRate ? (data.yieldRate | percent) : (data.yieldRate ==0 ? '0.00%' : '未改善' )}}</span>
+          </ng-container>
+          <ng-template #changeYield>
+            <nz-input-number *ngIf="editCache[data.indexId].data.yieldRate||editCache[data.indexId].data.yieldRate==0"
+              [(ngModel)]="editCache[data.indexId].data.yieldRate" [nzMin]="0" [nzMax]="100"
+              [nzPlaceHolder]="'Please enter a number from 0 to 100'" [nzStep]="0.01"></nz-input-number>
+          </ng-template>
+        </td>
+        <td *ngIf="data.material.name !=='MB' &&data.originalId ===data.id && !downing">
+          <span style="border-bottom: 1px solid black;cursor: pointer;"
+            (click)="showChangeCompare(data.material.id,data.material.name)">{{ data.yieldRate ? (data.yieldRate | percent) : (data.yieldRate ==0 ? '0.00%' : '未改善' )}}</span>
+        </td>
+        <td *ngIf="data.material.name !=='MB' && downing">
+          <span
+            style="border-bottom: 1px solid black;cursor: pointer;">{{ data.yieldRate ? (data.yieldRate *100) : (data.yieldRate ==0 ? '0' : '未改善' )}}</span>
+        </td>
+        <!-- <td *ngIf="data.material.name !=='MB' &&data.originalYieldRate==0 &&data.yieldRate ==0">
+          <span style="border-bottom: 1px solid black;"
+            (click)="showChangeCompare(data.material.id,data.material.name)">{{ data.yieldRate ? (data.yieldRate | percent) : (data.yieldRate ==0 ? '0.00%' : '未改善' )}}</span>
+        </td> -->
+        <td>
+          <ng-container *ngIf="!editCache[data.indexId].edit; else pic">
+            {{data.pic | userEnname | async}}
+          </ng-container>
+          <ng-template #pic>
+            <div style="width: 120px;">
+              <app-search-user [picId]="data.pic" (selectedUserData)="select($event)">
+              </app-search-user>
+            </div>
+          </ng-template>
+        </td>
+        <td *ngIf="downing">
+          <span>{{editCache[data.indexId].data.status== 0 ? "Open" : (editCache[data.indexId].data.status== 1 ? "Ongoing" : "Close")}}</span>
+        </td>
+        <td *ngIf="!downing">
+          <ng-container *ngIf="!editCache[data.indexId].edit; else status">
+            <div *ngIf="data.status==2" class="green-circle"></div>
+            <div *ngIf="data.status==1" class="orange-circle"></div>
+            <div *ngIf="data.status==0" class="red-circle"></div>
+          </ng-container>
+          <ng-template #status>
+            <nz-select style="width: 90px;" nzShowSearch [(ngModel)]="editCache[data.indexId].data.status"
+              [nzDisabled]="(data.originalId ===data.id && data.material.name !=='MB') || !data.yieldRate  || !data.originalYieldRate  || !data.bestYield || !data.pic|| !editCache[data.indexId].data.duedate">
+              <!-- <nz-option nzValue="0" nzLabel="Open"></nz-option> -->
+              <!-- <nz-option nzValue="1" nzLabel="Ongoing"></nz-option> -->
+              <nz-option nzValue="2" nzLabel="Close"></nz-option>
+            </nz-select>
+          </ng-template>
+        </td>
+        <td>
+          <ng-container *ngIf="!editCache[data.indexId].edit; else duedate">
+            {{ data.duedate }}
+          </ng-container>
+          <ng-template #duedate>
+            <nz-date-picker [(ngModel)]="editCache[data.indexId].data.duedate" (ngModelChange)="null">
+            </nz-date-picker>
+          </ng-template>
+        </td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB' && !downing">
+          {{(data.bestYield - data.originalYieldRate) | percent}}</td>
+        <td *ngIf="data.material.name !=='MB' && downing">
+          {{(data.bestYield - data.originalYieldRate) *100}}</td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">{{(data.bestYield - data.originalYieldRate)*100*0.12 | number:'1.2-2'}}
+        </td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">{{data.workHour | number:'.2-2'}}</td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">{{data.workHour*0.001 | number:'1.2-2'}}</td>
+        <td *ngIf="data.material.name ==='MB'">NA</td>
+        <td *ngIf="data.material.name !=='MB'">
+          {{(((data.bestYield - data.originalYieldRate)*100*0.12)-(data.workHour*0.001)) | number:'1.2-2'}}</td>
+        <td *ngIf="!finish &&!downing" nzRight="0%">
+          <div class="editable-row-operations" *ngIf="!(data.status==2)">
+            <ng-container *ngIf="editCache[data.indexId] && !editCache[data.indexId].edit">
+              <i *ngIf="showEdit" class="anticon anticon-edit" style="cursor: pointer"
+                (click)="startEdit(data.indexId)"></i>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.indexId] && editCache[data.indexId].edit">
+              <i class="anticon anticon-check" style="cursor: pointer" (click)="saveEdit(data.indexId)"></i>
+              &nbsp;
+              <i class="anticon anticon-close" style="cursor: pointer" (click)="cancelEdit(data.indexId)"></i>
+              <!-- <i class="anticon anticon-save" (click)="saveEdit(data.indexId)"></i> -->
+            </ng-container>
+            &nbsp;
+            <ng-container *ngIf="deleteShow">
+              <i class="anticon anticon-delete" style="cursor: pointer" (click)="delete(data.indexId)"></i>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<app-blank-model-factors [plantMatch]="plantMatch" [blankModalMaterialName]="blankModalMaterialName"
+  [blankmaterialDetails]="blankmaterialDetails" [blankModalMaterialId]="blankModalMaterialId"
+  [isVisiblePic]="blankModalShow" (blankModalCal)="blankModalCal($event)"
+  (savedblankModalCal)="savedblankModalCal($event)">
+</app-blank-model-factors>
+<app-yr-compare [materialDetails]="materialDetails" [plantMatch]="plantMatch"
+  [yrCompareMaterialId]="yrCompareMaterialId" [isVisiblePic]="yrCompareShow"
+  (savedYrComCancel)="savedYrComCancel($event)" (yrComCancel)="yrComCancel($event)">
+</app-yr-compare>
+<app-change-compare [materialName]="materialName" [projectName]="projectName"
+  [changeCompareMaterialId]="changeCompareMaterialId" [plant]="plant" [isVisiblePic]="changeCompareShow"
+  (changeComCacel)="changeComCacel($event)"></app-change-compare>
+<app-motherboard-detail [mbYrEditId]="mbYrEditId" [mbDiscussionId]="mbDiscussionId" [product]="product" [plant]="plant"
+  [projectName]="projectName" [isVisiblePic]="motherboardDetailShow" (mBoardCancel)="mBoardCancel($event)"
+  (savedMBoardCancel)="savedMBoardCancel($event)">
+</app-motherboard-detail>
+<app-motherboard-add [mbMaterialId]="mbMaterialId" [projectCode]="projectCode" [projectName]="projectName"
+  [isVisiblePic]="motherboardAddShow" (mBoardAddCancel)="mBoardAddCancel($event)"></app-motherboard-add>

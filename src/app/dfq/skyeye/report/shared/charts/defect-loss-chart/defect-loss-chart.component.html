@@ -1,0 +1,84 @@
+ <div echarts [options]="line_chart" id="line-chart"  class="line-chart" (chartClick)="show_boxs($event)"></div>
+   <div class="suggest">
+      輔助建议决策---系統開發中
+ </div>
+   <nz-modal [(nzVisible)]="isVisible" nzTitle="" nzWidth="80%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+    <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(detailTable_total, 'FPYR total')">下载</button>
+    <div class="box-table-total">
+          <table cellspacing="0" cellpadding="0" >
+            <thead>
+              <th style="width: 35%;">總測試不良項目</th>
+              <th style="width: 35%;">子測試不良項目</th>
+              <th style="width: 15%;">FPYR</th>
+              <th style="width: 15%;">測試數量</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_total; let i = index">
+              <td>{{item['tdname']}}</td>
+              <td>{{item['mdname']}}</td>
+              <td>{{item['result']}}</td>
+              <td (click)="showSubDetail(item)" class="test-num">{{item['num']}}</td>
+            </tr>
+          </table>
+        </div>
+   </nz-modal>
+
+   <nz-modal [(nzVisible)]="isVisible_1"  nzWidth="65%" [nzStyle]="{ top: '30%' }" nzTitle="" (nzOnCancel)="handleCancel_1()" [nzClosable]="cancelOK_1" [nzFooter]="footer_1" (nzOnOk)="handleOk_1()">
+    <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 94%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadDetail( defect_list, 'FPYR detail')">下载</button>
+    <div class="box-table">
+          <table cellspacing="0" cellpadding="0" >
+            <thead>
+                <th>機種</th>
+                <th>線別</th>
+                <th>站別</th>
+                 <th>治具編號</th>
+                 <!-- <th>架構</th> -->
+                <th>機台序列號</th>
+                <th>開始測試時間</th>
+                <th>結束測試時間</th>
+                <th>測試值</th>
+                 <th>測試值上限</th>
+                 <th>測試值下限</th>
+                 <th>測試結果</th>
+            </thead>
+            <tr *ngFor="let item of defect_list; let i = index">
+              <td>{{item['modelName']}}</td>
+              <td>{{item['stationLine']}}</td>
+              <td>{{item['stationType']}}</td>
+              <td>{{item['stationid']}}</td>
+              <!-- <td>{{item['upn']}}</td> -->
+              <td>{{item['unitserialnumber']}}</td>
+              <td>{{item['item_startdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+              <td>{{item['item_stopdate'] | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+              <td>{{item['mdresult']}}</td>
+              <td>{{item['mdupperlimit']}}</td>
+              <td>{{item['mdlowerlimit']}}</td>
+              <td [ngClass]="item['mdstatus'].toLowerCase() === 'false' ? 'redColor' : ''">{{item['mdstatus']}}</td>
+
+
+              <!-- <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['unitserialnumber']}}</p></td>
+
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['item_startdate']}}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['item_stopdate']}}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['mdresult']}}</p></td>
+
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['mdupperlimit'] < 300 ? seriesNum['mdupperlimit'] : '無設置'}}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['mdlowerlimit'] > -300 ? seriesNum['mdlowerlimit'] : '無設置'}}</p></td>
+              <td><p class="p-series" *ngFor="let seriesNum of item['item_detail']">{{seriesNum['mdstatus']}}</p></td> -->
+
+
+              <!-- <td><p class="p-series" *ngFor="let seriesNum of item['unitserialnumber']">{{seriesNum}}</p></td>
+
+              <td>{{'開始測試時間'}}</td>
+              <td>{{'結束測試時間'}}</td>
+              <td>{{'測試值'}}</td>
+
+              <td *ngIf="defect_list['upper'] < 300">{{defect_list['upper']}}</td>
+              <td *ngIf="defect_list['upper'] > 300 || defect_list['upper'] === 300">無設置</td>
+              <td *ngIf="defect_list['lower'] > -300">{{defect_list['lower']}}</td>
+              <td *ngIf="defect_list['lower'] < -300 || defect_list['lower'] === -300">無設置</td> -->
+
+
+            </tr>
+          </table>
+        </div>
+   </nz-modal>

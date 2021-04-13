@@ -1,0 +1,56 @@
+<div>
+  <div class="tit" *ngIf="floorLinkFlag">
+    <i class="anticon anticon-link"></i>
+    <a href="javascript:void(0)"
+      [routerLink]="['/dashboard/report/issue/C4C5自動判定']">{{ 'dashboard.c4c5ExitJudgment' | translate }}</a>
+    <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummarycx "> &nbsp; {{ siteSummary.title }}:
+      <span
+        style="color:blue;font-weight: bold;">{{siteSummary.C4total+siteSummary.C5total}}</span>{{ 'dashboard.pie-item' | translate }};&nbsp;
+    </label>
+  </div>
+  <div class="tit" *ngIf="!floorLinkFlag">{{ 'dashboard.c4c5ExitJudgment' | translate }} </div>
+  <app-em-auto-judgement-qualifield-rate (setEchartSummarycx)="setEchartSummarycx($event)">
+  </app-em-auto-judgement-qualifield-rate>
+  <br>
+  <div class="tit" *ngIf="floorLinkFlag">
+    <i class="anticon anticon-link"></i>
+    <a href="javascript:void(0)"
+      [routerLink]="['/dashboard/report/issue/RFI良率預測']">{{ 'dashboard.rfiYieldPrediction' | translate }}</a>
+    <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummaryrfi ">&nbsp;
+      {{ siteSummary.title.slice(4, 8)| plantName | async }}:
+      <span style="color:blue;font-weight: bold;">{{siteSummary.top}}</span>{{ 'dashboard.pie-item' | translate }};
+      &nbsp;
+    </label>
+  </div>
+  <div class="tit" *ngIf="!floorLinkFlag">{{ 'dashboard.rfiYieldPrediction' | translate }}</div>
+  <app-rfi-work-progress (setEchartSummaryrfi)="setEchartSummaryrfi($event)"></app-rfi-work-progress>
+  <br>
+  <div class="tit" *ngIf="floorLinkFlag">
+    <i class="anticon anticon-link"></i>
+    <a href="javascript:void(0)"
+      [routerLink]="['/dashboard/report/issue/MP良率追蹤預警']">{{ 'dashboard.yieldRateTracking' | translate }}</a></div>
+  <div class="tit" *ngIf="!floorLinkFlag">{{ 'dashboard.yieldRateTracking' | translate }}</div>
+  <app-mp-fpyr-qualified-rate [businessGroup]="businessGroup"></app-mp-fpyr-qualified-rate>
+  <br>
+  <div class="tit" *ngIf="floorLinkFlag">
+    <i class="anticon anticon-link"></i>
+    <a href="javascript:void(0)" [routerLink]="['/dashboard/report/issue/Skyeye品質監控']">Sky Eye--品質監控管理系統</a>
+  </div>
+  <div class="tit" *ngIf="!floorLinkFlag">Sky Eye--品質監控管理系統</div>
+  <nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+    <div class="board-row">
+      <div class="board-row-dfc">
+        <div class="section">
+          <div style="width:160px">
+            <span>設備狀態<br>
+              達成比例</span>
+          </div>
+        </div>
+        <div class="section" *ngFor="let item of skyeyeItemsParams">
+          <app-skyeye-board [mqttHost]="item['mqttHost']" [curPlant]="item['plant']" [curSite]="item['site']">
+          </app-skyeye-board>
+        </div>
+      </div>
+    </div>
+  </nz-spin>
+</div>

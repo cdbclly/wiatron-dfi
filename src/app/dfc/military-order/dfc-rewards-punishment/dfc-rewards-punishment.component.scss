@@ -1,0 +1,80 @@
+body {
+  width: 100%;
+}
+
+.tooltip-header {
+  margin-bottom: 12px;
+}
+
+.body-top {
+  .table {
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    overflow-x: auto;
+    font-size: 14px;
+
+    table {
+      width: 100%;
+      margin: auto;
+
+      .row1 {
+        background-color: antiquewhite;
+
+        td {
+          height: 50px;
+          line-height: 50px;
+          font-size: 30px;
+          text-align: center;
+          border: 1px solid black;
+        }
+      }
+
+      .font-color {
+        color: blue;
+      }
+
+      td {
+        border: 1px solid black;
+        text-align: center;
+        line-height: 25px;
+      }
+    }
+  }
+}
+
+.body-bottom {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    margin-left: 10px;
+  }
+
+  span {
+    color: red;
+    font-size: 14px;
+  }
+}
+
+.dfc-send {
+  width: 100%;
+  padding: 5px;
+
+  table {
+    width: 100%;
+    font-size: 14px;
+
+    td {
+      padding: 5px;
+
+      nz-select {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.bold {
+  font-weight: bold;
+}

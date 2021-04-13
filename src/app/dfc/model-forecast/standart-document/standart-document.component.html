@@ -1,0 +1,423 @@
+<div class="dfc-all" #DFCModelStandart>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.forecast.model-time-forecast' | translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.forecast.maintenance-of-working-hours-standard-documents' | translate}}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'dfc.forecast.maintenance-of-working-hours-standard-documents' | translate}}</span>
+  </div>
+  <div class="dfc-query">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.operationCode" [(queryValue)]="queryValue.operationCode">
+      </app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="queryValue.modelType"
+        [querySelect]="querySelect.modelType" (queryValueChange)="modelTypeChange()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.process" [(queryValue)]="queryValue.process"
+        [querySelect]="querySelect.process"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.material" [(queryValue)]="queryValue.material">
+      </app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.factor" [(queryValue)]="queryValue.factor"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.action" [(queryValue)]="queryValue.action"></app-dfc-query-input>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button *ngIf="Auth.access" nzType="primary" (click)="query()">Query</button>
+    </div>
+  </div>
+
+  <div class="dfc-line"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-delete" *ngIf="buttonshow">
+      <button nz-button [nzType]="'primary'" *ngIf='disabledDeleteButton' title="Add" nzShape="circle"
+        (click)="operateAdd()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </div>
+    <div class="dfc-btn-right">
+      <app-upload-file *ngIf="Auth.insert && DFiLeaderFlag" class="dfc-btn-upload" [showLoading]="showLoading"
+        (uploadFile)="upload($event)"></app-upload-file>
+
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dfc-table">
+    <nz-table #mohModelTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzPageSize]="10"
+      [nzWidthConfig]="nzWidthConfig" [nzScroll]="nzScroll" (nzCurrentPageDataChange)="currentPageDataChange($event)"
+      (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()">
+      <thead>
+        <tr>
+          <th>{{'dfq.dfq-product' | translate}}</th>
+          <th>{{'dfc.forecast.identification-code' | translate}}</th>
+          <th>{{'mrr.nudd-process' | translate}}</th>
+          <th>{{'dfq.dfq-material' | translate}}</th>
+          <th>{{'dfc.forecast.factor' | translate}}</th>
+          <th>{{'dfc.forecast.factor-details' | translate}}</th>
+          <th>{{'dfc.forecast.action' | translate}}</th>
+          <th>{{'dfc.forecast.workhour' | translate}}</th>
+          <th nzRight="0px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of mohModelTable.data; let i = index;">
+          <td>{{data.ModelType}}</td>
+          <td>{{data.OperationCode}}</td>
+          <td style="text-align: right;">{{data.ProcessName}}</td>
+          <td style="text-align: right;">{{data.MaterialName}}</td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit || editType !== 'name'">
+              {{data.FactorName}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit && editType === 'name'">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.FactorName">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">{{data.FactorDetail}}</td>
+          <td style="text-align: right;">{{data.ActionName}}</td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit || editType !== 'hour'">
+              {{data.CostTime}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit && editType === 'hour'">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.CostTime">
+            </ng-container>
+          </td>
+          <td nzRight="0px">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              <a (click)="startEdit(data.No, i, 'hour')" *ngIf="!actionEnabled || !Auth.update"
+                style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <a (click)="startEdit(data.No, i, 'hour')" *ngIf="actionEnabled && Auth.update"
+                style="margin-left: 10px;">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <a (click)="startEdit(data.No, i, 'name')" *ngIf="!actionEnabled || !Auth.update"
+                style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-font-colors"></i>
+              </a>
+              <a (click)="startEdit(data.No, i, 'name')" *ngIf="actionEnabled && Auth.update"
+                style="margin-left: 10px;">
+                <i nz-icon type="font-colors"></i>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <a (click)="saveEdit(data.No)">
+                <i class="anticon anticon-save"></i>
+              </a>
+              <a style="margin-left:10px;" (click)="cancelEdit(data.No)">
+                <i class="anticon anticon-close-circle"></i>
+              </a>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <div class='send' *ngIf="sendSignFlag">
+      <div class='send-input'>
+        <p *ngFor='let data of standardOperationSignContent; let i=index;'>{{i}}.{{data.msg}}</p>
+      </div>
+      <div class='send-button'>
+        <button nz-button nzType="primary" (click)="send()" [disabled]="isSendFlag">送簽</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 新增 -->
+  <nz-modal class="dfc-add-modal" [nzWidth]="410" nzWrapClassName="vertical-center-modal"
+    [(nzVisible)]="isAddDataVisible" [nzTitle]="titleText" nzMaskClosable="false" [nzContent]="modalAddContent"
+    [nzFooter]="modalAddFooter" (nzOnCancel)="handleAddCancel()">
+    <div class="dfc-add-list" #modalAddContent>
+      <table>
+        <tr height="0px">
+          <td width="72px"></td>
+          <td width="280px"></td>
+          <td width="30px"></td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfq.dfq-product' | translate}}</span>
+            </div>
+          </td>
+          <td colspan="2">
+            <nz-select [(ngModel)]="addProjectSelectValue" [nzDisabled]="addProcessFlag" nzPlaceHolder="holderText"
+              nzAllowClear nzShowSearch [nzServerSearch]="true" (ngModelChange)="changeProject()">
+              <ng-container *ngFor="let list of addProjectList">
+                <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'mrr.nudd-process' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addProcessSelectValue" [nzDisabled]="addProcessFlag"
+              [nzPlaceHolder]="holderProcessText" nzAllowClear nzShowSearch [nzServerSearch]="true"
+              (ngModelChange)="changeProcess()">
+              <ng-container *ngFor="let list of addProcessList">
+                <nz-option [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+          <td>
+          </td>
+        </tr>
+        <tr *ngIf="addProcessPlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderProcessTextAdd" [(ngModel)]="addProcessValueCache" nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveProcessPlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfc.forecast.module' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addModuleSelectValue" [nzPlaceHolder]="holderModuleText" nzAllowClear nzShowSearch
+              [nzServerSearch]="true" [nzDisabled]="addModuleFlag" (nzOnSearch)="onAddModuleSearch($event)"
+              (ngModelChange)="changeModule()">
+              <ng-container *ngFor="let list of addModuleList">
+                <nz-option *ngIf="!isAddModuleSelectLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isAddModuleSelectLoading" nzDisabled nzCustomContent>
+                <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+              </nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addModuleFlag"
+              (click)="clickAddModulePlus()"></i>
+          </td>
+        </tr>
+        <tr *ngIf="addModulePlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderModuleTextAdd" [(ngModel)]="addModuleValueCache" nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveModulePlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfq.dfq-material' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addMaterialSelectValue" [nzPlaceHolder]="holderMaterialText" nzAllowClear
+              nzShowSearch [nzServerSearch]="true" [nzDisabled]="addMaterialFlag"
+              (nzOnSearch)="onAddMaterialSearch($event)" (ngModelChange)="changeMaterial()">
+              <ng-container *ngFor="let list of addMaterialList">
+                <nz-option *ngIf="!isAddMaterialSelectLoading" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isAddMaterialSelectLoading" nzDisabled nzCustomContent>
+                <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+              </nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addMaterialFlag"
+              (click)="clickAddMaterialPlus()"></i>
+          </td>
+        </tr>
+        <tr *ngIf="addMaterialPlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderMaterialTextAdd" [(ngModel)]="addMaterialValueCache" nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveMaterialPlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfc.forecast.factor' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addFactorSelectValue" [nzPlaceHolder]="holderFactorText" nzAllowClear nzShowSearch
+              [nzServerSearch]="true" [nzDisabled]="addFactorFlag" (nzOnSearch)="onAddFactorSearch($event)"
+              (ngModelChange)="changeFactor()">
+              <ng-container *ngFor="let list of addFactorList">
+                <nz-option *ngIf="!isAddFactorSelectLoading" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isAddFactorSelectLoading" nzDisabled nzCustomContent>
+                <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+              </nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addFactorFlag"
+              (click)="clickAddFactorPlus()"></i>
+          </td>
+        </tr>
+        <tr *ngIf="addFactorPlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderFactorTextAdd" [(ngModel)]="addFactorValueCache" nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveFactorPlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfc.forecast.factor-details' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addFactorDetailSelectValue" [nzPlaceHolder]="holderFactorDetailsText" nzAllowClear
+              nzShowSearch [nzServerSearch]="true" [nzDisabled]="addFactorDetailFlag"
+              (nzOnSearch)="onAddFactorDetailSearch($event)" (ngModelChange)="changeFactorDetail()">
+              <ng-container *ngFor="let list of addFactorDetailList">
+                <nz-option *ngIf="!isAddFactorDetailSelectLoading" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isAddFactorDetailSelectLoading" nzDisabled nzCustomContent>
+                <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+              </nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addFactorDetailFlag"
+              (click)="clickAddFactorDetailPlus()"></i>
+          </td>
+        </tr>
+        <tr *ngIf="addFactorDetailPlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderFactorDetailsTextAdd" [(ngModel)]="addFactorDetailValueCache"
+              nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveFactorDetailPlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfc.forecast.action' | translate}}</span>
+            </div>
+          </td>
+          <td>
+            <nz-select [(ngModel)]="addActionSelectValue" [nzPlaceHolder]="holderActionText" nzAllowClear nzShowSearch
+              [nzServerSearch]="true" [nzDisabled]="addActionFlag" (nzOnSearch)="onAddActionSearch($event)"
+              (ngModelChange)="changeAction()">
+              <ng-container *ngFor="let list of addActionList">
+                <nz-option *ngIf="!isAddActionSelectLoading" [nzValue]="list" [nzLabel]="list"></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isAddActionSelectLoading" nzDisabled nzCustomContent>
+                <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+              </nz-option>
+            </nz-select>
+          </td>
+          <td>
+            <i class="anticon anticon-plus dynamic-add-button" *ngIf="!addActionFlag"
+              (click)="clickAddActionPlus()"></i>
+          </td>
+        </tr>
+        <tr *ngIf="addActionPlus">
+          <td>
+            <div></div>
+          </td>
+          <td>
+            <input nz-input [placeholder]="holderActionTextAdd" [(ngModel)]="addActionValueCache" nzSize="default">
+          </td>
+          <td>
+            <i class="anticon anticon-save dynamic-save-button" (click)="clickSaveActionPlus()"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div>
+              <span style="color:red;">*</span>
+              <span>{{'dfc.forecast.workhour' | translate}}</span>
+            </div>
+          </td>
+          <td colspan="2">
+            <nz-input-number [nzDisabled]='addCostTimeFlag' [nzMin]="0" [(ngModel)]="addCostTimeValue"
+              [nzPlaceHolder]="holderWorkhourText"></nz-input-number>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <ng-template #modalAddFooter>
+      <button nz-button nzType="default" (click)="handleAddCancel()">Cancel</button>
+      <button nz-button nzType="primary" (click)="handleAddSave()">Save</button>
+    </ng-template>
+  </nz-modal>
+
+  <!-- 點擊刪除, 選擇是否刪除 -->
+  <app-delete-pop *ngIf='isDeleteVisible' (cancelDel)='cancelDelete($event)' (del)='Delete($event)'
+    [isAfterDeleteVisible]='isAfterDeleteVisible'></app-delete-pop>
+  <!-- 送簽彈窗 -->
+  <nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="450" [(nzVisible)]="isSendSignVisible"
+    [nzTitle]="sendSign" (nzOnCancel)="cancelSendSign()" [nzFooter]="modalEditSaveFooter">
+    <div class="dfc-send">
+      <table>
+        <tr *ngFor="let key of objectKeys(sendMode.memberList)">
+          <td>{{sendMode.memberList[key].Role}}</td>
+          <td>
+            <nz-select [(ngModel)]="sendMode.memberList[key].Value" nzAllowClear nzShowSearch [nzServerSearch]="true">
+              <ng-container *ngFor="let option of sendMode.memberList[key].List">
+                <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+        </tr>
+        <tr>
+          <td>{{'mrr.military-order.describe'}}</td>
+          <td><textarea rows="2" nz-input [(ngModel)]="sendMode.description" class="textarea"></textarea></td>
+        </tr>
+      </table>
+    </div>
+    <ng-template #modalEditSaveFooter>
+      <button nz-button nzType="default" (click)="cancelSendSign()">Cancel</button>
+      <button nz-button nzType="primary" (click)="sendButton()">{{'dfq.dfq-send-sign' | translate}}</button>
+    </ng-template>
+  </nz-modal>
+</div>

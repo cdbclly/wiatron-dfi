@@ -1,0 +1,163 @@
+.dfc-btn{
+	margin-top:20px;
+	width: 100%;
+	height: 36px;
+  position: relative;
+  .dfc-btn-left{
+		display: flex;
+		align-items: center;
+		float: left;
+    margin-right: 30px;
+    button{
+      margin-left: 10px;
+    }
+	}
+	.dfc-btn-right{
+		position: absolute;
+		right: 0;
+		float: right;
+		width: 330px;
+    height: 100%;
+    font-size: 14px;
+		.dfc-btn-upload{
+			height: 100%;
+			width: 282px;
+			float: left;
+		}
+	}
+}
+
+.dfc-table{
+  width: 100%;
+  padding: 10px;
+  table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    tr{
+      height: 36px;
+      td{
+        text-align: left;
+        font-size: 14px;
+        border-left: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+        padding-left: 10px;
+        padding-right: 10px;
+        word-wrap: break-word;
+        word-break: break-all;
+        width: 10%;
+        img{
+          margin: auto;
+          max-width: 99%;
+          max-height: 150px;
+        }
+      }
+      td:last-child{
+        border-right: 1px solid #ccc;
+      }
+    }
+    tr:nth-child(2n+1){
+      background-color: #f0f0f0;
+    }
+    tr:nth-child(2n){
+      background-color: #ffffff;
+    }
+    tr:first-child{
+      td:first-child{
+        border-top-left-radius: 10px;
+      }
+      td:last-child{
+        border-top-right-radius: 10px;
+      }
+    }
+    tr:last-child{
+      td{
+        border-bottom: 1px solid #ccc;
+      }
+      td:first-child{
+        border-bottom-left-radius: 10px;
+      }
+      td:last-child{
+        border-bottom-right-radius: 10px;
+      }
+    }
+    tr:nth-child(2), tr:nth-child(3), tr:nth-child(4){
+      td:last-child{
+        border-right: 0px solid #ccc;
+      }
+    }
+
+  }
+}
+
+.dfc-sign{
+  width: 100%;
+  margin-top: 15px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  button{
+    margin: auto;
+  }
+  .dfc-sign-txt{
+    color: red;
+    font-size: 14px;
+  }
+  div{
+    width: 33.33%;
+  }
+  .dfc-btn-center{
+    display: flex;
+    align-items: center;
+  }
+  .dfc-btn-right{
+    text-align: right;
+    font-size: 14px;
+    button{
+      margin: 10px;
+    }
+  }
+}
+.dfc-approve{
+  width: 100%;
+  margin-top: 15px;
+  height: 32px;
+  text-align: center;
+  span{
+    font-size:18px;
+		font-weight: bolder;
+  }
+}
+
+.dfc-approve-table{
+	margin-top: 10px;
+	width: 100%;
+}
+
+.dfc-print {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+
+.dfc-send{
+  width: 100%;
+  padding: 5px;
+  table{
+    width: 100%;
+    font-size: 14px;
+    td{
+      width: 50%;
+      padding: 5px;
+      height: 42px;
+      nz-select{
+        width: 100%
+      }
+    }
+
+  }
+}
+
+.dfc-military-isMohFAYield{
+  font-size: 10px;
+}

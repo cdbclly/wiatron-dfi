@@ -1,0 +1,15 @@
+<p>{{subject}}</p>
+<div>
+  <app-material-pie-product [pieOptions]="warningCloseRatePie" ></app-material-pie-product>
+  <app-material-pie-product [pieOptions]="abnormalCloseRatePie"></app-material-pie-product>
+  <app-material-pie-product [pieOptions]="traceClosePie"></app-material-pie-product>
+</div>
+<app-imqm-line-chart [lineOptions]="materialPDDRLine" ></app-imqm-line-chart>
+<app-imqm-line-chart [lineOptions]="materialStopCountLine" ></app-imqm-line-chart>
+<app-material-alert-product [options]="stopLineRankBar"></app-material-alert-product>
+<app-imqm-line-chart [lineOptions]="materialYRLine" ></app-imqm-line-chart>
+<div *ngIf="icqThriftBar"> <!-- [hidden]在這裡不可用，因為hidden的內容是會被加載的 -->
+  <app-material-alert-product [options]="icqThriftBar"></app-material-alert-product>
+  <app-material-alert-product [options]="sqmThriftBar"></app-material-alert-product>
+  <app-material-alert-product [options]="venderThriftBar" (subDetail)="showVenderThriftDetail($event)"></app-material-alert-product>
+</div>

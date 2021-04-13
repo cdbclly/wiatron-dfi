@@ -1,0 +1,91 @@
+.bg-logo {
+  height: 60px;
+}
+
+.sm-logo {
+  height: 40px;
+}
+
+
+@media (min-width: 955px) {
+  .topnav-title {
+    display: inline-block;
+    text-align: right;
+    width: calc(50% - 46px);
+    min-width: 170px;
+    margin-top: 10px;
+    font-size: 24px;
+    color: #fff;
+  }
+}
+
+@media (max-width: 954px) {
+  .topnav-title {
+    display: none;
+  }
+}
+
+.time {
+  display: inline-block;
+  min-width: 170px;
+  margin-top: 15px;
+  color: #fff;
+}
+
+.icon-user {
+  font-size: 20px;
+}
+
+.logout {
+  background: #808080;
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+.navbar-nav li a:hover {
+  background: #808080;
+  cursor: default;
+}
+
+.inboxIcon {
+  margin-top: 12px;
+}
+
+.translateIcon {
+  display: inline-block;
+  margin-top: 12px;
+  margin-right: 10px;
+}
+
+.langIcon {
+  display: inline-block;
+  margin-top: 15px;
+  margin-right: 10px;
+  outline: none;
+  border: none;
+  background: #808080;
+  color: #fff;
+}
+
+.matMenubtn:hover {
+  background-color: #b3b1b1;
+}
+
+.matMenubtn {
+  outline: none;
+  border: none;
+  padding: 0 8px;
+  height: 48px;
+  line-height: 48px;
+}
+
+.md-4 {
+  margin: 0 4px;
+  vertical-align: text-bottom;
+  color: #808080;
+}
+
+.sp-32 {
+  margin-left: 32px;
+  display: inline-block;
+}

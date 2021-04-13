@@ -1,0 +1,110 @@
+<div class="query-row">
+  <!-- site -->
+  <div class="field1">
+    <span class="span-width1">
+        <span style="color: red;">*</span>
+        <span>Site</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_site']" (ngModelChange)="getOptions('site')">
+        <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+
+  <!-- plant -->
+  <div class="field">
+      <span class="span-width2">
+          <span style="color: red;">*</span>
+          <span>{{'imq-plant' | translate}}</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_plant']" (ngModelChange)="getOptions('factory')">
+          <nz-option *ngFor="let factory of factoryGroup" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+      </nz-select>
+  </div>
+
+  <!-- 产品别 -->
+  <div class="field">
+      <span class="span-width2">
+          <span  style="color: red;">*</span>
+          <span>{{'imq-product' | translate }}</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_productCate']" (ngModelChange)="getOptions('productCate')">
+          <nz-option *ngFor="let factoryCate of productCateGroup" [nzLabel]="factoryCate" [nzValue]="factoryCate"></nz-option>
+      </nz-select>
+  </div>
+
+  <!-- 客户别 -->
+  <div class="field">
+      <span class="span-width2">
+          <span  style="color: red;">*</span>
+          <span>{{'imq-customer'| translate}}</span>
+      </span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_customer']" (ngModelChange)="getOptions('customer')">
+          <nz-option *ngFor="let customer of customerGroup" [nzLabel]="customer" [nzValue]="customer"></nz-option>
+      </nz-select>
+  </div>
+</div>
+<div class="query-row">
+  <!-- 查询方式 -->
+  <!-- <div class="field1">
+        <span class="span-width1">{{'imq-query' | translate}}</span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_searchBy']" (ngModelChange)="getOptions('searchBy')">
+            <nz-option nzLabel="{{'imq-menu-overSpec' | translate }}" nzValue="abnormal"></nz-option>
+            <nz-option nzLabel="{{'imq-menu-prewarning' | translate}}" nzValue="earlyWarn"></nz-option>
+            <nz-option nzLabel="{{'imq-menu-tracking' | translate}}" nzValue="traceBack"></nz-option>
+        </nz-select>
+  </div> -->
+
+  <!-- 供应商 -->
+  <div class="field1">
+    <span class="span-width1">{{'imq-supplier' | translate}}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_vendor']" (ngModelChange)="getOptions('factoryUser')">
+        <nz-option *ngFor="let facUsr of factoryUserGroup" [nzLabel]="facUsr" [nzValue]="facUsr"></nz-option>
+    </nz-select>
+</div>
+
+<!-- 机种 -->
+  <div class="field">
+      <span class="span-width2">{{'imq-model' | translate}}</span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_model']"  (ngModelChange)="getOptions('model')">
+          <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+      </nz-select>
+  </div>
+
+  <!-- 品名 -->
+  <div class="field">
+      <span class="span-width2">{{'imq-proName' | translate}}</span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_proName']"  (ngModelChange)="getOptions('proName')">
+          <nz-option *ngFor="let proName of proNameGroup" [nzLabel]="proName" [nzValue]="proName"></nz-option>
+      </nz-select>
+  </div>
+
+    <!-- 料号 -->
+    <div class="field">
+      <span class="span-width2">{{'imq-partNumber' | translate}}</span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_materialNo']" (ngModelChange)="getOptions('materialNo')">
+          <nz-option *ngFor="let materialNo of materialNoGroups" [nzLabel]="materialNo" [nzValue]="materialNo"></nz-option>
+      </nz-select>
+  </div>
+
+</div>
+<div class="query-row">
+  <!-- 料号 -->
+    <!-- <div class="field1">
+        <span class="span-width1">{{'imq-partNumber' | translate}}</span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="selectItem['cur_materialNo']" (ngModelChange)="getOptions('materialNo')">
+            <nz-option *ngFor="let materialNo of materialNoGroups" [nzLabel]="materialNo" [nzValue]="materialNo"></nz-option>
+        </nz-select>
+    </div> -->
+    <div class="field"  style=" width: 30%; ">
+
+      <span class="span-width1" style="width: 25%; margin-left: 15px; padding-left: 9px; text-align: right;">
+
+        <span ><span  style="color: red;">*</span>{{'imq-date' | translate}}</span>
+    </span>
+
+
+        <nz-range-picker style="width: 60%;" [nzFormat]="dateFormat" [(ngModel)]="datefroms" (ngModelChange)="getOptions('cur_date')"></nz-range-picker>
+    </div>
+    <button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

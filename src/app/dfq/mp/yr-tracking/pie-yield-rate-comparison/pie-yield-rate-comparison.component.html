@@ -1,0 +1,9 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div echarts (chartClick)="detail($event)" [options]="options"></div>
+  <nz-modal [nzTitle]="title" [(nzVisible)]="isVisible" (nzOnCancel)="handleCancel()" [nzFooter]=null>
+    <nz-spin nzSimple [nzSpinning]="isDetailLoading">
+      <div echarts [options]="detailOptions"></div>
+    </nz-spin>
+  </nz-modal>
+</nz-spin>
+

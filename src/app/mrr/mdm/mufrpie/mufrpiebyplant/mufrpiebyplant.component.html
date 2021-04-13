@@ -1,0 +1,123 @@
+<div class="file-maintain">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-data-pie' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.vendor-review-list' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+</div>
+<div style="margin-top: 20px">
+  <nz-table class="table" #basicTable [nzData]="dataSet" nzBordered [nzPageSize]=10 [nzHideOnSinglePage]=true>
+    <thead>
+      <tr>
+        <th nzShowExpand style="width: 100px;">{{ 'mrr.vendor-extension' | translate }}</th>
+        <th rowspan="3">{{ 'mrr.mrr-model' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr>
+          <td nzShowExpand [(nzExpand)]="data.expand"></td>
+          <td [ngStyle]="{'background':data.status === 'red'? 'red' : (data.status === 'green'? 'green': 'yellow')}">
+            {{ data.projectCode }}</td>
+        </tr>
+        <tr [nzExpand]="data.expand">
+          <td colspan="2">
+            <nz-table class="table" #editRowTable nzBordered [nzData]="data.listData" [nzPageSize]=5
+              [nzHideOnSinglePage]=true>
+              <thead>
+                <tr>
+                  <th rowspan="5" style="width: 220px;">{{ 'mrr.mrr-partNumber' | translate }}</th>
+                  <th rowspan="5" style="width: 180px;">{{ 'mrr.mrr-vendor' | translate }}</th>
+                  <th rowspan="5" style="width: 120px;">{{ 'mrr.vendor-curAt' | translate }}</th>
+                </tr>
+                <tr>
+                  <th colspan="5" *ngFor="let stages of data.stages"
+                    [ngStyle]="{'background':stages.status === 'red'? 'red' : (stages.status === 'green'? 'green': (stages.status === 'yellow'? 'yellow' : '#333333'))}">
+                    {{stages.stage}}</th>
+                </tr>
+                <tr>
+                  <th colspan="5" *ngFor="let remarks of data.stageRemark">
+                    <button nz-button nzType="primary" *ngIf="!remarks.remark && remarks.enable"
+                      (click)="showRemarkModel(data, remarks.stage)">{{ 'mrr.vendor-skip-stage-remark' | translate }}</button>
+                    {{remarks.remark}}</th>
+                </tr>
+                <tr>
+                  <th colspan="5" *ngFor="let duedays of data.stageDueday">D.D: {{duedays.dueday}}</th>
+                </tr>
+                <tr>
+                  <th *ngFor="let status of checkStatus">{{status}}</th>
+                </tr>
+              </thead>
+    <tbody>
+      <tr *ngFor="let data2 of data.listData">
+        <td>{{data2.partNumber}}</td>
+        <td>{{data2.manufacturerId}}</td>
+        <td>{{data2.currentStage}}</td>
+        <!-- 应上传以及红色底的td加跳转链接 -->
+        <ng-container *ngIf="c3ShowFlag">
+          <ng-container *ngFor="let data3 of data2.C3; let i = index">
+            <ng-container *ngIf="i === 0, else vv">
+              <td (click)="linkMufrMatain(data2, 'C3')"><u><a>{{data3}}</a></u></td>
+            </ng-container>
+            <ng-template #vv>
+              <ng-container
+                *ngIf="i===1 && data2.C3[1] > 0  || i === 2 && data2.C3[2] > 0 || i === 3 && data2.C3[3], else showNumber">
+                <td (click)="linkMufrMatain(data2, 'C3')" style="background: red;"><u><a>{{data3}}</a></u></td>
+              </ng-container>
+              <ng-template #showNumber>
+                <td>{{data3}}</td>
+              </ng-template>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="c4ShowFlag">
+          <ng-container *ngFor="let data4 of data2.C4; let i = index">
+            <ng-container *ngIf="i === 0, else vv">
+              <td (click)="linkMufrMatain(data2, 'C4')"><u><a>{{data4}}</a></u></td>
+            </ng-container>
+            <ng-template #vv>
+              <ng-container
+                *ngIf="i===1 && data2.C4[1] > 0  || i === 2 && data2.C4[2] > 0 || i === 3 && data2.C4[3], else showNumber">
+                <td (click)="linkMufrMatain(data2, 'C4')" style="background: red;"><u><a>{{data4}}</a></u></td>
+              </ng-container>
+              <ng-template #showNumber>
+                <td>{{data4}}</td>
+              </ng-template>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="c5ShowFlag">
+          <ng-container *ngFor="let data5 of data2.C5; let i = index">
+            <ng-container *ngIf="i === 0, else vv">
+              <td (click)="linkMufrMatain(data2, 'C5')"><u><a>{{data5}}</a></u></td>
+            </ng-container>
+            <ng-template #vv>
+              <ng-container
+                *ngIf="i===1 && data2.C5[1] > 0  || i === 2 && data2.C5[2] > 0 || i === 3 && data2.C5[3], else showNumber">
+                <td (click)="linkMufrMatain(data2, 'C5')" style="background: red;"><u><a>{{data5}}</a></u></td>
+              </ng-container>
+              <ng-template #showNumber>
+                <td>{{data5}}</td>
+              </ng-template>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
+  </td>
+  </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+</div>
+
+<!-- 添加文件 -->
+<nz-modal nzWidth="400px" class="model-cls" [(nzVisible)]="addRemark" [nzOkLoading]="confirmLoading" (nzOnOk)="addOne()"
+  (nzOnCancel)="cancelAddOne()" nzTitle="Add Remark" [nzMaskClosable]="false"  nzCancelText="Cancel" nzOkText="Save">
+  <label class="input-cls">
+    <textarea style="width: 170px; height: 80px;" nz-input [(ngModel)]="addStageRemark"></textarea>
+  </label>
+</nz-modal>

@@ -1,0 +1,98 @@
+body{
+  width: 100%;
+}
+
+.tooltip-header {
+  margin-bottom: 12px;
+}
+
+.body-top {
+  .table {
+    // max-height: calc(100vh - 240px);
+    padding-left: 20px;
+    padding-right: 20px;
+    width: 100%;
+    overflow-x: auto;
+    font-size: 14px;
+
+    table {
+      width: 100%;
+      margin: auto;
+
+      .row1 {
+        background-color: antiquewhite;
+
+        td {
+          height: 50px;
+          line-height: 50px;
+          font-size: 30px;
+          text-align: center;
+          border: 1px solid black;
+        }
+      }
+
+      .font-color {
+        color: blue;
+      }
+
+      td {
+        border: 1px solid black;
+        text-align: center;
+        line-height: 25px;
+      }
+    }
+  }
+}
+
+.body-bottom {
+  display: flex;
+  justify-content: flex-end;
+  button {
+    margin-left: 10px;
+  }
+  span {
+    color: red;
+    font-size: 14px;
+  }
+}
+
+.dfc-send {
+  width: 100%;
+  padding: 5px;
+  table {
+    width: 100%;
+    font-size: 14px;
+    td {
+      padding: 5px;
+      nz-select {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.BZ {
+  width: 80px;
+  font-weight: bold;
+}
+.week {
+  width: 15%;
+}
+.row2 {
+  font-weight: bold;
+}
+.row3 {
+  font-weight: bold;
+}
+.goal {
+  font-weight: bold;
+}
+.actual {
+  font-weight: bold;
+}
+.JL {
+  font-weight: bold;
+}
+.CF {
+  font-weight: bold;
+}

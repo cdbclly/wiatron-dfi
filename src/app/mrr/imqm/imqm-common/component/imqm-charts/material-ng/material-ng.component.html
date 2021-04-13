@@ -1,0 +1,2 @@
+<div echarts *ngIf="options" [options]="barOption" id="barOption" (chartClick)="showSubChart($event)"
+[ngStyle]="{ 'width': options['width'], 'height': options['height']}" class="bar-chart"></div>

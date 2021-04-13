@@ -1,0 +1,30 @@
+<div class="tit" *ngIf="!bg">
+  <i nz-icon type="link" theme="outline"></i>
+  <a href="javascript:void(0)"
+    [routerLink]="['/dashboard/report/issue/材料良率自動追蹤']">{{ 'dashboard.material' | translate }}</a>
+  <label style="font-weight:normal;" *ngFor="let siteSummary of echartSummary">
+    <span
+      style="color:blue;font-weight:bold;">{{ siteSummary.title }}:{{ siteSummary.top }}{{ 'dashboard.pie-item' | translate }};</span>
+  </label>
+</div>
+<div class="tit" *ngIf="bg">{{ 'dashboard.material' | translate }}</div>
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <span>KPI:{{ 'dashboard.materialYield' | translate }}<br>
+            {{ 'dashboard.reachRatio' | translate }}<i class="anticon anticon-link"></i>
+            <a style="color: #3C8DBC;"
+              href="http://dfi.wks.wistron.com.cn/dfi/api/Containers/mrrManuIssuePic/download/MRR材料良率KPI看板邏輯.pptx">{{ 'dashboard.mrrKpiLogic' | translate }}
+            </a></span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of mrrKpiPlantCharts">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="clickMrrKpi($event)">
+        </app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>

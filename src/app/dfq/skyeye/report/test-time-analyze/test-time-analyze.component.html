@@ -1,0 +1,66 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>Sky eye Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>測試時間監控</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  測試時間監控 <a *ngIf="cur_plant"
+    href="http://dmc.{{cur_site | lowercase}}.wistron.com.cn/EC/?Plant={{cur_plant}}&eventId={{project | event : 'toEvent'}}&evt_dt={{cur_date}}"
+    target="_blank"><i class="anticon anticon-link" nzTitle="Link DMC" nzPlacement="top" nz-tooltip></i></a>
+</div>
+
+<app-top-options (queryOption)="queryOp($event)" [cur_site]="cur_site" [cur_plant]="cur_plant"
+  [cur_section]="cur_section" [cur_line]="cur_line" [cur_mdname]="cur_mdname" [project]="project"></app-top-options>
+<app-test-time-chart #testTimeChart></app-test-time-chart>
+<!-- <div id="scatter-chart" echarts [options]="scatter_chart" class="scatter-chart" (chartClick)="show_boxs($event)"></div>
+  <div class="suggest">
+      輔助建议决策---系統開發中
+ </div>
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="" nzWidth="80%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+      <div>
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <th>治具編號</th>
+              <th>測試值</th>
+              <th>測試數量</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_test; let i = index">
+              <td>{{item['fix']}}</td>
+              <td>{{item['long']}}</td>
+              <td (click)="showSubDetail(item['key'])" class="test-num">{{item['num']}}</td>
+            </tr>
+          </table>
+        </div>
+ </nz-modal>
+
+<nz-modal [(nzVisible)]="isVisible_1" nzTitle="" [nzStyle]="{ top: '30%' }" nzWidth="65%" (nzOnCancel)="handleCancel_1()" [nzClosable]="cancelOK_1" [nzFooter]="footer_1" (nzOnOk)="handleOk_1()">
+      <div class="box-table">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <th>機種</th>
+              <th>線別</th>
+              <th>站別</th>
+              <th>治具編號</th>
+              <th>序列號</th>
+              <th>測試時間</th>
+              <th>測試值</th>
+              <th>上限</th>
+              <th>中心值</th>
+              <th>下限</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_sub; let i = index">
+              <td>{{item['model']}}</td>
+              <td>{{item['line']}}</td>
+              <td>{{item['station']}}</td>
+              <td>{{item['fix']}}</td>
+              <td>{{item['unitNum']}}</td>
+              <td>{{item['test_time'] | date: 'yyyy-MM-dd hh:mm:ss'}}</td>
+              <td>{{item['test_long']}}</td>
+              <td>{{item['upper']}}</td>
+              <td>{{item['mean']}}</td>
+              <td>{{item['lower']}}</td>
+            </tr>
+          </table>
+        </div>
+ </nz-modal> -->

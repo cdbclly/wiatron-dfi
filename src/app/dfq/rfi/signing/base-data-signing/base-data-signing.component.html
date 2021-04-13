@@ -1,0 +1,99 @@
+<div class="divAll">
+  <div class="divshare">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>RFI {{ 'dfq.dfq-sign-off' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item style="cursor:pointer" (click)="trans()"><a style="border-bottom: 1px solid black;">
+        {{ 'dfq.dfq-yield' | translate }} Base Data {{ 'dfq.dfq-sign-off' | translate }}</a></nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div class="content">
+      {{ 'dfq.rfi-material-yied-sign' | translate }}
+    </div>
+  </div>
+  <div *ngIf="!detialsShow">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="product cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectProduct"
+            [(ngModel)]="selectProduct" (ngModelChange)="productChange()">
+            <ng-container *ngFor="let Product of Product">
+              <nz-option [nzValue]="Product" [nzLabel]="Product"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-model' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="model cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectModel"
+            [(ngModel)]="selectModel">
+            <ng-container *ngFor="let item of Model">
+              <nz-option [nzValue]="item" [nzLabel]="item"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'dfq.dfq-sign-status' | translate }}</nz-form-label>
+        <nz-form-control nzErrorTip="signingStatus cannot be empty">
+          <nz-select style="width: 250px" nzShowSearch nzAllowClear formControlName="selectStatus"
+            [(ngModel)]="selectStatus">
+            <ng-container *ngFor="let item of Status">
+              <nz-option [nzValue]="item" [nzLabel]="item"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading">{{ 'dfq.dfq-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <nz-divider></nz-divider>
+  </div>
+  <div class="div2" *ngIf="!detialsShow">
+    <div class="table-cls" *ngIf="tableShow">
+      <nz-table id="ModelMaterialUpload" *ngIf="editCache !== undefined" #editRowTable nzBordered [nzData]="selectTable"
+        [nzShowPagination]="false" nzPageSize="500">
+        <thead>
+          <tr>
+            <th>{{ 'dfq.dfq-plant' | translate }}</th>
+            <th>{{ 'dfq.dfq-product' | translate }}</th>
+            <th>{{ 'dfq.dfq-model' | translate }}</th>
+            <th>{{ 'dfq.dfq-sign-status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of editRowTable.data">
+            <td>
+              <ng-container>
+                {{data.site}}-{{data.plant}}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.product }}
+              </ng-container>
+            </td>
+            <td (click)="showModal(data.modelId,data.product,data.site,data.plant,data.customer)">
+              <a style="border-bottom: 1px solid black;">{{ data.modelId }}</a>
+            </td>
+            <td>
+              <ng-container>
+                {{ data.status | flowStatus }}
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div class="div3">
+    <app-model-detials-siging *ngIf="detialsShow" [showModalTable]="showModalTable"
+      [editmodelMaterial]="editmodelMaterial" [noFlowIdDataLength]="noFlowIdDataLength" [allData]="allData"
+      (queryTrriger)="query()" (finishSigned)="finishSign($event)"></app-model-detials-siging>
+  </div>
+</div>

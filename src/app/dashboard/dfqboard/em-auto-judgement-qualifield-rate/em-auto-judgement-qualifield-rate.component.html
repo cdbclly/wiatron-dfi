@@ -1,0 +1,28 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div class="board-row">
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <div class="title">C4 Exit</div>
+          <span>KPI:{{ 'dashboard.passingRate' | translate }}<br>{{ 'dashboard.reachRatio' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of c4Options">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onChartEvent($event)"></app-pie-chart>
+      </div>
+    </div>
+    <div class="board-row-dfc">
+      <div class="section">
+        <div style="width:160px">
+          <div class="title">C5 Exit</div>
+          <span>KPI:{{ 'dashboard.passingRate' | translate }}<br>{{ 'dashboard.reachRatio' | translate }}</span>
+        </div>
+      </div>
+      <div class="section" *ngFor="let options of c5Options">
+        <app-pie-chart [title]="options.title" [subtext]="options.subtext" [data]="options.data" [width]="options.width"
+          [height]="options.height" (clickChart)="onChartEvent($event)"></app-pie-chart>
+      </div>
+    </div>
+  </div>
+</nz-spin>

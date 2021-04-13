@@ -1,0 +1,270 @@
+<div class="mrr-material-all" *ngIf="page === 1">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.material-title' | translate }}</nz-breadcrumb-item>
+    <nz-breadcrumb-item><a style="border-bottom: 1px solid #7E7E7E;"
+        (click)="goBack()">{{ 'mrr.material-vendor-select' | translate }}</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{ 'mrr.mrr-vendor' | translate }}{{ 'mrr.mrr-yieldRate' | translate }}</span>
+  </div>
+  <div style="margin-top: 20px;">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-partNumber' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="partNumber"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="partNumberChange$.next($event)"
+            (nzOnSearch)="partNumberSearch$.next($event)">
+            <ng-container *ngFor="let list of partNumbers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-vendor' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 140px" nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="manufacturer" (ngModelChange)="manufacturerChange$.next($event)">
+            <ng-container *ngFor="let list of manufacturers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-plant' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" nzShowSearch formControlName="plant" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="plantChange$.next($event)">
+            <ng-container *ngFor="let list of plants">
+              <nz-option [nzValue]="list.Value" [nzLabel]="list.Value"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-customer' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 120px" nzShowSearch formControlName="customer" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="customerChange$.next($event)">
+            <ng-container *ngFor="let list of customers">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label nzRequired>Project Code</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch formControlName="projectCode"
+            [nzDropdownMatchSelectWidth]="false" (ngModelChange)="projectCodeChange$.next($event)"
+            (nzOnSearch)="projectCodeSearch$.next($event)">
+            <ng-container *ngFor="let list of projectCodes">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Project Name</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzAllowClear nzShowSearch [nzDropdownMatchSelectWidth]="false"
+            formControlName="projectName" (ngModelChange)="projectNameChange$.next($event)"
+            (nzOnSearch)="projectNameSearch$.next($event)">
+            <ng-container *ngFor="let list of projectNames">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>{{ 'mrr.mrr-part' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" nzShowSearch formControlName="part" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="partChange$.next($event)">
+            <ng-container *ngFor="let list of parts">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.name"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <br>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.mrr-stage' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 100px" formControlName="stage" [nzDropdownMatchSelectWidth]="false">
+            <ng-container *ngFor="let list of stages">
+              <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-vendorCode' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-select style="width: 200px" formControlName="vendor" [nzDropdownMatchSelectWidth]="false"
+            (ngModelChange)="vendorChange$.next($event)">
+            <ng-container *ngFor="let list of vendors">
+              <nz-option [nzValue]="list.id" [nzLabel]="list.id" nzCustomContent>
+                {{ list.name }}</nz-option>
+            </ng-container>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired>{{ 'mrr.material-manufacture-date' | translate }}</nz-form-label>
+        <nz-form-control>
+          <nz-date-picker formControlName="dateCode" (ngModelChange)="calWeek($event)" [nzDisabledDate]="disabledDate">
+          </nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input hidden formControlName="partNumberVendor" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [nzLoading]="isLoading"
+            [disabled]="!validateForm.valid">{{ 'mrr.mrr-query' | translate }}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div class="center-line"></div>
+  <div class="mrr-doc-btn">
+    <div class="mrr-doc-btn-left">
+      <button nz-button nzType="primary" [disabled]="!isExt || vendorRecordStatus !== 0" *ngIf="!yieldRateInupt"
+        (click)="edit()">
+        <i class="anticon anticon-edit"></i>{{ 'mrr.mrr-edit' | translate }}
+      </button>
+      <button nz-button nzType="primary" *ngIf="yieldRateInupt" (click)="save()">
+        <i class="anticon anticon-save"></i>{{ 'mrr.mrr-saveData' | translate }}
+      </button>
+      <button nz-button nzType="default" *ngIf="yieldRateInupt" (click)="cancel()">
+        <i class="anticon anticon-close-circle"></i>{{ 'mrr.mrr-cancelEdit' | translate }}
+      </button>
+    </div>
+    <button nz-button nzType="primary" [disabled]="!isExt || vendorRecordStatus !== 0 || !checkData" (click)="submit()">
+      <i class="anticon anticon-upload"></i>{{ 'mrr.mrr-send' | translate }}
+    </button>
+    <span style="color: red;font-size: 14px;">{{promptText}}</span>
+    <div class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </div>
+  </div>
+  <div class="YieldRateInput-table">
+    <nz-spin nzSimple [nzSpinning]="keyinLoading" [nzSize]="'large'">
+      <nz-table id="singleProcessYrTable" #basicTable nzBordered [nzData]="singlePartYrData"
+        [nzNoResult]="dataSetNoResult" nzShowPagination="false" nzFrontPagination="false">
+        <thead>
+          <tr>
+            <th rowspan="2">{{ 'mrr.mrr-vendor' | translate }}</th>
+            <th rowspan="2">{{ 'mrr.mrr-part' | translate }}</th>
+            <th rowspan="2">Critical Process</th>
+            <th rowspan="2">MP {{ 'mrr.material-goal' | translate }}</th>
+            <th colspan="6">
+              {{ 'Week ' + (weekNum ? weekNum : '') }}
+              <br>
+              {{ nowDate ? (nowDate | date: 'yyyy/MM/dd') : '' }}
+            </th>
+          </tr>
+          <tr>
+            <th>{{ 'mrr.material-goal' | translate }}</th>
+            <th>{{ 'mrr.mrr-remark' | translate }}</th>
+            <th>{{ 'mrr.material-input' | translate }}</th>
+            <th>{{ 'mrr.material-output' | translate }}</th>
+            <th>{{ 'mrr.material-poor-amount' | translate }}</th>
+            <th>{{ 'mrr.material-actualYield' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data; let i = index;">
+            <td>{{ data.manufacturer }}</td>
+            <td>{{ data.part }}</td>
+            <td>{{ data.operationName }}</td>
+            <td>{{ data.sqmTargetYieldShow + '%' }}</td>
+
+            <td *ngIf="!yieldRateInupt">
+              {{ (data.vendorTargetYieldShow || data.vendorTargetYieldShow === 0) ? (data.vendorTargetYieldShow + '%') : '%' }}
+            </td>
+            <td *ngIf="yieldRateInupt">
+              <nz-input-number [attr.id]="'vendorTargetYieldShow' + i" style="width: 80px;"
+                [(ngModel)]="singlePartYrDataCache[i].vendorTargetYieldShow" [nzMin]="data.vendorTargetYieldShow"
+                [nzMax]="100" [nzStep]="0.1">
+              </nz-input-number>
+              %
+            </td>
+            <td *ngIf="!yieldRateInupt">
+              {{ data.remark }}</td>
+            <td *ngIf="yieldRateInupt">
+              <textarea [attr.id]="'remark' + i" nz-input style="width: 100px;"
+                [(ngModel)]="singlePartYrDataCache[i].remark"></textarea>
+            </td>
+            <td *ngIf="!yieldRateInupt">
+              {{ data.input === 0 && data.output === 0 ? 'NA' : data.input }}</td>
+            <td *ngIf="yieldRateInupt && data.operationName !== 'RTY'">
+              <nz-input-number [attr.id]="'input' + i" style="width: 80px;" [(ngModel)]="singlePartYrDataCache[i].input"
+                [nzMin]="0" [nzMax]="999999" [nzStep]="1">
+              </nz-input-number>
+            </td>
+            <td *ngIf="yieldRateInupt && data.operationName === 'RTY'"></td>
+            <td *ngIf="!yieldRateInupt">
+              {{ data.input === 0 && data.output === 0 ? 'NA' : data.output }}</td>
+            <td *ngIf="yieldRateInupt && data.operationName !== 'RTY'">
+              <nz-input-number [attr.id]="'output' + i" style="width: 80px;"
+                [(ngModel)]="singlePartYrDataCache[i].output" [nzMin]="0" [nzMax]="999999" [nzStep]="1">
+              </nz-input-number>
+            </td>
+            <td *ngIf="yieldRateInupt && data.operationName === 'RTY'"></td>
+            <td *ngIf="!yieldRateInupt && data.operationName !== 'RTY'">
+              {{ data.input === 0 && data.output === 0 ? 'NA' : data.input - data.output }}</td>
+            <td *ngIf="!yieldRateInupt && data.operationName === 'RTY'"></td>
+            <td *ngIf="yieldRateInupt && data.operationName !== 'RTY'">
+              {{ singlePartYrDataCache[i].input === 0 && singlePartYrDataCache[i].output === 0 ? 'NA' : singlePartYrDataCache[i].input - singlePartYrDataCache[i].output }}
+            </td>
+            <td *ngIf="yieldRateInupt && data.operationName === 'RTY'"></td>
+            <td [ngStyle]="data.markRed ? {'backgroundColor': 'red'} : {}"><a
+                [ngStyle]="data.markRed ? {'color': '#ccc'} : {}"
+                (click)="trClick(data)">{{ data.actual ? (Mathround(data.actual * 10000) / 100) + '%' : (0 + '%') }}</a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <ng-template #dataSetNoResult>
+        <ng-container *ngIf="!hasQueried; else elTableNoResult">
+          {{ 'mrr.material-noData' | translate }}
+        </ng-container>
+        <ng-template #elTableNoResult>
+          <ng-container *ngIf="isExt; else elseIsExt">
+            {{ 'mrr.material-contact-sqm' | translate }} <span style="color: royalblue;">
+              <{{ 'mrr.material-model-partNo' | translate }}>
+            </span>
+          </ng-container>
+          <ng-template #elseIsExt>
+            {{ 'mrr.material-please' | translate }} {{ 'mrr.mrr-maintain' | translate }} <a
+              style="color: rgba(255, 38, 0, 0.9); border-bottom: 1px solid rgba(255, 38, 0, 0.9);"
+              (click)="linkBaseDataParts()">
+              <{{ 'mrr.material-model-partNo' | translate }}>
+            </a>
+          </ng-template>
+          , {{ 'mrr.material-if-maintain' | translate }} ->
+          <button nz-button [nzType]="'primary'" (click)="query()">
+            <i class="anticon anticon-reload"></i>
+            {{ 'mrr.material-requery' | translate }}
+          </button>
+        </ng-template>
+      </ng-template>
+    </nz-spin>
+  </div>
+</div>
+
+<app-manufaturer-input-issue *ngIf="page === 2" (pageRoute)="pageRouteFn($event)" [toTopIssueDate]="topIssueDate">
+</app-manufaturer-input-issue>

@@ -1,0 +1,76 @@
+$centerHeight: calc(100vh - 95px);
+
+.dfc-wh {
+  height: $centerHeight;
+  width: 100%;
+
+}
+
+.title {
+  width: 100%;
+}
+
+.dfc-wg {
+  margin-left: -5%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 8px;
+
+  div {
+    width: 21.2%;
+  }
+}
+
+.head {
+  span {
+    font-size: 8px;
+    font-weight: normal;
+  }
+}
+
+.plantPlus {
+  margin-left: 5%;
+}
+
+.customPlus {
+  margin-left: 25%;
+}
+
+.dfc-query {
+  margin-top: 10px;
+  width: 100%;
+  overflow: hidden;
+
+  div {
+    height: 42px;
+    display: block;
+    float: left;
+  }
+
+  .dfc-query-btn {
+    margin-top: 10px;
+    margin-right: 10px;
+    width: 73px;
+
+    button {
+      width: 73px;
+    }
+  }
+}
+
+.query-table {
+  margin-top: 10px;
+}
+
+.dfc-line {
+  margin-top: 19px;
+  color: rgba(80, 80, 80, 1);
+  background-color: rgba(212, 212, 212, 1);
+  width: 100%;
+  height: 1px;
+}
+
+.download {
+  margin-left: 95%
+}

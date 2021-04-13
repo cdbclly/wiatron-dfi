@@ -1,0 +1,32 @@
+<div class="center">
+  <ng-container *ngIf="!notFillIn;else notFillInTemplate">
+    <div>
+      <h1>原因對策填寫</h1>
+      <h2>單號:{{ number }}</h2>
+      <div *ngIf="type === 'traceback'">
+        <div *ngFor="let item of reply;let index = index" class="traceback">
+          <h3>第{{ index + 1 }}次</h3>
+          <div>
+            <div>原因</div>
+            <textarea disabled>{{ item.reason }}</textarea>
+          </div>
+          <div>
+            <div>對策</div>
+            <textarea disabled>{{ item.countermeasures }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div>原因</div>
+      <textarea [(ngModel)]="reason"></textarea>
+      <div>對策</div>
+      <textarea [(ngModel)]="countermeasures"></textarea>
+      <div style="text-align: center;">
+        <button (click)="send()">送出</button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #notFillInTemplate>
+    <h1 style="color:red">此單號已填寫完成或不可填寫</h1>
+  </ng-template>
+</div>

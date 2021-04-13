@@ -1,0 +1,65 @@
+<div echarts [options]="line_chart" id="line-chart"  class="line-chart" (chartClick)="showModal($event)"></div>
+
+<div class="suggest">
+  輔助建议决策
+</div>
+<div class="suggest1">{{comment}}</div>
+
+   <nz-modal [(nzVisible)]="isVisible" nzTitle="" nzWidth="80%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+    <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadTotal(detailTable_total, '組裝治具retest rate total')">下载</button>
+     <div class="box-table-total">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+                <th style="width: 35%;">壓頭編號</th>
+                <th style="width: 35%;">測試不良項目</th>
+              <th style="width: 15%;">Retest Rate</th>
+              <th style="width: 15%;">測試數量</th>
+            </thead>
+            <tr *ngFor="let item of detailTable_total; let i = index">
+              <td>{{item['tdname']}}</td>
+              <td>{{item['mdname']}}</td>
+              <td>{{item['retestrate']}}</td>
+              <td (click)="showSubDetail(item)" class="test-num">{{item['num']}}</td>
+            </tr>
+          </table>
+        </div>
+    </nz-modal>
+
+    <nz-modal [(nzVisible)]="isVisible_1" nzWidth="65%" [nzStyle]="{ top: '30%' }" nzTitle="" (nzOnCancel)="handleCancel_1()" [nzClosable]="cancelOK_1" [nzFooter]="footer_1" (nzOnOk)="handleOk_1()">
+        <button nz-button nzType="primary" style="border-radius: 6px;margin-left: 95%;height: 25px;font-size: 12px; margin-bottom: 10px;" (click)="downloadDetail('組裝治具retest rate detail')">下载</button>
+      <div class="box-table">
+            <table cellspacing="0" cellpadding="0">
+              <thead>
+                <th>機種</th>
+                <th>線別</th>
+                <th>站別</th>
+                <th>治具編號</th>
+                <th>機台序列號</th>
+                <th>開始測試時間</th>
+                <th>結束測試時間</th>
+                <th>测试值</th>
+                <th>测试值上限</th>
+                <th>测试值下限</th>
+
+             </thead>
+             <tr *ngFor="let item of defect_list; let i = index">
+               <!-- <td>{{detailTable_loss['model']}}</td>
+               <td>{{detailTable_loss['line']}}</td>
+               <td>{{detailTable_loss['stage']}}</td>
+               <td>{{detailTable_loss['fixture']}}</td>
+               <td>{{item.ProductionSN}}</td> -->
+               <td>{{item.ProductionSN.split(';*&')[1] ? item.ProductionSN.split(';*&')[0] : detailTable_loss['model']}}</td>
+               <td>{{item.ProductionSN.split(';*&')[1] ? item.ProductionSN.split(';*&')[1] : detailTable_loss['line']}}</td>
+               <td>{{item.ProductionSN.split(';*&')[2] ? item.ProductionSN.split(';*&')[2] : detailTable_loss['stage']}}</td>
+               <td>{{item.ProductionSN.split(';*&')[3] ? item.ProductionSN.split(';*&')[3] : detailTable_loss['fixture']}}</td>
+               <td>{{item.ProductionSN.split(';*&')[4] ? item.ProductionSN.split(';*&')[4] : item.ProductionSN}}</td>
+
+               <td>{{item.StartTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+               <td>{{item.EndTime | date:'yyyy/MM/dd HH:mm:ss'}}</td>
+               <td>{{item.result}}</td>
+               <td>{{item.item_upperlimit}}</td>
+               <td>{{item.item_lowerlimit}}</td>
+              </tr>
+            </table>
+          </div>
+      </nz-modal>

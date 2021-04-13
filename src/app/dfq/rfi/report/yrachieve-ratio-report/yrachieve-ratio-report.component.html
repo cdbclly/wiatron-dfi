@@ -1,0 +1,171 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFQ Report</nz-breadcrumb-item>
+  <nz-breadcrumb-item>良率達成比例Report</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  良率達成比例Report
+</div>
+<div class="query">
+  <div class="dfc-query">
+    <div class="dfc-query-half">
+      <div>
+        <div class="dfc-query-span">
+          <span style="color:red">*</span>
+          <span>廠別</span>
+        </div>
+        <nz-select [(ngModel)]="plantSelectValue" nzShowSearch [nzServerSearch]="true"
+          (nzOnSearch)="onPlantSearch($event)" (ngModelChange)="changePlant()">
+          <ng-container *ngFor="let list of listOfPlantSelectOption">
+            <nz-option *ngIf="!isPlantListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isPlantListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span2">
+          <span>BU</span>
+        </div>
+        <nz-select [(ngModel)]="customerSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (nzOnSearch)="onCustomerSearch($event)" (ngModelChange)="changeCustomer()">
+          <ng-container *ngFor="let list of listOfCustomerSelectOption">
+            <nz-option *ngIf="!isPlantListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isCustomerListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+      <!-- 添加客戶別 -->
+      <div>
+        <div class="dfc-query-span2">
+          <span>客戶別</span>
+        </div>
+        <nz-select [(ngModel)]="customerSelectValue" nzAllowClear nzShowSearch [nzServerSearch]="true"
+          (nzOnSearch)="onCustomerSearch($event)" (ngModelChange)="changeCustomer()">
+          <ng-container *ngFor="let list of listOfCustomerSelectOption">
+            <nz-option *ngIf="!isPlantListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isCustomerListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span2">
+          <span>產品</span>
+        </div>
+        <nz-select [(ngModel)]="modelTypeSelectValue" nzAllowClear [nzServerSearch]="true"
+          (nzOnSearch)="onModelTypeSearch($event)" (ngModelChange)="changeModelType()">
+          <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+            <nz-option *ngIf="!isModelTypeListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelTypeListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-span2">
+          <span>達標狀況</span>
+        </div>
+        <nz-select [(ngModel)]="modelTypeSelectValue" nzAllowClear [nzServerSearch]="true"
+          (nzOnSearch)="onModelTypeSearch($event)" (ngModelChange)="changeModelType()">
+          <ng-container *ngFor="let list of listOfStatus">
+            <nz-option *ngIf="!isModelTypeListLoading" [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-full">
+      <div>
+        <div class="dfc-query-span">
+          <span>Project Name</span>
+        </div>
+        <nz-select [(ngModel)]="modelNameSelectValue" nzMode="multiple" nzAllowClear [nzServerSearch]="true"
+          (nzOnSearch)="onModelNameSearch($event)" (ngModelChange)="changeModelName($event)">
+          <ng-container *ngFor="let list of listOfModelNameSelectOption">
+            <nz-option *ngIf="!isModelNameListLoading" [nzValue]="list" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelNameListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-full">
+
+      <div>
+        <div class="dfc-query-span">
+          <span>Project Code</span>
+        </div>
+        <nz-select nzMode="multiple" [(ngModel)]="modelFamilySelectValue" nzAllowClear [nzDisabled]="true">
+          <ng-container *ngFor="let list of listOfModelFamilySelectOption">
+            <nz-option *ngIf="!isModelFamilyListLoading" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+          </ng-container>
+          <nz-option *ngIf="isModelFamilyListLoading" nzDisabled nzCustomContent>
+            <i class="anticon anticon-loading anticon-spin loading-icon"></i> Loading Data...
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div class="dfc-query-half">
+      <div>
+        <div class="dfc-query-span">
+          <span>C階段</span>
+        </div>
+        <nz-select [(ngModel)]="cFlowSelectValue" nzAllowClear [nzDisabled]="cFlowSelectFlag">
+          <ng-container *ngFor="let list of listOfCFlowSelectOption">
+            <nz-option [nzValue]="list" [nzLabel]="list"></nz-option>
+          </ng-container>
+        </nz-select>
+      </div>
+      <div>
+        <div class="dfc-query-btn">
+          <button nz-button [nzSize]="'normal'" nzType="primary" (click)="queryFirstEchart()">Query</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<nz-divider></nz-divider>
+<div>
+  <div class="download">
+    <button nz-button [nzType]="'primary'" title="下載" nzShape="circle" (click)="download()">
+      <i class="anticon anticon-download"></i>
+    </button>
+  </div>
+</div>
+<br>
+<div>
+  <nz-table #nzTable nzBordered="true" id="yrReport" [nzData]="null" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th rowspan="2">廠別</th>
+        <th rowspan="2">客戶別</th>
+        <th rowspan="2">產品</th>
+        <th rowspan="2">C階段</th>
+        <th rowspan="2">Project Code</th>
+        <th rowspan="2">Project Name</th>
+        <th colspan="2">良率</th>
+        <th rowspan="2">達成狀況</th>
+      </tr>
+      <tr>
+        <th>Target</th>
+        <th>Actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

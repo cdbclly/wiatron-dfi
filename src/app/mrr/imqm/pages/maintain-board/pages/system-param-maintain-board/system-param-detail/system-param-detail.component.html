@@ -1,0 +1,334 @@
+<div class="query-row">
+  <div class="field1">
+    <span class="span-width1">
+      <span style="color: red;">*</span>
+      <span>{{'imq-mt-category' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curCategory" (ngModelChange)="getOptions('plant', factoryGroup)">
+      <nz-option nzLabel="{{'imq-mt-drbyMonth' | translate}}" nzValue="pddr"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-yrTargetVendor' | translate}}" nzValue="pdyr"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-stoplineCount' | translate}}" nzValue="hold"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-spcCalc' | translate}}" nzValue="spc"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-autoTraceNum' | translate}}" nzValue="trace"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-cpkCriterian' | translate}}" nzValue="cpk"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-deadLine' | translate}}" nzValue="deadline"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-vendorProductcat' | translate}}" nzValue="shift"></nz-option>
+      <nz-option nzLabel="{{'imq-mt-faseData' | translate}}" nzValue="fakeRawdata"></nz-option>
+    </nz-select>
+  </div>
+  <!-- 厂别 -->
+  <div class="field1">
+    <span class="span-width1">
+      <span *ngIf="isShowFactoryMark" style="color: red;">*</span>
+      <span>{{'imq-plant' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curFactory" [nzDisabled]="isDisableFactory"
+      (ngModelChange)="getOptions( curCategory === 'pdyr' ? 'model' :'product',curCategory === 'pdyr' ? modelGroup : prodTypeGroup)">
+      <nz-option *ngFor="let factory of factoryGroup" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+    </nz-select>
+  </div>
+<!-- 产品别 -->
+  <div class="field1">
+    <span class="span-width1">
+      <span *ngIf="isShowProductMark" style="color: red;">*</span>
+      <span>{{'imq-product' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curProdType" [nzDisabled]="isDisableProdType"
+      (ngModelChange)="getOptions('model', modelGroup)">
+      <nz-option *ngFor="let prodType of prodTypeGroup" [nzLabel]="prodType" [nzValue]="prodType"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1">
+    <span class="span-width1">
+      <span *ngIf="isShowModelMark" style="color: red;">*</span>
+      <span *ngIf="curCategory !== 'shift'">{{'imq-model' | translate}}</span>
+      <span *ngIf="curCategory === 'shift'">{{'imq-shft' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curModel" [nzDisabled]="isDisableModel"
+      (ngModelChange)="getOptions('productName', productGroup)">
+      <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+    </nz-select>
+  </div>
+  <!-- 品名 -->
+  <div class="field1">
+    <span class="span-width1">
+      <span>{{'imq-proName' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curProduct" [nzDisabled]="isDisableProduct"
+      (ngModelChange)="getOptions('partNumber', materialGroup)">
+      <nz-option *ngFor="let product of productGroup" [nzLabel]="product" [nzValue]="product"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field1">
+    <span class="span-width1">
+      <span>{{'imq-partNumber' | translate}}</span>
+    </span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="curMaterial" [nzDisabled]="isDisableMaterial">
+      <nz-option *ngFor="let material of materialGroup" [nzLabel]="material" [nzValue]="material"></nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px" (click)="query()"
+    [disabled]="isDisableQueryButton">Query</button>
+</div>
+
+<button nz-button [nzType]="'primary'" title="{{'imq-create' | translate}}" nzShape="circle" *ngIf="isAuthCreate"  (click)="showModal()">
+  <i class="anticon anticon-plus"></i>
+</button>
+
+<div>
+  <nz-table #plantTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzHideOnSinglePage]='true' [nzPageSize]="10">
+    <thead>
+      <tr>
+        <th width="10%">{{'imq-plant' | translate}}</th>
+        <th width="10%">{{'imq-product' | translate}}</th>
+        <th width="15%" *ngIf="curCategory !== 'shift'">{{'imq-model' | translate}}</th>
+        <th width="15%" *ngIf="curCategory === 'shift'">{{'imq-shft' | translate}}</th>
+        <th width="20%">{{'imq-proName' | translate}}</th>
+        <th width="20%">{{'imq-partNumber' | translate}}</th>
+        <th *ngIf="!curCategory" width="15%">{{'imq-mt-setValue' | translate}}</th>
+        <th *ngIf="curCategory == 'pddr'" width="15%">{{'imq-mt-drbyMonth' | translate}}</th>
+        <th *ngIf="curCategory == 'pdyr'" width="15%">{{'imq-mt-yrTargetVendor' | translate}}</th>
+        <th *ngIf="curCategory == 'hold'" width="15%">{{'imq-mt-stoplineCount' | translate}}</th>
+        <th *ngIf="curCategory == 'spc'" width="15%">{{'imq-mt-spcCalc' | translate}}</th>
+        <th *ngIf="curCategory == 'trace'" width="15%">{{'imq-mt-autoTraceNum' | translate}}</th>
+        <th *ngIf="curCategory == 'cpk'" width="15%">{{'imq-mt-cpkCriterian' | translate}}</th>
+        <th *ngIf="curCategory == 'deadline'" width="15%">{{'imq-mt-deadLine' | translate}}</th>
+        <th *ngIf="curCategory == 'shift'" width="15%">{{'imq-mt-vendorProductcat' | translate}}</th>
+        <th *ngIf="curCategory == 'fakeRawdata'" width="15%">{{'imq-mt-faseData' | translate}}</th>
+
+        <th width="10%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of plantTable.data;  let i = index;">
+        <td>{{data.detail.plant}}</td>
+        <td style="text-align: left;">
+            <ng-container *ngIf="!editCache[data.key].edit">
+              {{data.detail.product}}
+            </ng-container>
+            <ng-container *ngIf=" editCache[data.key].edit && (curCategory == 'spc'|| curCategory == 'cpk' || curCategory == 'trace' || curCategory == 'deadline' || curCategory == 'shift' || curCategory == 'fakeRawdata')">
+              <input type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.product">
+            </ng-container>
+          </td>
+        <td style="text-align: left;">
+          <ng-container *ngIf="!editCache[data.key].edit">
+            {{data.detail.model}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.key].edit && (curCategory == 'spc' || curCategory == 'cpk'|| curCategory == 'trace' || curCategory == 'pdyr' || curCategory == 'deadline' || curCategory == 'shift' || curCategory == 'fakeRawdata')">
+            <input type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.model">
+          </ng-container>
+        </td>
+        <td style="text-align: left;">
+            <ng-container *ngIf="!editCache[data.key].edit">
+              {{data.detail.productName}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.key].edit && (curCategory == 'pdyr' || curCategory == 'deadline' || curCategory == 'shift')">
+              <input type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.productName">
+            </ng-container>
+          </td>
+        <td style="text-align: left;">
+          <ng-container  *ngIf="!editCache[data.key].edit">
+            {{data.detail.partNumber}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.key].edit && (curCategory == 'pdyr' || curCategory == 'deadline' || curCategory == 'shift')">
+            <input type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.partNumber">
+          </ng-container>
+        </td>
+        <!-- 第六列 -->
+        <td style="text-align: left;">
+          <ng-container [ngSwitch]="curCategory" *ngIf="!editCache[data.key].edit">
+            <span *ngSwitchCase="'pddr'">
+                {{data.detail.drMonthlyAverage}} %
+            </span>
+            <span *ngSwitchCase="'hold'">
+                {{data.detail.numberStopsMonthlyAverage}} 次
+            </span>
+            <span *ngSwitchCase="'trace'">
+                {{data.detail.automaticTraceability}} Pcs
+            </span>
+            <span *ngSwitchCase="'pdyr'">
+                {{data.detail.yrTarget}} %
+            </span>
+            <span *ngSwitchCase="'spc'">
+                {{data.detail.spcCalculationFrequency}} 時
+            </span>
+            <span *ngSwitchCase="'cpk'">
+                {{data.detail.cpkCriteria}}
+            </span>
+            <span *ngSwitchCase="'deadline'">
+              {{data.detail.vendorReplyDeadline}} 天
+            </span>
+            <span *ngSwitchCase="'shift'">
+              {{data.detail.text}}
+            </span>
+            <span *ngSwitchCase="'fakeRawdata'">
+              {{data.detail.fakeRawdataCount}}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="editCache[data.key].edit" [ngSwitch]="curCategory">
+                  <span *ngSwitchCase="'pdyr'">
+                      <input type="text" style="width: 70%;" nz-input [(ngModel)]="editCache[data.key].data.detail.yrTarget"> %
+                  </span>
+                  <span *ngSwitchCase="'pddr'">
+                      <input type="text" style="width: 70%;" nz-input [(ngModel)]="editCache[data.key].data.detail.drMonthlyAverage"> %
+                  </span>
+                  <span *ngSwitchCase="'hold'">
+                      <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.numberStopsMonthlyAverage"> 次
+                  </span>
+                  <span *ngSwitchCase="'spc'">
+                      <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.spcCalculationFrequency"> 時
+                  </span>
+                  <span *ngSwitchCase="'trace'">
+                      <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.automaticTraceability"> Pcs
+                  </span>
+                  <span *ngSwitchCase="'cpk'">
+                      <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.cpkCriteria">
+                  </span>
+                  <span *ngSwitchCase="'deadline'">
+                    <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.vendorReplyDeadline">天
+                  </span>
+                  <span *ngSwitchCase="'shift'">
+                    <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.text">
+                  </span>
+                  <span *ngSwitchCase="'fakeRawdata'">
+                    <input style="width: 70%;" type="text" nz-input [(ngModel)]="editCache[data.key].data.detail.fakeRawdataCount">
+                  </span>
+            </ng-container>
+        </td>
+        <!-- action -->
+        <td>
+          <ng-container *ngIf="!editCache[data.key].edit && !(editCache[data.key].data.detail.product === '*' && editCache[data.key].data.detail.model === '*'
+          && editCache[data.key].data.detail.productName === '*' && editCache[data.key].data.detail.partNumber === '*')">
+            <div *ngIf="!actionEnabled">
+              <a style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+            </div>
+            <div *ngIf="actionEnabled && isAuthEdit">
+              <a style="margin-left: 10px;" (click)="startEdit(data.key, curCategory)">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <nz-popconfirm [nzTitle]="'Sure to delete?'" (nzOnConfirm)="deleteRow(data.key)" [ngClass]="{'disabled': !isAuthDel }">
+                <a nz-popconfirm ><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+              </nz-popconfirm>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="editCache[data.key].edit">
+            <a (click)="saveEdit(data.key)">
+              <i class="anticon anticon-save"></i>
+            </a>
+            <a style="margin-left:10px;" (click)="cancelEdit(data.key)">
+              <i class="anticon anticon-close-circle"></i>
+            </a>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+<!--<nz-modal [(nzVisible)]="isModalVisible" nzTitle="新增項目"  [nzFooter]="modalButton" (nzOnCancel)="handleModalCancel()" (nzOnOk)="handleModalOk()">-->
+<nz-modal [(nzVisible)]="isModalVisible" nzTitle="{{'imq-mt-createItem' | translate}}"  [nzFooter]="modalButton"  (nzOnCancel)="handleModalCancel()">
+  <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+  <div style="margin-left: 50px;">
+    <!-- 维护项目 -->
+    <p>
+      <span class="span-width2">{{'imq-mt-item' | translate}}</span>
+      <nz-select style="width: 390px;height: 35px;" nzShowSearch nzAllowClear [(ngModel)]="curModalCategory"
+        (ngModelChange)="getModalOptions('plant', factoryGroupAdd)">
+        <nz-option nzLabel="{{'imq-mt-drbyMonth' | translate}}" nzValue="pddr"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-yrTargetVendor' | translate}}" nzValue="pdyr"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-stoplineCount' | translate}}" nzValue="hold"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-spcCalc'| translate}}" nzValue="spc"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-autoTraceNum' | translate}}" nzValue="trace"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-cpkCriterian' | translate}}" nzValue="cpk"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-deadLine' | translate}}" nzValue="deadline"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-vendorProductcat' | translate}}" nzValue="shift"></nz-option>
+        <nz-option nzLabel="{{'imq-mt-faseData' | translate}}" nzValue="fakeRawdata"></nz-option>
+      </nz-select>
+    </p>
+    <!-- 厂别 -->
+    <p>
+          <span *ngIf="curModalCategory" style="color: red;">*</span>
+          <span class="span-width2">{{'imq-plant' | translate}}</span>
+      <!-- <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputFactory"
+        [disabled]="isDisableModalFactory" (change)="checkModalInput()"/> -->
+    <nz-select style="width: 390px;height: 35px;"  nzShowSearch nzAllowClear [(ngModel)]="inputFactory" (ngModelChange)="modalSelectGroup(modelGroup, 'model')">
+      <nz-option *ngFor="let factory of factoryGroupAdd" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+    </nz-select>
+    </p>
+    <!-- 产品别 -->
+    <p>
+      <span *ngIf="curModalCategory === 'deadline' || curModalCategory === 'shift'" style="color: red;">*</span>
+      <span class="span-width2">{{'imq-product' | translate}}</span>
+      <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputProdType"
+        [disabled]="isDisableModalProdType" (change)="checkModalInput()"/>
+    </p>
+    <!-- 机种 -->
+    <p>
+      <span *ngIf="curModalCategory == 'pdyr' || curModalCategory === 'shift'" style="color: red;">*</span>
+      <span class="span-width2" *ngIf="curModalCategory !== 'shift'">{{'imq-model' | translate}}</span>
+      <span class="span-width2" *ngIf="curModalCategory === 'shift'">{{'imq-shft' | translate}}</span>
+      <ng-container *ngIf="curModalCategory === 'pdyr' else modalModelTemplate">
+        <nz-select style="width: 390px;height: 35px;"  nzShowSearch nzAllowClear [(ngModel)]="inputModel"
+        (ngModelChange)="modalSelectGroup(productGroup, 'productName')"
+        >
+          <nz-option *ngFor="let model of modelGroup" [nzLabel]="model" [nzValue]="model"></nz-option>
+        </nz-select>
+      </ng-container>
+      <ng-template #modalModelTemplate>
+        <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputModel"
+        [disabled]="isDisableModalModel" (change)="checkModalInput()"/>
+      </ng-template>
+    </p>
+    <!-- 品名 -->
+    <p>
+      <span class="span-width2">{{'imq-proName' | translate}}</span>
+      <ng-container *ngIf="curModalCategory === 'pdyr'; else modalProductTemplate">
+        <nz-select style="width: 390px;height: 35px;"  nzShowSearch nzAllowClear [(ngModel)]="inputProduct"
+        (ngModelChange)="modalSelectGroup(materialGroup, 'partNumber')"
+        >
+          <nz-option *ngFor="let product of productGroup" [nzLabel]="product" [nzValue]="product"></nz-option>
+        </nz-select>
+      </ng-container>
+      <ng-template #modalProductTemplate>
+        <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputProduct"
+        [disabled]="isDisableModalProduct" (change)="checkModalInput()"/>
+      </ng-template>
+    </p>
+    <!-- 料号 -->
+    <p>
+      <span class="span-width2">{{'imq-partNumber' | translate}}</span>
+      <ng-container *ngIf="curModalCategory === 'pdyr'; else modalMaterialTemplate">
+        <nz-select style="width: 390px;height: 35px;"  nzShowSearch nzAllowClear [(ngModel)]="inputMaterial"
+        (ngModelChange)="checkModalInput()"
+        >
+          <nz-option *ngFor="let material of materialGroup" [nzLabel]="material" [nzValue]="material"></nz-option>
+        </nz-select>
+      </ng-container>
+      <ng-template #modalMaterialTemplate>
+        <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputMaterial"
+        [disabled]="isDisableModalMaterial" (change)="checkModalInput()"/>
+      </ng-template>
+    </p>
+    <!-- 最后一栏 -->
+    <p>
+      <span *ngIf="curModalCategory" style="color: red;">*</span>
+      <span class="span-width1" *ngIf="!curModalCategory">{{'imq-mt-setValue' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'pddr'">{{'imq-mt-drbyMonth' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'pdyr'">{{'imq-mt-yrTargetVendor' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'hold'">{{'imq-mt-stoplineCount' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'spc'">{{'imq-mt-spcCalc' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'trace'">{{'imq-mt-autoTraceNum' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'cpk'">{{'imq-mt-cpkCriterian' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'deadline'">{{'imq-mt-deadLine' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'shift'">{{'imq-mt-vendorProductcat' | translate}}</span>
+      <span class="span-width1" *ngIf="curModalCategory == 'fakeRawdata'">{{'imq-mt-faseData' | translate}}</span>
+      <input type="text" nz-input style="width: 390px;height: 35px;" [(ngModel)]="inputValue"
+        [disabled]="isDisableModalValue" (change)="checkModalInput()"/>
+    </p>
+  </div>
+  <ng-template #modalButton>
+    <button nz-button nzType="default" (click)="handleModalCancel()"> {{'imq-cancel' | translate}}</button>
+    <button nz-button nzType="primary" [disabled]="!isModalPass" (click)="handleModalOk()">{{'imq-confirm' | translate}}</button>
+  </ng-template>
+</nz-modal>

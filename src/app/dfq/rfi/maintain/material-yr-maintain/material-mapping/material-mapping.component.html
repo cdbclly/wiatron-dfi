@@ -1,0 +1,64 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-new-model-yield-forecast' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-data-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.rfi-institutional-material-maintenance' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'dfq.dfq-material' | translate }}Mapping</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'dfq.dfq-material' | translate }}Mapping
+</div>
+<form nz-form [nzLayout]="'inline'" [formGroup]="validatorForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-product' | translate }}</nz-form-label>
+    <nz-form-control class="formselect-cls" nzErrorTip="product cannot be empty">
+      <nz-select nzShowSearch nzAllowClear formControlName="productId" [(ngModel)]="selectProduct"
+        (ngModelChange)="getMaterial()">
+        <ng-container *ngFor="let product of products">
+          <nz-option [nzValue]="product.id" [nzLabel]="product.id"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-plant' | translate }}</nz-form-label>
+    <nz-form-control class="formselect-cls" nzErrorTip="plant cannot be empty">
+      <nz-select nzShowSearch nzAllowClear nzLoading formControlName="plantId" [(ngModel)]="selectPlant">
+        <ng-container *ngFor="let plant of plants">
+          <nz-option [nzValue]="plant" [nzLabel]="plant"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>{{ 'dfq.dfq-material' | translate }}</nz-form-label>
+    <nz-form-control class="formselect-cls" nzErrorTip="material cannot be empty">
+      <nz-select nzShowSearch nzAllowClear nzLoading formControlName="materialId" [(ngModel)]="selectMaterial"
+        (ngModelChange)="getDFQMaterial()">
+        <ng-container *ngFor="let material of materials">
+          <nz-option [nzValue]="material.id" [nzLabel]="material.name"></nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isLoading"
+        [disabled]="!validatorForm.valid">{{ 'dfq.dfq-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+<nz-divider></nz-divider>
+
+<div class="mapping-transfer" *ngIf="transferShow">
+  <div class="transfer">
+    <nz-transfer nzShowSearch [nzDataSource]="nonRelatedMaterials" [nzTitles]="[this.title1,this.title2]"
+      [nzListStyle]="{'width.px': 450, 'height.px': 600, 'background-color': 'white', 'text-align': 'left'}"
+      (nzChange)="change($event)">
+    </nz-transfer>
+    <div style="margin-top: 10px; text-align: center;">
+      <button nz-button nzType="primary" [disabled]="saveFlag"
+        (click)="save()">{{ 'dfq.dfq-save' | translate }}</button>
+    </div>
+  </div>
+</div>

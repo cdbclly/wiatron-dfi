@@ -1,0 +1,98 @@
+<!-- 表單 -->
+<form nz-form [nzLayout]="'inline'" [formGroup]="validateForm" (ngSubmit)="query()">
+  <nz-form-item>
+    <nz-form-label>{{ 'mrr.mrr-file' | translate }}</nz-form-label>
+    <nz-form-control>
+      <nz-select style="width: 170px" nzShowSearch nzAllowClear formControlName="fileName" nzMode="multiple"
+        (ngModelChange)="selcetOption($event)"  [nzFilterOption]="filterOption"   (nzOnSearch)="search($event)">
+        <ng-container *ngFor="let file of fileSelectArr">
+          <nz-option [nzValue]="file" [nzLabel]="file">{{file}}</nz-option>
+        </ng-container>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [nzLoading]="isSearchLoading">{{ 'mrr.mrr-query' | translate }}</button>
+    </nz-form-control>
+  </nz-form-item>
+  <span style="font-size: 16px; font-weight: bold;">{{ 'mrr.vendor-sop' | translate }}
+    <a><i class="anticon anticon-download" (click)="downSqmSop()" style="font-size: 16px;"></i></a></span>
+</form>
+
+<!-- table -->
+<div class="table-cls">
+  <div class="table-inner">
+    <div class="dfq-btn-add">
+      <button nz-button nzType="primary" title="'mrr.vendor-addone' | translate" nzShape="circle" (click)="addFile()">
+        <i class="anticon anticon-plus"></i>
+      </button>
+    </div>
+    <nz-table class="nz-table" #editRowTable nzBordered [nzShowSizeChanger]="true" [nzPageSize]="5"
+      [nzData]="diasplayDatas">
+      <thead>
+        <tr>
+          <th>{{ 'mrr.mrr-file' | translate }}</th>
+          <th>{{ 'mrr.mrr-category' | translate }}1</th>
+          <th>{{ 'mrr.mrr-category' | translate }}2</th>
+          <th width="15%">{{ 'mrr.vendor-disable-enable' | translate }}</th>
+          <th width="9%">{{ 'mrr.vendor-addDate' | translate }}</th>
+          <th width="9%">{{ 'mrr.vendor-addMember' | translate }}</th>
+          <th width="8%">{{ 'mrr.mrr-action' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of editRowTable.data">
+          <td style="font-weight: bold; text-align: left;">
+            <i class="anticon anticon-folder-open"></i>&nbsp;&nbsp;{{ data.name }}
+          </td>
+          <td>{{data.vendorDocumentCategoryName}}</td>
+          <td>{{data.vendorDocumentSubCategoryName}}</td>
+          <td>
+            <nz-switch [(ngModel)]="data.isEnable" [nzDisabled]="data.isSwitchDisabled"></nz-switch>
+          </td>
+          <td>{{data.createdDate}}</td>
+          <td>{{data.createUser}}</td>
+          <td>
+            <ng-container *ngIf="!data.edit; else saveTpl">
+              <button class="editButton" (click)="startEdit(data)" [disabled]="data.isEditDisabled"
+                [ngStyle]="{'color': data.isEditDisabled === true ? '#B2B2B2': '#595959'}">
+                <i class="anticon anticon-edit"></i></button>
+            </ng-container>
+            <ng-template #saveTpl>
+              <a (click)="saveEdit(data)"><i class="anticon anticon-save"></i></a>&nbsp;&nbsp;&nbsp;
+              <a (click)="cancelEdit(data)"><i class="anticon anticon-close-circle"></i></a>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- 添加文件 -->
+<nz-modal nzWidth="400px" class="model-cls" [(nzVisible)]="addOneFlag" [nzOkLoading]="confirmLoading"
+  (nzOnOk)="addOne()" (nzOnCancel)="cancelAddOne()" [nzTitle]="'mrr.vendor-addFile' | translate"
+  [nzMaskClosable]="false"  nzCancelText="Cancel" nzOkText="Save">
+  <label class="input-cls">
+    <span class="mustItem">*</span>{{ 'mrr.mrr-file' | translate }}
+    <input style="width: 170px;" nz-input [(ngModel)]="addFileName" />
+  </label><br>
+  <label class="input-cls">
+    <span class="mustItem">*</span>{{ 'mrr.vendor-big-category' | translate }}:&nbsp;
+    <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="addFirstCategory"
+      (ngModelChange)="firstCategoryChange($event)">
+      <ng-container *ngFor="let cc of vendorDocumentCategory">
+        <nz-option [nzValue]="cc.id" [nzLabel]="cc.name"></nz-option>
+      </ng-container>
+    </nz-select>
+  </label><br>
+  <label class="input-cls">
+    <span class="mustItem"></span>{{ 'mrr.vendor-small-category' | translate }}:&nbsp;
+    <nz-select style="width: 170px" nzShowSearch nzAllowClear [(ngModel)]="addSecondCategory">
+      <ng-container *ngFor="let ss of vendorDocumentSubCategory">
+        <nz-option [nzValue]="ss.id" [nzLabel]="ss.name"></nz-option>
+      </ng-container>
+    </nz-select>
+  </label><br>
+</nz-modal>

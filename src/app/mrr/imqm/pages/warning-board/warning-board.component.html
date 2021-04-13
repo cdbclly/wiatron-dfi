@@ -1,0 +1,13 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'imq-preW-preWarning' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select  [subject]="subject" [onlyShowRequired]="require" (queryOps)="query($event)"></app-imqm-select>
+<div *ngIf="warningCountBarData">
+    <app-material-alert-product [options]="warningCountBarData" (subDetail)="showSubDetailAlert($event)"></app-material-alert-product>
+</div>
+<!-- 点击柱子展示出来的第二层table -->
+<app-pop-alert [data]="dataAlert" (dateItem)="showFormDetail($event)"></app-pop-alert>
+<!-- 点击放大镜弹出界面 -->
+<app-pop-spc-detail [data]="subFormsList"></app-pop-spc-detail>

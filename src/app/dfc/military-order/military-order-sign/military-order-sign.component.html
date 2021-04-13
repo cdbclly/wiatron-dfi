@@ -1,0 +1,57 @@
+<div class="dfc-all" #DFCMilitaryOrder>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>{{'military-order.military-order'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      {{ title === '軍令狀查詢' ? ('military-order.military-query'|translate) : ('military-order.military-sign'|translate) }}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span
+      style="font-size:20px;">{{ title === '軍令狀查詢' ? ('military-order.military-query'|translate) : ('military-order.military-sign'|translate) }}</span>
+  </div>
+  <div class="dfc-query">
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.signStatus" [(queryValue)]="queryValue.signStatus"
+        [querySelect]="querySelect.signStatus"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.plant" [(queryValue)]="queryValue.plant"
+        [querySelect]="querySelect.plant" (queryValueChange)="changePlant()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.bu" [(queryValue)]="queryValue.bu" [querySelect]="querySelect.bu"
+        (queryValueChange)="changeBU()" (searchSelectChange)="buSearch($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.custom" [(queryValue)]="queryValue.custom"
+        [querySelect]="querySelect.custom" (queryValueChange)="changeCustomAndModelType()"
+        (searchSelectChange)="customSearch($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.modelType" [(queryValue)]="queryValue.modelType"
+        [querySelect]="querySelect.modelType" (queryValueChange)="changeCustomAndModelType()"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proName" [(queryValue)]="queryValue.proName"
+        [querySelect]="querySelect.proName" (queryValueChange)="changeProName($event)"
+        (searchSelectChange)="proNameSearch($event)"></app-dfc-query-input>
+    </div>
+    <div>
+      <app-dfc-query-input [queryStyle]="queryStyle.proCode" [(queryValue)]="queryValue.proCode"
+        [querySelect]="querySelect.proCode"></app-dfc-query-input>
+    </div>
+
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()"
+        [nzLoading]="queryLoading">{{'mrr.mrr-query'|translate}}</button>
+    </div>
+  </div>
+
+  <div class="dfc-line"></div>
+  <div *ngIf="queryClick">
+    <app-military-order-sign-approve *ngIf="thisPage === 'sign'" [queryValue]="queryValue"
+      [tabelHeight]="thisPageHeight"></app-military-order-sign-approve>
+    <app-military-order-query *ngIf="thisPage === 'query'" [queryValue]="queryValue" [tabelHeight]="thisPageHeight"
+      [modalWidth]="modalWidth"></app-military-order-query>
+  </div>
+</div>

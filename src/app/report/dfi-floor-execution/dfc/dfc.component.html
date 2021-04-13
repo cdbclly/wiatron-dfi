@@ -1,0 +1,12 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.meetingRecord' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'dfi-monthly-meeting.each-site-floor-execution' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>DFC</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div style="margin: 12px 0px;">
+  <span style="font-size:20px;">DFC {{'dfi-monthly-meeting.landingExecution' | translate}}</span>
+</div>
+<div style="height: 850px;">
+  <app-dfcrfqboard  [floorTitle]=form.forecastTitle [floorColor]=form.color [floorLegendFlag]=true></app-dfcrfqboard>
+</div>
+<app-dfcrfqboard  [floorTitle]=form.trackTitle [floorColor]=form.color [floorLegendFlag]=false></app-dfcrfqboard>

@@ -1,0 +1,164 @@
+body {
+  margin: 0 8px;
+  width: 100%;
+}
+
+.content {
+  // background: red;
+  margin: 0 -15px;
+  margin-top: -15px;
+  min-height: 0px;
+  font-size: 20px;
+}
+span {
+  font-size: 13px;
+}
+.query-row {
+  margin-bottom: 15px;
+  width: 100%;
+  // min-width: 1330px;
+
+  .field1 {
+    display: inline-block;
+    width: 18%;
+
+    span {
+      // width: 105px;
+      display: inline-block;
+      margin-right: 3%;
+    }
+  }
+
+  .field2 {
+    display: inline-block;
+
+    span {
+      width: 120px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field {
+    display: inline-block;
+    width: 17%;
+
+    span {
+      display: inline-block;
+      text-align: right;
+      margin-right: 3%;
+    }
+  }
+
+  .field3 {
+    display: inline-block;
+
+    span {
+      width: 375px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field5 {
+    display: inline-block;
+
+    span {
+      width: 108px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field4 {
+    display: inline-block;
+
+    span {
+      width: 50px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  .field6 {
+    display: inline-block;
+    margin-right: 15px;
+
+    span {
+      width: 20px;
+      display: inline-block;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
+
+  label {
+    font-weight: normal;
+  }
+
+  button {
+    margin-left: 5px;
+  }
+}
+nz-select {
+  width: 60%;
+  // margin-right: 15px;
+}
+.table-divider {
+  float: left;
+  margin: 0 auto;
+  height: 20px;
+}
+.add-span {
+  display: block;
+}
+
+.upload {
+  input {
+    display: none;
+  }
+
+  i {
+    vertical-align: bottom;
+  }
+}
+
+.fakeInput {
+  padding-top: 3px;
+}
+
+div.fakeInput {
+  margin-left: 10px;
+  display: inline-block;
+  width: 240px;
+  color: #505050;
+  background-color: white;
+  border-radius: 3px 0px 0px 3px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 150%;
+  border: #cccccc solid 1px;
+  text-align: left;
+  height: 32px;
+  cursor: pointer;
+
+  span {
+    padding-left: 10px;
+    vertical-align: sub;
+    color: #999;
+  }
+}
+
+.upload-progress{
+  width: 290px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  margin-left: 5px;
+}
+.btn-upload {
+  margin-left: -9px;
+}

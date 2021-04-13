@@ -1,0 +1,212 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-maintenance' | translate}}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{'imq-menu-usrAuthMaintenance' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<h2>{{'imq-menu-usrAuthMaintenance' | translate}}</h2>
+<div class="query">
+  <input nz-input nzSize="default" [(ngModel)]="searchKey" (keyup.enter)="query()">
+  <button nz-button nzType="primary" (click)="query()">Query</button>
+</div>
+<nz-divider></nz-divider>
+<button *ngIf="isAuthCreate" title="{{'imq-create' | translate}}" nz-button [nzType]="'primary'" nzShape="circle" (click)="operationAdd()">
+  <i class="anticon anticon-plus"></i>
+</button>
+
+<div class="tableContainer">
+  <nz-table #basicTable nzBordered nzShowQuickJumper [nzPageSize]="10" [nzData]="dataSet">
+    <thead>
+      <tr>
+        <th>Site</th>
+        <th>{{'imq-plant' | translate}}</th>
+        <th>{{'imq-operablePlant' | translate}}</th>
+        <th>{{'imq-mt-dept' | translate}}</th>
+        <th>{{'imq-mt-userId' | translate}}</th>
+        <th>{{'imq-mt-cName' | translate}}</th>
+        <th>{{'imq-mt-eName' | translate}}</th>
+        <th>{{'imq-mt-phone' | translate}}</th>
+        <th>{{'imq-mt-mailBox' | translate}}</th>
+        <th>Rank</th>
+        <th>{{'imq-mt-auth' | translate}}</th>
+        <th>Action</th>
+        <th>{{'imq-mt-toWeChat' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td style="text-align: left;">
+          {{data.site}}
+        </td>
+        <td style="text-align: left;">
+          {{data.plant}}
+        </td>
+        <td style="text-align: left;">
+          <ng-container *ngIf="!editCache[data.number].edit">
+            {{data.operablePlant}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <nz-select style="width: 120px;" [(ngModel)]="editCache[data.number].data.operablePlant" nzMode="multiple">
+              <nz-option *ngFor="let operablePlant of operablePlantGroup" [nzLabel]="operablePlant" [nzValue]="operablePlant"></nz-option>
+            </nz-select>
+          </ng-container>
+        </td>
+        <td style="text-align: left;">
+           <ng-container *ngIf="!editCache[data.number].edit">
+            {{data.department}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <input type="text" nz-input [(ngModel)]="editCache[data.number].data.department">
+          </ng-container>
+        </td>
+        <td>{{data.number}}</td>
+        <td style="text-align: left;">
+          {{data.chineseName}}
+        </td>
+        <td style="text-align: left;">
+          {{data.name}}
+        </td>
+        <td style="text-align: left;">
+          <ng-container *ngIf="!editCache[data.number].edit">
+            {{data.tel}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <input type="text" nz-input [(ngModel)]="editCache[data.number].data.tel">
+          </ng-container>
+        </td>
+        <td style="text-align: left;">
+          <ng-container *ngIf="!editCache[data.number].edit">
+            {{data.eMail}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <input type="text" nz-input [(ngModel)]="editCache[data.number].data.eMail">
+          </ng-container>
+        </td>
+        <td>
+          <!-- <label nz-checkbox [nzDisabled]="true" [nzChecked]="data.rank === 'SQM'"></label> -->
+          <ng-container *ngIf="!editCache[data.number].edit">
+            {{data.rank}}
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <nz-select [(ngModel)]="editCache[data.number].data.rank">
+              <nz-option nzLabel="SQM" nzValue="sqm"></nz-option>
+              <nz-option nzLabel="課級" nzValue="class"></nz-option>
+              <nz-option nzLabel="部級" nzValue="ministerial"></nz-option>
+              <nz-option nzLabel="长处級" nzValue="factory"></nz-option>
+              <nz-option nzLabel="工程师" nzValue="engineer"></nz-option>
+              <nz-option nzLabel="其他" nzValue="other"></nz-option>
+            </nz-select>
+          </ng-container>
+        </td>
+        <td  style="text-align: left;">
+            {{data.groupName}}
+          <!-- <ng-container *ngIf="editCache[data.number].edit">
+            <nz-select [(ngModel)]="editCache[data.number].data.groupId" (ngModelChange)="getOptions('auth', data)">
+              <nz-option *ngFor="let group of groupList" [nzLabel]="group.name" [nzValue]="group.id"></nz-option>
+            </nz-select>
+          </ng-container> -->
+        </td>
+        <td>
+          <ng-container *ngIf="!editCache[data.number].edit && isAuthEdit">
+            <div *ngIf="!actionEnabled">
+              <a style="margin-left: 10px;" disabled="disabled">
+                <i class="anticon anticon-edit"></i>
+              </a>
+            </div>
+            <div *ngIf="actionEnabled && isAuthEdit">
+              <a style="margin-left: 10px;" (click)="startEdit(data.number)">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <nz-popconfirm  [nzTitle]="'Sure to delete?'" (nzOnConfirm)="deleteRow(data.number)">
+                <a nz-popconfirm><i class="anticon anticon-delete" style="margin-left: 10px;"></i></a>
+              </nz-popconfirm>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="editCache[data.number].edit">
+            <a (click)="saveEdit(data.number)">
+              <i class="anticon anticon-save"></i>
+            </a>
+            <a style="margin-left:10px;" (click)="cancelEdit(data.number)">
+              <i class="anticon anticon-close-circle"></i>
+            </a>
+          </ng-container>
+        </td>
+        <td>
+          <nz-switch [(ngModel)]= "data.weChat" [nzCheckedChildren]="checkedTemplate" [nzDisabled]="!isAuthEdit || editCache[data.number].edit" [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="saveEdit(data.number)"></nz-switch>
+          <ng-template #checkedTemplate><i nz-icon type="check"></i></ng-template>
+          <ng-template #unCheckedTemplate><i nz-icon type="close"></i></ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<!-- 新增 -->
+<nz-modal [nzWidth]="411" nzWrapClassName="vertical-center-modal" [(nzVisible)]="isAddDataVisible" nzTitle="{{'imq-mt-addUser' | translate}}"
+  nzMaskClosable="false" (nzOnCancel)="handleAddCancel()" [nzFooter]="modalAddFooter">
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-groupName' | translate}}</div>
+    <nz-select [(ngModel)]="saveData.groupId" (ngModelChange)="getOptions('group')">
+      <nz-option *ngFor="let group of groupList" [nzLabel]="group.name" [nzValue]="group.id"></nz-option>
+    </nz-select>
+  </div>
+
+  <div class="field">
+    <div><span class="mustItem">*</span>Site</div>
+    <nz-select nzShowSearch nzAllowClear [nzDisabled]="isHideCol" [(ngModel)]="saveData.site" (ngModelChange)="getOptions('site')">
+      <nz-option *ngFor="let site of siteGroup" [nzLabel]="site" [nzValue]="site"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-plant' | translate}}</div>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="saveData.plant" [nzDisabled]="isHideCol">
+      <nz-option *ngFor="let factory of factoryGroup" [nzLabel]="factory" [nzValue]="factory"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-operablePlant' | translate}}</div>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="saveData.operablePlant" [nzDisabled]="isHideCol" (ngModelChange)="getOptions('operablePlant')" nzMode="multiple">
+      <nz-option *ngFor="let operablePlant of operablePlantGroup" [nzLabel]="operablePlant" [nzValue]="operablePlant"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-userId' | translate}}</div><input nz-input [(ngModel)]="saveData.number">
+  </div>
+  <div class="field">
+    <div>{{'imq-mt-cName' | translate}}</div><input nz-input [(ngModel)]="saveData.chineseName">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-eName' | translate}}</div><input nz-input [(ngModel)]="saveData.name">
+  </div>
+  <div class="field">
+      <div>{{'imq-mt-phone' | translate}}</div>
+      <input nz-input  [(ngModel)]="saveData.tel">
+    </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>{{'imq-mt-dept' | translate}}</div><input nz-input [(ngModel)]="saveData.department">
+  </div>
+  <div class="field">
+    <div>Mail</div><input nz-input [(ngModel)]="saveData.eMail">
+  </div>
+  <div class="field">
+    <div><span class="mustItem">*</span>Rank</div>
+    <nz-select [(ngModel)]="saveData.rank">
+      <nz-option nzLabel="SQM" nzValue="sqm"></nz-option>
+      <nz-option nzLabel="課級" nzValue="class"></nz-option>
+      <nz-option nzLabel="部級" nzValue="ministerial"></nz-option>
+      <nz-option nzLabel="厂处級" nzValue="factory"></nz-option>
+      <nz-option nzLabel="工程师" nzValue="engineer"></nz-option>
+      <nz-option nzLabel="其他" nzValue="other"></nz-option>
+    </nz-select>
+  </div>
+  <div class="field" *ngIf="saveData.tel">
+      <div style="width: 110px;">{{'imq-mt-toWeChat' | translate}}</div>
+      <nz-switch [(ngModel)]="saveData.weChat" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+      <ng-template #checkedTemplate><i nz-icon type="check"></i></ng-template>
+      <ng-template #unCheckedTemplate><i nz-icon type="close"></i></ng-template>
+  </div>
+  <ng-template #modalAddFooter>
+    <button nz-button nzType="default" (click)="handleAddCancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="handleAddSave()" [disabled]="!saveData.groupId || isAllAuth === 'true' ? saveData.site : !saveData.site || isAllAuth === 'true' ? saveData.plant : !saveData.plant || !saveData.operablePlant || !saveData.number || !saveData.department || !saveData.name || !saveData.rank">Save</button>
+  </ng-template>
+</nz-modal>

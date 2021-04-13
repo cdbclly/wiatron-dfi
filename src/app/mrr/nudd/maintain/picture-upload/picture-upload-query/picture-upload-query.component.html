@@ -1,0 +1,21 @@
+<div class="query-row">
+  <div class="field1">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.mrr-product' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="dimensionId" (ngModelChange)="getProcessType()">
+      <nz-option *ngFor="let dimension of dimensions" [nzLabel]="dimension.productId" [nzValue]="dimension.id">
+      </nz-option>
+    </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red;margin-right: 0px;width: auto">*</span>
+    <span>{{ 'mrr.nudd-craft' | translate }}</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="processTypeId">
+      <nz-option *ngFor="let processType of processTypes" [nzLabel]="processType.name" [nzValue]="processType.id">
+      </nz-option>
+    </nz-select>
+  </div>
+  <button nz-button nzType="primary" style="border-radius:6px;" (click)="query()"
+    [nzLoading]="isLoading">{{ 'mrr.mrr-query' | translate }}</button>
+</div>
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>

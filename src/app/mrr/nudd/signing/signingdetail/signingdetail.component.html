@@ -1,0 +1,147 @@
+<div>
+  <div>
+    <nz-table #nzTable1 [nzData]="rdData" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width: 5%">List</th>
+          <th rowspan="2" style="width: 25%">{{ 'mrr.nudd-red-light-project' | translate }}</th>
+          <th colspan="2" style="width: 25%">{{ 'mrr.nudd-rd-sign-off' | translate }}</th>
+          <th rowspan="2" style="width: 45%">Comments</th>
+        </tr>
+        <tr>
+          <th style="width: 12.5%">Agree</th>
+          <th style="width: 12.5%">No Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzTable1.data; let i = index">
+          <td>{{data.key}}</td>
+          <td (click)="showItemDetail(data.workflowId)">{{data.designItem}}</td>
+          <td colspan="2">
+            <nz-radio-group [(ngModel)]="data.isAgree" [nzDisabled]="!ifRDEnable" (ngModelChange)="setSendEnable()">
+              <label nz-radio [nzValue]="1">Agreed</label>
+              <label style="margin-left:30px;" nz-radio [nzValue]="0">Not Agreed</label>
+            </nz-radio-group>
+          </td>
+          <td><textarea nz-input id="comments" [(ngModel)]="data.comment" (ngModelChange)="getComment(data.comment)"
+              [disabled]="!ifRDEnable" placeholder="Please enter within 500 words"></textarea></td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+    <nz-table #nzTable3 [nzData]="sqmData" nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width: 5%">List</th>
+          <th rowspan="2" style="width: 25%">{{ 'mrr.nudd-red-light-project' | translate }}</th>
+          <th colspan="2" style="width: 25%">{{ 'mrr.nudd-sqm-sign-off' | translate }}</th>
+          <th rowspan="2" style="width: 45%">Comments</th>
+        </tr>
+        <tr>
+          <th style="width: 12.5%">Agree</th>
+          <th style="width: 12.5%">No Agree</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of nzTable3.data; let i = index">
+          <td>{{data.key}}</td>
+          <td (click)="showItemDetail(data.workflowId)">{{data.designItem}}</td>
+          <td colspan="2">
+            <nz-radio-group [(ngModel)]="data.isAgree" [nzDisabled]="!ifSQMEnable" (ngModelChange)="setSendEnable()">
+              <label nz-radio [nzValue]=" 1">Agreed</label>
+              <label style="margin-left:30px;" nz-radio [nzValue]="0">Not Agreed</label>
+            </nz-radio-group>
+          </td>
+          <td><textarea nz-input id="comments" [(ngModel)]="data.comment" (ngModelChange)="getComment(data.comment)"
+              [disabled]="!ifSQMEnable" placeholder="Please enter within 500 words"></textarea></td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div class="query-row" *ngIf="ifHeaderShow">
+    <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+    <div class="field2">
+      <span>Plant Manager</span>
+      <div id="row1">{{plantManName | userEnname | async}}</div>
+    </div>
+    <div class="field4">
+      <span>Judge</span>&nbsp;
+      <nz-radio-group [(ngModel)]="plantManData[0].isAgree" [nzDisabled]="!plantMan.enable"
+        (ngModelChange)="setSendEnable()">
+        <label nz-radio [nzValue]="1">Agreed</label>
+        <label nz-radio [nzValue]="0">Not Agreed</label>
+      </nz-radio-group>
+    </div>
+    <div class="field6">
+      <span>Comments</span>
+      <textarea nz-input id="comments" [(ngModel)]="plantManData[0].comment" [disabled]="!plantMan.enable"></textarea>
+    </div>
+    <br>
+    <br>
+    <div class="field2">
+      <span>PM Head</span>
+      <div id="row1">{{pmName | userEnname | async}}</div>
+    </div>
+    <div class="field4">
+      <span>Judge</span>&nbsp;
+      <nz-radio-group [(ngModel)]="pmData[0].isAgree" [nzDisabled]="!pmHead.enable" (ngModelChange)="setSendEnable()">
+        <label nz-radio [nzValue]="1">Agreed</label>
+        <label nz-radio [nzValue]="0">Not Agreed</label>
+      </nz-radio-group>
+    </div>
+    <div class="field6">
+      <span>Comments</span>
+      <textarea nz-input id="comments" [(ngModel)]="pmData[0].comment" [disabled]="!pmHead.enable"></textarea>
+    </div>
+  </div>
+  <br>
+  <div style="display: flex;justify-content: center;">
+    <button (click)="submit()" nz-button nzType="primary"
+      [disabled]="!sendEnable">{{ 'mrr.mrr-send' | translate }}</button>
+  </div>
+</div>
+
+<nz-modal nzWrapClassName="vertical-center-modal" [nzWidth]="282" [nzStyle]="{ height: '202px' }"
+  [(nzVisible)]="isSubmitVisible" [nzClosable]="false" [nzCancelText]="null" [nzOkText]="null" [nzFooter]="null"
+  nzTitle="">
+  <div class="dfc-delAfter-icon">
+    <i class="anticon anticon-check"></i>
+  </div>
+  <div class="dfc-delAfter-text">
+    <span>{{ 'mrr.mrr-send-successfully' | translate }}</span>
+  </div>
+</nz-modal>
+<nz-modal nzWidth="800" [(nzVisible)]="isVisible" [nzClosable]="false" (nzOnCancel)="handleCancel()" [nzFooter]="null">
+  <nz-table #nzTable [nzData]="itemsDetail" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Part</th>
+        <th>Process Type</th>
+        <th>Side</th>
+        <th>Point</th>
+        <th>Value</th>
+        <th>Risk Level</th>
+        <th>Picture</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+        <td>{{data.dimensionName}}</td>
+        <td>{{data.partName}}</td>
+        <td>{{data.processType}}</td>
+        <td>{{data.sideName}}</td>
+        <td>{{data.pointName}}</td>
+        <td>{{data.value}}</td>
+        <td>{{data.riskLevel}}</td>
+        <td><img *ngIf="data.designItemPath" height="30px" (click)="clickEventHandler(data.designItemPath)" id="image"
+            [src]="data.designItemPath"></td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>
+
+<nz-modal *ngIf="isVisiblePic" [nzWidth]="1220" [(nzVisible)]="isVisiblePic" [nzClosable]="false"
+  (nzOnCancel)="cancel()" [nzFooter]="null" nzTitle="">
+  <img width="100%" [src]="imageUrl">
+</nz-modal>

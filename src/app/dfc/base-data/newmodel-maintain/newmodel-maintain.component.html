@@ -1,0 +1,654 @@
+<div class="dfc-all" #DFCNewModel>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>Base Data</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'base-data.new-model-information-maintenance' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'base-data.new-model-information-maintenance' | translate }}</span>
+  </div>
+  <div class="dfc-query">
+    <div *ngFor="let key of objectKeys(querySelect); let i=index;">
+      <app-dfc-query-input *ngIf="(i < 1)" [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="dfc-query-showAll">
+      <label nz-checkbox [(ngModel)]="showAll">{{'base-data.show-status-ongoing' | translate }}</label>
+    </div>
+  </div>
+  <div class="dfc-query">
+    <div *ngFor="let key of objectKeys(querySelect); let i=index;">
+      <app-dfc-query-input *ngIf="(i > 0)" [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" [nzLoading]="queryLoading"
+        (click)="query()">{{'dfq.dfq-query' | translate }}</button>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+  <div class="dfc-btn-left"></div>
+  <div class="dfc-btn">
+    <div class="dfc-btn-delete" *ngIf="Auth.delete">
+      <button nz-button *ngIf="!disabledDeleteButton" title="delete" [nzType]="'primary'" nzShape="circle"
+        (click)="operateDelete()">
+        <i class="anticon anticon-delete"></i>
+      </button>
+    </div>
+    <div class="dfc-btn-right">
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-table">
+    <nz-table #mainTable nzBordered nzShowQuickJumper [nzPageIndex]="currentIndex" [nzData]="data" [nzPageSize]="10"
+      [nzHideOnSinglePage]="true" [nzWidthConfig]="nzWidthConfig" [nzScroll]="nzScroll"
+      (nzCurrentPageDataChange)="currentPageDataChange($event)" (nzPageIndexChange)="refreshStatus()"
+      (nzPageSizeChange)="refreshStatus()">
+      <thead>
+        <tr>
+          <th nzLeft="0px" nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+            (nzCheckedChange)="checkAll($event)"></th>
+          <th nzShowExpand>{{'dfq.report-expand'|translate}}</th>
+          <th>No.</th>
+          <th>{{'dfq.dfq-plant'|translate}}</th>
+          <th>BU</th>
+          <th>{{'dfq.dfq-customer'|translate}}</th>
+          <th nz-tooltip [nzTitle]="" titleTemplate>{{'dfq.dfq-product'|translate}}</th>
+          <th>Project Code</th>
+          <th>Project Name</th>
+          <th>Schedule</th>
+          <th>DFC {{'base-data.process' | translate }}</th>
+          <th>MRR {{'base-data.process' | translate }}</th>
+          <th>DFQ {{'base-data.process' | translate }}</th>
+          <th>PLM {{'dfq.dfq-status'|translate}}</th>
+          <th>{{'dfq.dfq-status'|translate}}</th>
+          <th>{{'base-data.remarks' | translate }}</th>
+          <th nzShowFilter [nzFilters]="listOfAvailables" (nzFilterChange)="filterAvailable($event)">Available</th>
+          <th nzRight="0px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let data of mainTable.data; let i = index">
+          <tr>
+            <td nzLeft="0px" *ngIf="!data.IsPLMProject"
+              [nzDisabled]="!(data.isPM || (isDFiLeader && userSite === data.Site))" nzShowCheckbox
+              [(nzChecked)]="data.Checked" (nzCheckedChange)="refreshStatus()"></td>
+            <td nzLeft="0px" *ngIf="data.IsPLMProject || !Auth.delete"></td>
+            <td nzShowExpand [(nzExpand)]="data.expand" (nzExpandChange)="nzExpandChange($event,data)"></td>
+            <td>{{data.No}}</td>
+            <td>{{data.Plant | plantName | async}}</td>
+            <td>{{data.BU}}</td>
+            <td>{{data.Customer}}</td>
+            <td style="text-align: right;"
+              [ngStyle]="(data.ModelType | productTypeBgColor: this.querySelect.productType.select.selectList)">
+              <ng-container *ngIf="!editCache[data.No].edit">
+                {{data.ModelType}}
+              </ng-container>
+              <ng-container *ngIf="editCache[data.No].edit && (data.isPM || isDFiLeader)">
+                <nz-select style="width:100%" [(ngModel)]="editCache[data.No].data.ModelType"
+                  nzPlaceHolder="Choose product type" nzAllowClear nzShowSearch [nzServerSearch]="true"
+                  [nzDropdownMatchSelectWidth]="false">
+                  <ng-container *ngFor="let list of listOfModelTypeSelectOption">
+                    <nz-option style="width: 180px" [nzValue]="list.Value" [nzLabel]="list.Label"></nz-option>
+                  </ng-container>
+                </nz-select>
+              </ng-container>
+            </td>
+            <td [ngStyle]="{'background': !data.member.length ? 'red' : ''}">
+              <a (click)="listProjectMembers(i)" style="text-decoration:underline">{{data.ProjectCode}}</a>
+            </td>
+            <td>{{data.ProjectName}}</td>
+            <td>
+              <a (click)="showScheduleModal(data.ProjectCode, data.Schedule, data.StageShowFlag)"
+                style="text-decoration:underline">C0-C6</a>
+            </td>
+            <td>
+              <!-- Rfq project 為正常 -->
+              <!-- 有Rfq project Code 且 不是 DMA開頭 則為正常DFC -->
+              <ng-container *ngIf="!(editCache[data.No].edit && isDFiLeader && userSite === data.Site)">
+                <li>
+                  <label nz-checkbox nzDisabled
+                    [ngModel]="(data.IsRfq && data.ProjectCode.indexOf('DMA-') != 0) || (data.hasRfq && data.RfqProjectCode && data.RfqProjectCode.indexOf('DMA-') != 0)">{{'base-data.normal-dfc' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox nzDisabled
+                    [ngModel]="(data.IsRfq && data.ProjectCode.indexOf('DMA-') == 0) || (!data.IsRfq && (data.hasRfq && data.RfqProjectCode && data.RfqProjectCode.indexOf('DMA-') == 0))">{{'base-data.new-dfc' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox nzDisabled
+                    [ngModel]="data.Status == 2">{{'base-data.no-dfc-required' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox nzDisabled
+                    [ngModel]="data.Status == 3">{{'base-data.discontinue-dfc' | translate }}</label>
+                </li>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.No].edit">
+                <button nz-button nzType="default" [disabled]="data.IsRfq || data.hasRfq || data.Status !=0"
+                  (click)="onclickNewDFC(data.ProjectNameID,data.No)">{{'base-data.new-dfc' | translate }}</button><br>
+                <button nz-button nzType="default" [disabled]="data.IsRfq || data.hasRfq || data.Status !=0"
+                  (click)="onclickNoNeedDFC(data.ProjectNameID,data.No, editCache[data.No].data.Remark)">{{'base-data.no-dfc-required' | translate }}</button><br>
+                <button nz-button nzType="default" [disabled]="data.Status !=0"
+                  (click)="onclickStopDFC(data.ProjectNameID,data.No, editCache[data.No].data.Remark)">{{'base-data.discontinue-dfc' | translate }}</button>
+                <button nz-button nzType="default" [disabled]="data.Status == 0"
+                  (click)="onclickResumeDFC(data.ProjectNameID,data.No)">{{'base-data.restart' | translate }}</button>
+              </ng-container>
+            </td>
+            <!-- MRR流程 -->
+            <td>
+              <ng-container>
+                <li #shoWTpl><label nz-checkbox [nzDisabled]="data.disMrrCheckBox" [(ngModel)]="data.allModule"
+                    (ngModelChange)="allValueChange(data, $event)">
+                    {{'base-data.select-all' | translate }}
+                  </label>
+                </li>
+                <li #shoWTpl><label nz-checkbox [nzDisabled]="data.disMrrCheckBox" [(ngModel)]="data.nudd"
+                    (ngModelChange)="nuddValueChange(data, $event)">
+                    {{'base-data.nudd-automatic-evaluation' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox [nzDisabled]="data.disMrrCheckBox" [(ngModel)]="data.productDocument"
+                    (ngModelChange)="productDocumentValueChange(data, $event)">
+                    {{'base-data.product-standard-document' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox [nzDisabled]="data.disMrrCheckBox" [(ngModel)]="data.material"
+                    (ngModelChange)="materialValueChange(data, $event)">
+                    {{'base-data.automatic-tracking-of-material-yield' | translate }}
+                  </label>
+                </li>
+                <li>
+                  <label nz-checkbox [nzDisabled]="data.disMrrCheckBox" [(ngModel)]="data.vendorFile"
+                    (ngModelChange)="vendorFileValueChange(data, $event)">
+                    {{'base-data.vendor-information-management' | translate }}
+                  </label>
+                </li>
+              </ng-container>
+              <i class="anticon anticon-eye" (click)="showMrrRemark(data)"></i>
+            </td>
+            <!-- DFQ流程 -->
+            <td>
+              <ng-container>
+                <li #shoWTpl><label nz-checkbox [nzDisabled]="data.disDFQCheckBox" [(ngModel)]="data.rfi"
+                    (ngModelChange)="DFQValueChange(data, $event)">
+                    {{'base-data.yield-prediction-of-new-rfi-models' | translate }}
+                  </label></li>
+              </ng-container>
+              <i class="anticon anticon-eye" (click)="showDFQRemark(data)"></i>
+            </td>
+            <td>
+              <ng-container>
+                {{data.PLMProjectStatus}}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container>
+                {{StatusMapping(data.Status)}}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!(editCache[data.No].edit)">
+                <div style="white-space: pre-line;"> {{data.Remark}} </div>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.No].edit">
+                <textarea type="text" nz-input [(ngModel)]="editCache[data.No].data.Remark"
+                  (click)="onclickEdit(data.No)" [nzAutosize]="{ minRows: 2, maxRows: 6 }"></textarea>
+              </ng-container>
+            </td>
+            <td>{{data.available}}</td>
+            <td nzRight="0px">
+              <ng-container *ngIf="!editCache[data.No].edit">
+                <a (click)="copy(data)"
+                  *ngIf="(data.isPM|| isDFiLeader) && data.IsRfq && actionEnabled && Auth.insert && isDFiLeader && userSite === data.Site">
+                  <i class="anticon anticon-copy"></i>
+                </a>
+                <a *ngIf="!((data.isPM|| isDFiLeader) && data.IsRfq && actionEnabled && Auth.insert && isDFiLeader && userSite === data.Site)"
+                  disabled="disabled">
+                  <i class="anticon anticon-copy"></i>
+                </a>
+                <a style="margin-left: 10px;"
+                  *ngIf="!actionEnabled || !Auth.update || data.militaryFlag ||!isDFiLeader || userSite !== data.Site"
+                  disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+                <a (click)="startEdit(data.No)"
+                  *ngIf="actionEnabled && Auth.update && !data.militaryFlag && isDFiLeader && userSite === data.Site"
+                  style="margin-left: 10px;">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+                <span
+                  [nzTitle]="data.militaryFlag? ('base-data.start-military-notice' | translate) : (!data.rfqMapping ? ('base-data.not-binding-RFQ-notice' | translate) : '')  "
+                  nzPlacement="leftTop" nz-tooltip style="margin-left:10px; color: #BFBFBF"
+                  *ngIf="!(actionEnabled && !(data.IsPLMProject && data.IsRfq) && Auth.update && !data.militaryFlag && data.rfqMapping && isDFiLeader && userSite ===  data.Site)">
+                  <i class="anticon anticon-plus"></i>
+                </span>
+                <a style="margin-left:10px;" (click)="addOrUpdateModelData(data)"
+                  *ngIf="actionEnabled && !(data.IsPLMProject && data.IsRfq) && Auth.update && !data.militaryFlag && data.rfqMapping && isDFiLeader && userSite ===  data.Site">
+                  <i class="anticon anticon-plus"></i>
+                </a>
+              </ng-container>
+              <ng-container *ngIf="editCache[data.No].edit">
+                <a (click)="saveEdit(data.No)">
+                  <i class="anticon anticon-save"></i>
+                </a>
+                <a style="margin-left:10px;" (click)="cancelEdit(data.No)">
+                  <i class="anticon anticon-close-circle"></i>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+          <tr [nzExpand]="data.expand">
+            <td></td>
+            <td colspan="7">
+              <nz-table #modelTable [nzData]="data.modelData | async" nzShowQuickJumper [nzShowPagination]="true"
+                [nzPageSize]="10" [nzHideOnSinglePage]="true">
+                <thead>
+                  <tr>
+                    <th nzShowExpand></th>
+                    <th>Model Name</th>
+                    <th>FCST(K/Mouth)</th>
+                    <th>{{'base-data.military-order-signing' | translate }}</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+      <tbody>
+        <ng-template ngFor let-modelData [ngForOf]="modelTable.data">
+          <tr>
+            <td [nzShowExpand]="modelData.type === 2" [(nzExpand)]="modelData.expand"
+              (nzExpandChange)="nzExpandChangeGroupModel($event,modelData)"></td>
+            <td>{{ modelData.modelName }}</td>
+            <td>{{ modelData.FCST }}</td>
+            <td><label nz-checkbox disabled [(ngModel)]="modelData.isMilitary"></label></td>
+            <td>
+              <a style="margin-left:10px;" *ngIf="!data.militaryFlag && !modelData.targetSignFlag"
+                (click)="addOrUpdateModelData(data,modelData)">
+                <i class="anticon anticon-edit"></i>
+              </a>
+              <a style="margin-left:10px;" *ngIf="modelData.type === 2 && !data.militaryFlag"
+                (click)="addOrUpdateGroupModelData(data,modelData)">
+                <i class="anticon anticon-plus"></i>
+              </a>
+              <a style="margin-left:10px;"
+                *ngIf="modelData.deleteFlag && !data.militaryFlag && !modelData.targetSignFlag"
+                (click)="openDeleteModel(modelData,data)">
+                <i class="anticon anticon-close"></i>
+              </a>
+            </td>
+          </tr>
+          <tr [nzExpand]="modelData.expand">
+            <td></td>
+            <td colspan="4">
+              <nz-table #grouopModelData [nzData]="modelData.modelData" nzShowQuickJumper [nzShowPagination]="true"
+                [nzPageSize]="10" [nzHideOnSinglePage]="true">
+                <thead>
+                  <tr>
+                    <th>Model Name</th>
+                    <th>Count</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+      <tbody>
+        <tr *ngFor="let groupModelDataItem of grouopModelData.data">
+          <td>{{ groupModelDataItem.modelName }}</td>
+          <td>{{ groupModelDataItem.count }}</td>
+          <td>
+            <a style="margin-left:10px;" *ngIf="!data.militaryFlag"
+              (click)="openEditGroupModelMapping(groupModelDataItem,data)">
+              <i class="anticon anticon-edit"></i>
+            </a>
+            <a style="margin-left:10px;" *ngIf="!data.militaryFlag"
+              (click)="openDeleteGroupModelMapping(groupModelDataItem,data)">
+              <i class="anticon anticon-close"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    </td>
+    </tr>
+    </ng-template>
+    </tbody>
+    </nz-table>
+    </td>
+    <td colspan='6'></td>
+    </tr>
+    </ng-container>
+    </tbody>
+    </nz-table>
+  </div>
+  <app-add-or-update-model [editModel]="editModel" (cancelVisible)="endAddOrUpdateModel()"
+    [addModelVisible]="addModelVisible"></app-add-or-update-model>
+  <app-add-group-model [groupModelMappingSelect]="groupModelMappingSelect" [editGroupModel]="editGroupModel"
+    (cancelVisible)="endAddOrUpdateGroupModel()" [addGroupModelVisible]="addGroupModelVisible"
+    [modifyType]="addGroupModelType">
+  </app-add-group-model>
+
+  <!-- 點擊刪除, 選擇是否刪除 -->
+  <nz-modal [(nzVisible)]="isModelDeleteVisible" nzTitle="'delete'" nzOkText="Ok" nzCancelText="Cancel"
+    (nzOnOk)="deleteModel()" (nzOnCancel)="cancelDeleteModel()">
+    <p>Are you sure you want to delete?</p>
+  </nz-modal>
+
+  <!-- list project member modal -->
+  <nz-modal [(nzVisible)]="isProjectMemberListVisible" (nzOnCancel)="cancelEditProjectMember()" nzOkText="Ok"
+    nzCancelText="Cancel" nzTitle="Project member" [nzContent]="modalProCodeContent" [nzFooter]="null" nzWidth="50vw">
+    <ng-template #modalProCodeContent>
+      <button nz-button [nzType]="'primary'"
+        [disabled]="!isSamePlant || !Auth.insert && (!isDFiLeader || !selectedProjecCode?.isRoleNPI)" title="Add Member"
+        nzShape="circle" (click)="editMember()"><i class="anticon anticon-plus"></i></button>
+      <nz-table #projectMemberList [nzData]="members" [nzPageSize]="10" [nzHideOnSinglePage]="true" nzBordered>
+        <thead>
+          <tr>
+            <th>Role
+              <label class="search-cls" (click)="searchMyRole()" *ngIf="showSelectIcon">
+                <i class="anticon anticon-search"></i></label>
+              <div class="search-box" *ngIf="showSelect">
+                <input type="text" nz-input placeholder="Search Role" [(ngModel)]="searchRoles" />
+                <button nz-button nzSize="small" nzType="primary" (click)="searchOneRole()" class="search-button">
+                  Search
+                </button>
+                <button nz-button nzSize="small" (click)="reset()">Reset</button>
+              </div>
+            </th>
+            <th>
+              English Name
+              <label class="search-cls2" (click)="searchEname()" *ngIf="showSelectIcon2">
+                <i class="anticon anticon-search"></i></label>
+              <div class="search-box2" *ngIf="showSelect2">
+                <app-search-user (selectedUserData)="getMember($event)" [picId]="editingMember.MemberID">
+                </app-search-user>
+                <button nz-button nzSize="small" nzType="primary" (click)="searchOneEname()" class="search-button">
+                  Search
+                </button>
+                <button nz-button nzSize="small" (click)="reset2()">Reset</button>
+              </div>
+            </th>
+            <th>{{"imq-mt-userId"|translate}}</th>
+            <th>PLM</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of projectMemberList.data">
+            <td>{{member.Role}}</td>
+            <td>{{member.MemberID | userEnname | async}}</td>
+            <td>{{member.MemberID}}</td>
+            <td>
+              <label nz-checkbox nzDisabled [ngModel]="member.IsPLMData"></label>
+            </td>
+            <td>
+              <button nz-button [disabled]="!(isDFiLeader || selectedProjecCode?.isPM || selectedProjecCode?.isRoleNPI)"
+                (click)="editMember(member)"><i class="anticon anticon-edit"></i></button>
+              <button nz-popconfirm nzTitle="Are you sure?" (nzOnConfirm)="deleteMember(member)" nz-button
+                [disabled]="!(isDFiLeader || selectedProjecCode?.isPM || selectedProjecCode?.isRoleNPI)"><i
+                  class="anticon anticon-delete"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </ng-template>
+  </nz-modal>
+
+  <!-- edit project member -->
+  <nz-modal [(nzVisible)]="isEditMemberVisible" nzOkText="Ok" nzCancelText="Cancel"
+    [nzTitle]="editingMember.id ? ('base-data.update' | translate) : ('base-data.new' | translate)"
+    (nzOnCancel)="cancelAddMember()" [nzContent]="modalAddMemberContent" [nzFooter]="modalAddMemberFooter">
+    <ng-template #modalAddMemberContent>
+      <div>{{'base-data.member' | translate }}</div>
+      <app-search-user (selectedUserData)="getMember($event)" [picId]="editingMember.MemberID"></app-search-user>
+      <div>{{'base-data.role' | translate }}</div>
+      <nz-select style="width:100%" [(ngModel)]="editingMember.Role" nzPlaceHolder="Please choose a role" nzAllowClear
+        nzShowSearch>
+        <ng-container *ngFor="let role of roles">
+          <nz-option [nzValue]="role" [nzLabel]="role"></nz-option>
+        </ng-container>
+      </nz-select>
+    </ng-template>
+    <ng-template #modalAddMemberFooter>
+      <button nz-button nzType="default" (click)="cancelAddMember()">Cancel</button>
+      <button nz-button nzType="primary" (click)="upsertMember(editingMember)"
+        [disabled]="!editingMember.MemberID || !editingMember.Role">Save</button>
+    </ng-template>
+  </nz-modal>
+  <!-- project schedule -->
+  <nz-modal class="dfc-schedule-modal" nzOkText="Ok" nzCancelText="Cancel" [nzWidth]="342"
+    [nzStyle]="{ height: '532px' }" nzWrapClassName="vertical-center-modal" [(nzVisible)]="isScheduleDataVisible"
+    nzTitle="Schedule" [nzContent]="modalScheduleContent" [nzFooter]="modalScheduleFooter"
+    (nzOnCancel)="handleScheduleCancel()">
+    <div class="dfc-schedule-list" #modalScheduleContent [ngStyle]="scheduleListStyle()">
+      <table>
+        <tr height="48px">
+          <td width="145px">
+            <div>
+              <span>RFQ Due Date</span>
+            </div>
+          </td>
+          <td width="197px">
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.RfqDueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px" *ngIf="stageShowFlag">
+          <td>
+            <div>
+              <span>C0 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C0DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px" *ngIf="stageShowFlag">
+          <td>
+            <div>
+              <span>C1 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C1DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>C2 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C2DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>C3 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C3DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>C4 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C4DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>C5 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C5DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>C6 Due Date</span>
+            </div>
+          </td>
+          <td>
+            <div>
+              <input type="text" nz-input [(ngModel)]="scheduleDataSet.C6DueDate" readonly="readonly">
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <ng-template #modalScheduleFooter>
+      <button nz-button nzType="primary" (click)="handleScheduleCancel()">Close</button>
+    </ng-template>
+  </nz-modal>
+
+  <!-- 點擊刪除, 選擇是否刪除 -->
+  <app-delete-pop *ngIf='isDeleteVisible' (cancelDel)='cancelDelete($event)' (del)='Delete($event)'
+    [isAfterDeleteVisible]='isAfterDeleteVisible'></app-delete-pop>
+
+  <!-- newProjectNameProfiles 點擊copy后出現 -->
+  <nz-modal class="dfc-addProjectName-modal" [nzWidth]="342" [nzStyle]="{ height: '234px' }"
+    nzWrapClassName="vertical-center-modal" [(nzVisible)]="isAddProjectNameVisible" nzTitle="Copy"
+    nzMaskClosable="false" [nzContent]="modalAddProjectNameContent" [nzFooter]="modalAddProjectNameFooter"
+    (nzOnCancel)="handleAddProjectNameCancel()">
+    <div class="dfc-addProjectName-list" #modalAddProjectNameContent>
+      <table>
+        <tr height="48px">
+          <td width="141px">
+            <div>
+              <span>Project Code</span>
+            </div>
+          </td>
+          <td width="196px" style="text-align: left;">
+            <input nz-input placeholder="Project Code" nzSize="default" disabled
+              [attr.value]="addProjectNameDataCache.ProjectCode">
+          </td>
+        </tr>
+        <tr height="48px">
+          <td>
+            <div>
+              <span>Project Name</span>
+            </div>
+          </td>
+          <td style="text-align: left;">
+            <input nz-input [(ngModel)]="addProjectNameInput" placeholder="Project Name" nzSize="default">
+          </td>
+        </tr>
+        <tr height="20px">
+          <td></td>
+          <td style="text-align: left;">
+            <div *ngIf="addProjectNameFlag" class="dfc-addProjectName-tips">
+              <span>{{addProjectNameSpan}}</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <ng-template #modalAddProjectNameFooter>
+      <button nz-button nzType="default" (click)="handleAddProjectNameCancel()">Cancel</button>
+      <button nz-button nzType="primary" (click)="handleAddProjectNameSave()">Save</button>
+    </ng-template>
+  </nz-modal>
+</div>
+
+<!-- 填寫mrr不做原因 -->
+<nz-modal nzWidth="450px" class="model-cls" nzOkText="Ok" nzCancelText="Cancel" [(nzVisible)]="addMrrRemarkFlag"
+  [nzOkLoading]="mrrRemarkconfirmLoading" (nzOnOk)="addMrrRemark()" (nzOnCancel)="cancelAddMrrRemark()"
+  [nzTitle]="mrrModuleTitle" [nzMaskClosable]=false>
+  <label class="input-cls">
+    <textarea rows="4" nz-input [(ngModel)]="inputMrrRemark"></textarea>
+  </label>
+</nz-modal>
+
+<!-- 填寫所有mrr不做原因 -->
+<nz-modal nzWidth="450px" class="model-cls" nzOkText="Ok" nzCancelText="Cancel" [(nzVisible)]="allMrrRemarkFlag"
+  [nzOkLoading]="allmrrRemarkconfirmLoading" (nzOnOk)="addAllMrrRemark()" (nzOnCancel)="cancelAllMrrRemark()"
+  [nzTitle]="'base-data.notDo-mrrFlow-reason' | translate" [nzMaskClosable]=false>
+  <label class="input-cls">
+    <textarea rows="4" nz-input [(ngModel)]="inputAllMrrRemark"></textarea>
+  </label>
+</nz-modal>
+
+<!-- 顯示mrr流程不做理由 -->
+<nz-modal nzWidth="800px" class="model-cls" nzOkText="Ok" nzCancelText="Cancel" [(nzVisible)]="mrrShowFlag"
+  [nzMaskClosable]="false" [nzFooter]="null" [nzContent]="modalContent" (nzOnCancel)="cancelMrrModel()">
+  <ng-template #modalContent>
+    <nz-table class="nz-table" #basicTable nzBordered [nzShowPagination]="false" [nzData]="mrrRemarks">
+      <thead>
+        <tr>
+          <th style="width: 250px;">{{'base-data.mrr-flow' | translate }}</th>
+          <th>{{'base-data.reason' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.moduleName}}</td>
+          <td>{{data.remark}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+</nz-modal>
+
+<!-- 填寫DFQ不做原因 -->
+<nz-modal nzWidth="450px" class="model-cls" nzOkText="Ok" nzCancelText="Cancel" [(nzVisible)]="addDFQRemarkFlag"
+  [nzOkLoading]="DFQRemarkconfirmLoading" (nzOnOk)="addDFQRemark()" (nzOnCancel)="cancelAddDFQRemark()"
+  [nzTitle]="DFQModuleTitle" [nzMaskClosable]=false>
+  <label class="input-cls">
+    <textarea rows="4" nz-input [(ngModel)]="inputDFQRemark"></textarea>
+  </label>
+</nz-modal>
+
+<!-- 顯示DFQ流程不做理由 -->
+<nz-modal nzWidth="800px" class="model-cls" nzOkText="Ok" nzCancelText="Cancel" [(nzVisible)]="DFQShowFlag"
+  [nzMaskClosable]="false" [nzFooter]="null" [nzContent]="modalContentDFQ" (nzOnCancel)="cancelDFQModel()">
+  <ng-template #modalContentDFQ>
+    <nz-table class="nz-table" #basicTable nzBordered [nzShowPagination]="false" [nzData]="DFQRemarks">
+      <thead>
+        <tr>
+          <th style="width: 250px;">{{'base-data.dfq-flow' | translate }}</th>
+          <th>{{'base-data.reason' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.moduleName}}</td>
+          <td>{{data.remark}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </ng-template>
+</nz-modal>
+<ng-template #titleTemplate>
+  <div>{{'base-data.system-autoSet-notice' | translate }}</div>
+</ng-template>

@@ -1,0 +1,13 @@
+<nz-modal *ngIf="rawData" [(nzVisible)]="isVisible" nzTitle="" [nzStyle]="{ top: '10%' }" nzWidth="75%" (nzOnCancel)="handleCancel()" [nzClosable]="cancelOK" [nzFooter]="footer" (nzOnOk)="handleOk()">
+  <div [ngSwitch]="data['type']">
+    <!-- 预警模板组件2: 表头包含SPC管制图 -->
+      <app-forms-item-spc *ngSwitchCase="'spc'" [seriesHeadWidth]="subDetailFormHeadWidth" [rawData]="rawData" [allData]="data"></app-forms-item-spc>
+      <!-- 結案率自動追蹤 预警模板组件1: 表头包不含SPC管制图 详细表格 -->
+      <app-forms-item-cpk *ngSwitchCase="'cpk'" [seriesHeadWidth]="subDetailFormHeadWidth" [rawData]="rawData" [allData]="data"></app-forms-item-cpk>
+      <!-- 結案率自動追蹤 查询类别追溯 详细表格 -->
+      <app-forms-item-trace *ngSwitchCase="'trace'" [seriesHeadWidth]="subDetailFormHeadWidthOthers" [rawData]="rawData" [allData]="data"></app-forms-item-trace>
+      <!-- 結案率自動追蹤 查询类别默认/异常 详细表格 / 供应商良率第三层-->
+      <app-forms-item *ngSwitchDefault [rawData]="rawData" [seriesHeadWidth]="subDetailFormHeadWidthOthers" [allData]="data"></app-forms-item>
+      <app-forms-item-fake  *ngSwitchCase="'fakeData'" [rawData]="rawData"  [allData]="data" ></app-forms-item-fake>
+  </div>
+</nz-modal>

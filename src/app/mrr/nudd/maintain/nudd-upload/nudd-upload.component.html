@@ -1,0 +1,113 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-maintain' | translate }}</nz-breadcrumb-item>
+  <nz-breadcrumb-item>{{ 'mrr.nudd-design-upload' | translate }}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content">
+  {{ 'mrr.nudd-design-upload' | translate }}
+</div>
+<app-nudd-upload-query (queryFlag)="queryFlag($event)"></app-nudd-upload-query>
+<div *ngIf="queryFlagShow">
+  <div *ngIf="enableUse">
+    <button nz-button [nzType]="'primary'" nzShape="circle" (click)="showModal()" class="bottom">
+      <i nz-icon type="plus" theme="outline"></i></button>
+  </div>
+  <div>
+    <nz-modal nzWidth="400px" [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+      <ng-template #modalTitle>
+        {{'mrr.nudd-data-upload' | translate}}
+      </ng-template>
+      <ng-template #modalContent>
+        <div class="input">
+          <span>{{ 'mrr.mrr-category' | translate }}</span>
+          <nz-select class="int" nzShowSearch nzAllowClear [(ngModel)]="form.dimensionId">
+            <nz-option *ngFor="let type of types" [nzLabel]="type.name" [nzValue]="type.id"></nz-option>
+          </nz-select>
+        </div>
+        <div *ngIf="form.dimensionId === 0">
+          <div class="input">
+            <span>{{ 'mrr.mrr-file' | translate }}</span>
+            <nz-upload [(nzFileList)]="file" [nzBeforeUpload]="beforeUpload" [nzLimit]="1" nzListType="picture">
+              <button nz-button style="width: 150px">
+                <i nz-icon type="upload"></i><span>Select File</span>
+              </button>
+            </nz-upload>
+          </div>
+          <div class="input">
+            <span>{{ 'mrr.nudd-path' | translate }}</span>
+            <input nz-input="" placeholder="" [disabled]="true" [(ngModel)]="formModel.path"
+              class="ng-pristine ng-valid ant-input ng-touched int">
+          </div>
+        </div>
+        <div *ngIf="form.dimensionId === null || form.dimensionId !== 0">
+          <div class="input">
+            <span>{{ 'mrr.mrr-part' | translate }}</span>
+            <nz-select class="int" nzShowSearch nzAllowClear [(ngModel)]="form.partId">
+              <nz-option *ngFor="let part of parts" [nzLabel]="part.name" [nzValue]="part.id"></nz-option>
+            </nz-select>
+          </div>
+          <div class="input">
+            <span>{{ 'mrr.mrr-file' | translate }}</span>
+            <nz-upload [(nzFileList)]="file" [nzBeforeUpload]="beforeUpload" [nzLimit]="1" nzListType="picture">
+              <button nz-button style="width: 150px">
+                <i nz-icon type="upload"></i><span>Select File</span>
+              </button>
+            </nz-upload>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #modalFooter>
+        <div *ngIf="form.dimensionId === null || form.dimensionId !== 0">
+          <button nz-button [nzType]="'primary'" [disabled]="file.length == 0 || addFileFlag" [nzLoading]="uploading"
+            (click)="handleUpload('2d3dfiles')" style="margin-top: 16px">
+            {{ uploading ? ('mrr.nudd-fileUploading' | translate) : ('mrr.nudd-uploadFile' | translate) }}
+          </button>
+        </div>
+        <div *ngIf="form.dimensionId === 0">
+          <button nz-button [nzType]="'primary'" [disabled]="file.length == 0 || addFileFlag" [nzLoading]="uploading"
+            (click)="handleUpload('idbookfiles')" style="margin-top: 16px">
+            {{ uploading ? ('mrr.nudd-fileUploading' | translate) : ('mrr.nudd-uploadFile' | translate) }}
+          </button>
+        </div>
+      </ng-template>
+    </nz-modal>
+  </div>
+
+  <nz-table #basicTable [nzData]="dataSet" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th>{{ 'mrr.mrr-category' | translate }}</th>
+        <th>{{ 'mrr.mrr-part' | translate }}</th>
+        <th *ngIf="enableUse">{{ 'mrr.mrr-action' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="dataSet[0]">
+      <tr *ngFor="let data of basicTable.data[0]['modelDocuments']">
+        <td>ID Book</td>
+        <td>/</td>
+        <td>
+          <a *ngIf="SQMLeaderUse">
+            <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(data, 'idbookfiles')"></i>
+          </a>&nbsp;&nbsp;
+          <a *ngIf="enableUse">
+            <i nz-icon type="download" download="" theme="outline" (click)="download(data,'idbookfiles')"></i>
+          </a>
+        </td>
+      </tr>
+      <tr *ngFor="let data of basicTable.data[0]['partDocuments']">
+        <td>{{data.dimension.name}}</td>
+        <td>{{data.part.name}}</td>
+        <td>
+          <a *ngIf="SQMLeaderUse">
+            <i nz-icon type="delete" theme="outline" (click)="showDeleteConfirm(data,'2d3dfiles')"></i>
+          </a>&nbsp;&nbsp;
+          <a *ngIf="enableUse">
+            <i nz-icon type="download" download="" theme="outline" (click)="download(data,'2d3dfiles')"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

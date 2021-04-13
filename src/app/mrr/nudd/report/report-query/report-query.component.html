@@ -1,0 +1,299 @@
+<div>
+  <div class="title">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+      <nz-breadcrumb-item>{{ 'mrr.nudd-title' | translate }}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>NUDD Report</nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </div>
+  <div class="body">
+    <div class="body-title">NUDD Report</div>
+    <div>
+      <div class="field1">
+        <span style="color: red;margin: 0px">*</span>
+        <span>{{ 'mrr.mrr-site' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear class="select" [(ngModel)]="site" (ngModelChange)="getResultBySite()">
+          <nz-option *ngFor="let site of sites" [nzLabel]="site" [nzValue]="site"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="field1">
+        <span>{{ 'mrr.mrr-plant' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear class="select" [(ngModel)]="plant" (ngModelChange)="getResultByPlant()">
+          <nz-option *ngFor="let plant of plants" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="field1">
+        <span>{{ 'mrr.mrr-product' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear class="select" [(ngModel)]="product" (ngModelChange)="getResultBySite()">
+          <nz-option *ngFor="let product of products" [nzLabel]="product" [nzValue]="product"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="field1">
+        <span>{{ 'mrr.mrr-customer' | translate }}</span>
+        <nz-select nzShowSearch nzAllowClear class="select" [(ngModel)]="customer" (ngModelChange)="getProject()">
+          <nz-option *ngFor="let customer of customers" [nzLabel]="customer" [nzValue]="customer"></nz-option>
+        </nz-select>
+      </div>
+
+        <div class="field1">
+          <span>BU</span>
+          <nz-select nzShowSearch nzAllowClear class="select" [(ngModel)]="BU" (ngModelChange)="getProject()">
+            <nz-option *ngFor="let BU of BUs" [nzLabel]="BU" [nzValue]="BU"></nz-option>
+          </nz-select>
+        </div>
+
+        <div>
+          <div class="field1">
+            <span>{{ 'mrr.nudd-timeInterval' | translate }}</span>
+            <nz-range-picker [(ngModel)]="dateRange" (ngModelChange)="getResultBySite()" [nzFormat]="'yyyy/MM/dd'"
+              [nzAllowClear]="true"></nz-range-picker>
+          </div>
+        </div>
+        <div>
+          <div class="field1">
+            <span>Project Code</span>
+            <nz-select nzShowSearch nzAllowClear [nzDisabled]="flag" [(ngModel)]="project" (ngModelChange)="getModel()">
+              <nz-option *ngFor="let project of projectCode" [nzLabel]="project" [nzValue]="project"></nz-option>
+            </nz-select>
+          </div>
+
+          <div class="field1">
+            <span>Project Name</span>
+            <nz-select nzShowSearch nzAllowClear [(ngModel)]="model" [nzDisabled]="flag" (ngModelChange)="queryShow()">
+              <nz-option *ngFor="let model of projectName" [nzLabel]="model" [nzValue]="model"></nz-option>
+            </nz-select>
+          </div>
+          <button nz-button nzType="primary" style="border-radius:6px" [disabled]="queryFlag" (click)="query()">
+            {{ 'mrr.mrr-query' | translate }}
+          </button>
+        </div>
+
+        <nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+        <!-- 餅圖 -->
+        <div class="section" *ngIf="showEchart">
+          <app-report-echarts *ngFor="let item of productList; let i = index" [total]="data.total[i]"
+            [pass]="data.pass[i]" [title]="productList[i]" (click)="clickEchart(i)"></app-report-echarts>
+        </div>
+        <!-- table的顯示 -->
+        <div class="overall">
+          <table *ngIf="show">
+            <thead>
+              <tr>
+                <th colspan="6">Overall({{ overall.red + overall.green }})</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3">
+                  <div class="circle red"></div>
+                  {{ overall.red }} ({{ 'mrr.nudd-unfinished-item' | translate }})
+                </td>
+                <td colspan="3">
+                  <div class="circle green"></div>
+                  {{ overall.green }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="1">{{ 'mrr.nudd-notPass' | translate }}</td>
+                <td colspan="1">{{ 'mrr.nudd-signing' | translate }}</td>
+                <td colspan="1">{{ 'mrr.nudd-not-evaluated' | translate }}</td>
+                <td colspan="3">{{ 'mrr.nudd-pass' | translate }}</td>
+              </tr>
+              <tr class="show-model">
+                <td colspan="1" (click)="showModal(3)">{{ red.fail }}</td>
+                <td colspan="1" (click)="showModal(1)">{{ red.signing }}</td>
+                <td colspan="1" (click)="showModal(0)">{{ red.unsubmit }}</td>
+                <td colspan="3" (click)="showModal(2)">{{ overall.green }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- 點擊table的數值要顯示的modal -->
+    <div>
+      <nz-modal nzWidth="70%" [(nzVisible)]="modelFlag" [nzTitle]="modalTitle" [nzContent]="modalContent"
+        [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+        <ng-template #modalTitle>
+          <div class="model-name">
+            {{ modelName === '已評估通過機種' ? ('mrr.nudd-pass-Model' | translate) : modelName === '已評估紅燈機種' ? ('mrr.nudd-red-Model' | translate) : modelName === '簽核中Fail機種' ? ('mrr.nudd-signing-fail-Model' | translate) : ('mrr.nudd-not-evaluated-model' | translate) }}
+          </div>
+        </ng-template>
+        <ng-template #modalContent>
+          <div style="float: left;margin-left: 3%;" *ngIf="isGreenPass === false">
+            <div class="circle green"></div>
+            <span style="font-size: 15px;">{{ 'mrr.nudd-pass-after-review' | translate }}</span>
+          </div>
+          <div class="download">
+            <button nz-button [nzType]="'primary'" title="Download" nzShape="circle" (click)="download()">
+              <i class="anticon anticon-download"></i>
+            </button>
+          </div>
+          <div class="modelTable">
+            <nz-table id="downdata" #nzTable [nzData]="showData" nzShowPagination="false" nzBordered="true"
+              [nzPageSize]="500">
+              <thead>
+                <tr>
+                  <th>List</th>
+                  <th>{{ 'mrr.mrr-site' | translate }}</th>
+                  <th>BU</th>
+                  <th>{{ 'mrr.mrr-customer' | translate }}</th>
+                  <th *ngIf="!isUnsubmitted">RFQ Code</th>
+                  <th *ngIf="!isUnsubmitted">ProjectCode</th>
+                  <th>{{ 'mrr.mrr-model' | translate }}</th>
+                  <th *ngIf="isUnsubmitted">{{ 'mrr.nudd-pass-after-review' | translate }}</th>
+                  <th *ngIf="!isUnsubmitted">{{ 'mrr.mrr-duedate' | translate }}</th>
+                  <th>{{ 'mrr.mrr-link' | translate }}</th>
+                </tr>
+              </thead>
+              <tr *ngFor="let item of nzTable.data; let i = index">
+                <td *ngIf="item.isGreen">
+                  <div class="circle green"></div>
+                  {{ i + 1 }}
+                </td>
+                <td *ngIf="!item.isGreen">
+                  {{ i + 1 }}
+                </td>
+                <td>{{ item.site }}</td>
+                <td>
+                  {{ item.businessUnit }}
+                </td>
+                <td>{{ item.customer }}</td>
+                <td *ngIf="!isUnsubmitted">{{ item.rfqProjectId }}</td>
+                <td *ngIf="!isUnsubmitted">
+                  {{ item.project }}
+                </td>
+                <td>{{ item.model }}</td>
+                <td *ngIf="isUnsubmitted" (click)="showDesignItemDetail(item)">
+                  {{ item.passItemCount }}
+                </td>
+                <td *ngIf="!isUnsubmitted">
+                  {{ item.dueDate | date: "yyyy-MM-dd HH:mm:ss" }}
+                </td>
+                <td>
+                  <div *ngIf="submitRed">
+                    <i nz-icon type="link" theme="outline" (click)="router(item)"></i>
+                  </div>
+                  <div *ngIf="signingRed">
+                    <i nz-icon type="link" theme="outline" (click)="router3(item)"></i>
+                  </div>
+                  <div *ngIf="!isUnsubmitted">
+                    <i nz-icon type="link" theme="outline" (click)="router2(item)"></i>
+                  </div>
+                  <div *ngIf="!isGreenPass">
+                    <i nz-icon type="link" theme="outline" (click)="router(item)"></i>
+                  </div>
+                </td>
+              </tr>
+            </nz-table>
+          </div>
+        </ng-template>
+        <ng-template #modalFooter>
+          <button nz-button nzType="primary" (click)="handleCancel()">
+            {{ 'mrr.mrr-return' | translate }}
+          </button>
+        </ng-template>
+      </nz-modal>
+    </div>
+    <!-- 審核通過的項目要顯示的modal -->
+    <div>
+      <nz-modal [(nzVisible)]="isVisible" [nzClosable]="false" (nzOnCancel)="handleCancel1()" [nzFooter]="null"
+        nzTitle="">
+        <nz-table class="item" #nzDesign [nzData]="items" [nzFrontPagination]="false" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th>{{ 'mrr.nudd-pass-after-review' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of nzDesign.data">
+              <td>{{ item }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-modal>
+    </div>
+    <!-- 精確查找時顯示的modal -->
+    <div>
+      <nz-modal nzWidth="60%" [(nzVisible)]="detailFlag" [nzTitle]="modalTitle2" [nzContent]="modalContent2"
+        [nzFooter]="null" (nzOnCancel)="handleCancel2()">
+        <ng-template #modalTitle2>
+          <div class="model-name">
+            {{ title === '已評估未通過' ? ('mrr.nudd-notPass' | translate) : title === '簽核中' ? ('mrr.nudd-signing' | translate) : title === '未評估' ? ('mrr.nudd-not-evaluated' | translate) : ('mrr.nudd-pass' | translate) }}
+          </div>
+        </ng-template>
+        <ng-template #modalContent2>
+          <div class="modelTable">
+            <nz-table #nzTable [nzData]="reportDetail" nzShowPagination="false" nzBordered="true" [nzPageSize]="500">
+              <thead>
+                <tr>
+                  <th>List</th>
+                  <th>{{ 'mrr.mrr-site' | translate }}</th>
+                  <th>BU</th>
+                  <th>{{ 'mrr.mrr-product' | translate }}</th>
+                  <th>{{ 'mrr.mrr-customer' | translate }}</th>
+                  <th>ProjectCode</th>
+                  <th>{{ 'mrr.mrr-model' | translate }}</th>
+                  <th>{{ 'mrr.mrr-link' | translate }}</th>
+                </tr>
+              </thead>
+              <tr *ngFor="let data of nzTable.data; let i = index">
+                <td>
+                  {{ i + 1 }}
+                </td>
+                <td>{{ data.site }}</td>
+                <td>{{ data.businessUnit }}</td>
+                <td>
+                  {{ data.product }}
+                </td>
+                <td>{{ data.customer }}</td>
+                <td>{{ data.project }}</td>
+                <td>{{ data.model }}</td>
+                <td>
+                  <div>
+                    <i nz-icon type="link" theme="outline" (click)="routing(data)"></i>
+                  </div>
+                </td>
+              </tr>
+            </nz-table>
+          </div>
+        </ng-template>
+      </nz-modal>
+    </div>
+    <!-- 增加by site plant全部下載的功能 -->
+    <div style="display: none;">
+      <nz-table id="downAll" #nzModelResult [nzData]="v_ModelResult" nzShowPagination="false" nzFrontPagination="false"
+        nzBordered="true">
+        <thead>
+          <tr>
+            <th>BU</th>
+            <th>Site</th>
+            <th>Plant</th>
+            <th>Product</th>
+            <th>Customer</th>
+            <th>RFQ Project Code</th>
+            <th>Project Code</th>
+            <th>Project Name</th>
+            <th>DueDate</th>
+            <th>ProjectCreatedOn</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tr *ngFor="let data of nzModelResult.data">
+          <td>{{ data.businessUnit }}</td>
+          <td>{{ data.site }}</td>
+          <td>{{ data.plant }}</td>
+          <td>{{ data.product }}</td>
+          <td>{{ data.customer }}</td>
+          <td>{{ data.rfqProjectId }}</td>
+          <td>{{ data.project }}</td>
+          <td>{{ data.model }}</td>
+          <td>{{ data.dueDate | date: "yyyy-MM-dd HH:mm:ss" }}</td>
+          <td>{{ data.projectCreatedOn | date: "yyyy-MM-dd HH:mm:ss" }}</td>
+          <td>{{ data.status === 2 ? 'Pass' : 'Fail'}}</td>
+        </tr>
+      </nz-table>
+    </div>

@@ -1,0 +1,21 @@
+[
+  {
+    "plantID":"F232",
+    "category":"PPK",
+    "screenparameter":"50",
+    "modelName":"QA228",
+    "stage":"DB",
+    "testitem":"WIFI_2G4",
+    "subItem":"C7_AvgPr",
+    "goal":1.5
+  },
+  {
+    "plantID":"F232",
+    "category":"SPC",
+    "screenparameter":"50",
+    "modelName":"QA228",
+    "stage":"DB",
+    "testitem":"WIFI_2G4",
+    "subItem":"C7_AvgPr"
+  }
+]

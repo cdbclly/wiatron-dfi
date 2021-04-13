@@ -1,0 +1,25 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>MRR System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>IMQM</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'imq-yr-yieldRate' | translate}}</nz-breadcrumb-item>
+</nz-breadcrumb>
+<app-imqm-select [subject]="subject" [onlyShowRequired]="require" (queryOps)="query($event)"></app-imqm-select>
+<!-- Yield Rate趋势图查詢 -->
+<app-imqm-yr-select [period]="yrTrendPeriod" (changeQueryType)="onChangeYrTrendQueryType($event)" (changePeriod)="onChangeYrTrendPeriod($event)"></app-imqm-yr-select>
+<!-- 供应商Yield Rate趋势图 -->
+<app-imqm-line-chart [lineOptions]="materialProductYrLineData" [target]="yrTrendTarget" (lineChartClick)="detailAnalyze($event, true)"></app-imqm-line-chart>
+<!-- 供应商材料Yield Rate -->
+<div style="float: left; width: 65%;height:18vw;" *ngIf="materialProductYrBarData">
+    <app-material-end-product [barOptions]="materialProductYrBarData" (trdDetail)="detailAnalyze($event)" (subDetail)="showSubDetailYR($event, '供應商材料Yield Rate', 'Y/R', '材料成品Over Spec 分析')"></app-material-end-product>
+</div>
+<!-- over spec分析 -->
+<div style="float: right; width: 35%;" *ngIf="materialProductYrAnalyzePieData">
+    <app-material-pie-product [pieOptions]="materialProductYrAnalyzePieData"></app-material-pie-product>
+</div>
+<!-- 纬创材料NG追溯 -->
+<div style="clear: both;height:18vw;" *ngIf="materialProductDrBarData">
+    <app-material-end-product [barOptions]="materialProductDrBarData"  (subDetail)="showSubDetailPD($event, 'D/R', '')"></app-material-end-product>
+</div>
+<!-- 三层饼图 -->
+<app-pop-yr [data]="dataYr" [drAnalyze]="defectLossAnalyze" (yrAnalyzeDetail)="detailAnalyze($event)"></app-pop-yr>
+<app-pop-dr [data]="dataDr"></app-pop-dr>

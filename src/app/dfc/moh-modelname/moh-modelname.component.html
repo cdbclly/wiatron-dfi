@@ -1,0 +1,236 @@
+<div class="dfc-all" #DFCMohModel>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>MOH {{'dfc.dfc-model-difference-item-maintain' | translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;"></span>
+  </div>MOH {{'dfc.dfc-model-difference-item-maintain' | translate}}
+  <div class="dfc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input *ngIf="['plant', 'bu', 'custom', 'productType'].includes(key)"
+        [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select" (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+      <app-dfc-query-input *ngIf="!['plant', 'bu', 'custom', 'productType'].includes(key)"
+        [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"></app-dfc-query-input>
+    </div>
+    <div  class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">Query</button>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+  <div class="dfc-btn">
+    <nz-spin class="spin" *ngIf="showLoading" nzTip='Uploading...'>
+    </nz-spin>
+    <div class="dfc-btn-right">
+      <app-upload-file *ngIf="Auth.insert" class="dfc-btn-upload" [showLoading]="showLoading"
+        (uploadFile)="upload($event)"></app-upload-file>
+      <div class="dfc-btn-download">
+        <button nz-button [nzType]="'primary'" title="download" nzShape="circle" (click)="download()">
+          <i class="anticon anticon-download"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="dfc-table">
+    <font color="red"> {{'dfc.dfc-the-cost-unit-is' | translate}} NTDK/{{'dfc.dfc-month' | translate}} </font>
+    <nz-table #mohModelTable nzBordered nzShowQuickJumper [nzData]="dataSet" [nzWidthConfig]="nzWidthConfig"
+      [nzScroll]="nzScroll" [nzPageSize]="10" (nzCurrentPageDataChange)="currentPageDataChange($event)"
+      (nzPageIndexChange)="refreshStatus()" (nzPageSizeChange)="refreshStatus()">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>{{'dfc.dfc-site' | translate}}</th>
+          <th>BU</th>
+          <th>{{'dfc.dfc-customer' | translate}}</th>
+          <th>{{'dfq.dfq-product' | translate}}</th>
+          <th>Project Code</th>
+          <th>Project Name</th>
+          <th>Model Name</th>
+          <th>C{{'dfq.dfq-stage' | translate}}</th>
+          <th>{{'dfc.dfc-depreciation-expense' | translate}}</th>
+          <th>Amortization</th>
+          <th>{{'dfc.dfc-factory-workshop-depreciation' | translate}}/{{'dfc.dfc-rent' | translate}}</th>
+          <th>IDL&{{'dfc.dfc-taiwan-stationed' | translate}}</th>
+          <th>Site Allocate</th>
+          <th>HQ Support</th>
+          <th>PA Charge Out</th>
+          <th>{{'dfc.dfc-water-and-electricity-costs' | translate}}</th>
+          <th>{{'dfc.dfc-maintenance' | translate}} &{{'dfc.dfc-maintainance-costs' | translate}}</th>
+          <th>DL{{'dfc.dfc-personnel-expenses' | translate}}</th>
+          <th>{{'dfc.dfc-miscellaneous-purchase-costs' | translate}}</th>
+          <th>{{'dfc.dfc-indirect-material-cost' | translate}}</th>
+          <th>Other Expense</th>
+          <th>{{'dfc.dfc-transportation' | translate}}</th>
+          <th>{{'dfc.dfc-travel-expenses' | translate}}</th>
+          <th>{{'dfc.dfc-tax' | translate}}</th>
+          <th [nzRight]="0">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of mohModelTable.data">
+          <td>{{data.No}}</td>
+          <td>{{(data.Plant | site: {type: 'plant'})}}</td>
+          <td>{{data.BU}}</td>
+          <td>{{data.Customer}}</td>
+          <td>{{data.ProductType}}</td>
+          <td>{{data.ProjectCode}}</td>
+          <td>{{data.ProjectName}}</td>
+          <td>{{data.ModelName}}</td>
+          <td>{{data.Stage}}</td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.FixDepre}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.FixDepre">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.FixAmort}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.FixAmort">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.FixRent}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.FixRent">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixIdl}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixIdl">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixSiteAlloc}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixSiteAlloc">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixHQSup}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixHQSup">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixPaCOut}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixPaCOut">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixHpwr}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixHpwr">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.SFixRepair}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.SFixRepair">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarDL}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarDL">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarMpa}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarMpa">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarMaterial}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarMaterial">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarOther}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarOther">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarDrive}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarDrive">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarTravel}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarTravel">
+            </ng-container>
+          </td>
+          <td style="text-align: right;">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              {{data.VarTax}}
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <input type="text" nz-input [(ngModel)]="editCache[data.No].data.VarTax">
+            </ng-container>
+          </td>
+          <td [nzRight]="0">
+            <ng-container *ngIf="!editCache[data.No].edit">
+              <div *ngIf="!actionEnabled || !Auth.update">
+                <a (click)="startEdit(data.No)" style="margin-left: 10px;" disabled="disabled">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </div>
+              <div *ngIf="actionEnabled && Auth.update">
+                <a (click)="startEdit(data.No)" style="margin-left: 10px;">
+                  <i class="anticon anticon-edit"></i>
+                </a>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="editCache[data.No].edit">
+              <a (click)="saveEdit(data.No)">
+                <i class="anticon anticon-save"></i>
+              </a>
+              <a style="margin-left:10px;" (click)="cancelEdit(data.No)">
+                <i class="anticon anticon-close-circle"></i>
+              </a>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

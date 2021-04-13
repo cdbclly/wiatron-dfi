@@ -1,0 +1,87 @@
+<nz-breadcrumb>
+    <nz-breadcrumb-item>DFQ System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>Sky Eye品質監控管理系統</nz-breadcrumb-item>
+    <nz-breadcrumb-item>品質監控管理看板</nz-breadcrumb-item>
+</nz-breadcrumb>
+<div class="content"> 品質監控管理看板</div>
+<div class="query-row">
+    <div class="field1">
+        <span style="color: red;">*</span>
+        <span style="font-size:14px;">廠別</span>
+        <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_site" (ngModelChange)="getOptions('site')">
+          <nz-option *ngFor="let site of objectKeys(siteGroup)" [nzLabel]="site" [nzValue]="site" ></nz-option>
+        </nz-select>
+    </div>
+  <div class="field">
+      <span style="color: red">*</span>
+      <span style="font-size:14px;">廠區</span>
+      <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_plant" (ngModelChange)="getOptions('plant')">
+        <nz-option *ngFor="let plant of plantGroup" [nzLabel]="plant" [nzValue]="plant"></nz-option>
+      </nz-select>
+  </div>
+  <div class="field">
+    <span style="color: red">*</span>
+    <span style="font-size:14px;">製程</span>
+    <nz-select nzShowSearch nzAllowClear [(ngModel)]="cur_section" (ngModelChange)="getOptions('section')">
+      <nz-option *ngFor="let section of sectionGroup" [nzLabel]="section['name']" [nzValue]="section['name']"></nz-option>
+    </nz-select>
+</div>
+<button nz-button nzType="primary" style="border-radius:6px" (click)="query()" [disabled]="queryButton">Query</button>
+<div class="tip-bar">
+  <div class="spot-normal" style="display: -webkit-inline-box;margin: auto;margin-right: 0.5vw;"></div>正常
+  <div class="spot-alert" style="display: -webkit-inline-box;margin: auto;margin-right: 0.5vw;"></div>預警
+  <div class="spot-abnormal" style="display: -webkit-inline-box;margin: auto;margin-right: 0.5vw;"></div>異常
+  <div class="spot-noproduct" style="display: -webkit-inline-box;margin: auto;margin-right: 0.5vw;"></div>未生產
+</div>
+</div>
+
+<!-- 分割线 -->
+<nz-divider style="background-color:rgba(212, 212, 212, 1);"></nz-divider>
+
+<div class="right">
+    <table [hidden]="isLoading">
+      <div *ngIf="layoutInfos">
+      <!-- <div *ngIf="plantInfos.plants[cur_plant].sections[cur_section]"> -->
+      <tr *ngFor="let line of objectKeys(layoutInfos); let j = index">
+        <td>
+          <ul>
+            <li class="line_style">{{line}}</li>
+            <li [ngClass]="{'li-big': liTagCount < 20, 'li-small': liTagCount > 19}" *ngFor="let item of layoutInfos[line]['stage']">
+                   <!-- 顶部圆点 -->
+                  <div class="{{item.status | statusPipe : 'name'}}"></div>
+                  <span nz-popover nzPlacement="top" nzTitle="{{line}} {{item.name}} 異常事件列表" [nzContent]="alertContents" nzTrigger="click">
+                    <img [ngClass]="{'img-big': liTagCount < 20, 'img-small': liTagCount > 19}" (click)="goDetail(line, item.name)"
+                    src=" ../../../../../../../assets/img/machineImgs/{{img_site + '_' + img_plant}}/{{img_site + '_' + img_plant + '_' + item.name }}.png"
+                    onerror="this.src='../../../../../../../assets/img/machineImgs/default.png'" nzTitle="{{item.desc}}" nzPlacement="bottom" nz-tooltip style="cursor: pointer;">
+                  </span>
+                  <!-- 标题 -->
+                  <span style="font-size: 0.8vw;">{{item.name }}</span>
+                <!-- <span style="font-size: 0.2vw;">{{item.desc}}</span> -->
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </div>
+    <!-- </div> -->
+    </table>
+    <div class="loading" [hidden]="!isLoading">
+        <nz-spin [nzSize]="'large'"></nz-spin>
+    </div>
+    </div>
+
+    <ng-template #alertContents>
+      <div style="max-height:200px; overflow-y:auto;">
+          <nz-collapse [nzBordered]="false">
+              <nz-collapse-panel *ngFor="let alert of alertItems" [nzHeader]="alert.name" [nzActive]="alert.active">
+                <p>類型：<span class="link-report" (click)="goReport(alert)"><i nz-icon type="link" theme="outline"></i>{{alert.name}}</span></p>
+                <p>狀態：<span class="{{alert.status | statusPipe}}" style="display: inline-block"></span> {{alert.status}}</p>
+                <p>時間：{{alert.sTime | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+                <p>機種：{{alert.model}}</p>
+                <p *ngIf="alert.machineModel">治具類別：{{alert.machineModel}}</p>
+                <p>治具: {{alert.fixId}}</p>
+                <p *ngIf="alert.bt">大測項：{{alert.bt}}</p>
+                <p *ngIf="alert.st">小測項：{{alert.st}}</p>
+              </nz-collapse-panel>
+            </nz-collapse>
+      </div>
+    </ng-template>

@@ -1,0 +1,44 @@
+<div class="dfc-wh">
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'dfc.model-performance-tracking'|translate}}</nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{'authority-maintain.working-hours-query'|translate}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">{{'authority-maintain.working-hours-query'|translate}}</span>
+  </div>
+  <div class="dfc-query">
+    <div *ngFor="let key of objectKeys(querySelect)">
+      <app-dfc-query-input [queryStyle]="querySelect[key].style" [(queryValue)]="querySelect[key].value"
+        [querySelect]="querySelect[key].select"
+        (queryValueChange)="querySelect[key].change$.next(querySelect[key].value)"
+        (searchSelectChange)="querySelect[key].select.searchChange$.next($event)"></app-dfc-query-input>
+    </div>
+    <div class="dfc-query-btn">
+      <button nz-button nzType="primary" (click)="query()">{{'dfq.dfq-query'|translate}}</button>
+    </div>
+  </div>
+  <div class="dfc-line"></div>
+  <div echarts [options]="option" class="dfc-query-echart"></div>
+  <div class="table" *ngIf=datas>
+    <nz-table #whQueryTable nzBordered nzShowQuickJumper [nzShowPagination]="false" [nzData]="datas"
+      [nzScroll]="nzScroll" [nzPageSize]="10">
+      <thead>
+        <tr class="table">
+          <th></th>
+          <th *ngFor="let data of datas">{{data.Stage}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td width="11%">{{'report.design-workhour'|translate}}</td>
+          <td *ngFor="let data of datas">{{data.time}}</td>
+        </tr>
+        <tr>
+          <td width="11%">{{'military-order.goal-workhour'|translate}}</td>
+          <td *ngFor="let data of datas">{{data.target}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

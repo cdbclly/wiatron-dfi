@@ -1,0 +1,117 @@
+<nz-modal *ngIf="isVisiblePic" [(nzVisible)]="modalShow" [nzWidth]="1300" (nzOnCancel)="handleCancel()"
+  [nzFooter]="null" [nzTitle]="material">
+  <div>
+    <button *ngIf="editButton" nz-button [nzType]="'primary'"  nzShape="circle"   (click)="edit()" class="editbut">
+      <i class="anticon anticon-edit"></i>
+    </button>
+    <button *ngIf="!editButton" nz-button [nzType]="'primary'"  nzShape="circle"  (click)="save()" class="editbut">
+      <i class="anticon anticon-save"></i>
+    </button>
+  </div>
+  <div>
+    <nz-table [nzScroll]="{ x: '2700px' }" nzBordered="true" #nzTable id="report" [nzData]="materialDetails.factors"
+      nzShowPagination="false" [nzPageSize]="500">
+      <thead>
+        <tr>
+          <th nzWidth="100px" nzLeft="0px">{{ 'dfq.dfq-project' | translate }}</th>
+          <th nzWidth="100px" nzLeft="100px">{{ 'dfq.dfq-plant' | translate }}</th>
+          <th nzWidth="100px" nzLeft="200px">{{ 'dfq.dfq-customer' | translate }}</th>
+          <th nzWidth="100px" nzLeft="300px">{{ 'dfq.dfq-product' | translate }}</th>
+          <th nzWidth="100px" nzLeft="400px">{{ 'dfq.dfq-model' | translate }}</th>
+          <th nzWidth="100px" nzLeft="500px">{{ 'dfq.dfq-material' | translate }}</th>
+          <th *ngFor="let factorType of factorTypes">{{factorType.name}}</th>
+          <th nzWidth="100px" nzRight="0px">{{ 'dfq.dfq-yield' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr *ngFor="let data of nzTable.data, let i=index">
+      </tr> -->
+        <tr>
+          <td nzLeft="0px">{{ 'dfq.rfi-design' | translate }}</td>
+          <td nzLeft="100px">{{materialDetails.site + '-' + materialDetails.plant}}</td>
+          <td nzLeft="200px">{{materialDetails.customer}}</td>
+          <td nzLeft="300px">{{materialDetails.product}}</td>
+          <td nzLeft="400px">{{materialDetails.modelId}}</td>
+          <td nzLeft="500px">{{materialDetails.material.name}}</td>
+          <td *ngFor="let item of nzTable.data,let j=index">
+            <span *ngIf="editButton">{{item.name}}</span>
+            <nz-select *ngIf="!editButton" (ngModelChange)="Change()" nzShowSearch [(ngModel)]="item.id">
+              <ng-container *ngFor="let list of factorTypes[j].factors">
+                <nz-option [nzValue]="list.id" [nzLabel]="list.name"></nz-option>
+              </ng-container>
+            </nz-select>
+          </td>
+          <td nzWidth="100px" nzRight="0px">
+            <span *ngIf="!getIng">{{materialDetails.yieldRate | percent}}</span>
+            <nz-spin *ngIf="getIng" nzSimple></nz-spin>
+            <!-- <span
+              *ngIf="!editButton&&materialDetails.originalYieldRate!=0">{{materialDetails.yieldRate ? (materialDetails.yieldRate | percent) :  (materialDetails.yieldRate == 0 ? '0' : (materialDetails.originalYieldRate | percent)) }}</span> -->
+            <!-- <input *ngIf="!editButton&&materialDetails.originalYieldRate==0" type="text" nz-input
+              [placeholder]="materialDetails.yieldRate ? (materialDetails.yieldRate | percent) :  (materialDetails.yieldRate == 0 ? '0' : (materialDetails.originalYieldRate | percent))"
+              [(ngModel)]="changeYiedlRate" /> -->
+          </td>
+        </tr>
+        <tr *ngIf="sameCustomer.length>=1">
+          <td nzLeft="0px">{{ 'dfq.rfi-best-customer' | translate }}</td>
+          <td nzLeft="100px">
+            {{ fstSameModelUploads['site'] + '-' + fstSameModelUploads['plant'] }}
+          </td>
+          <td nzLeft="200px">{{fstSameModelUploads['customer']}}</td>
+          <td nzLeft="300px">{{fstSameModelUploads['product']}}</td>
+          <td nzLeft="400px">{{fstSameModelUploads['modelId']}}</td>
+          <td nzLeft="500px">{{fstSameModelUploads['materialName']}}</td>
+          <td *ngFor="let item of fstSameFactors,let i = index">
+            <span
+              [ngStyle]="{'color': (materialDetails.factors[i].id !== item? 'rgb(0, 0, 255)': 'rgba(0, 0, 0, 0.65)')}">{{(item | factor | async)?.name}}</span>
+          </td>
+          <td nzWidth="100px" nzRight="0px">{{(fstSameModelUploads['yieldRate'] | percent)}}</td>
+        </tr>
+        <tr *ngIf="sameCustomer.length>=2">
+          <td nzLeft="0px">{{ 'dfq.rfi-best-customer' | translate }}</td>
+          <td nzLeft="100px">
+            {{ secSameModelUploads['site'] + '-' + secSameModelUploads['plant'] }}
+          </td>
+          <td nzLeft="200px">{{secSameModelUploads['customer']}}</td>
+          <td nzLeft="300px">{{secSameModelUploads['product']}}</td>
+          <td nzLeft="400px">{{secSameModelUploads['modelId']}}</td>
+          <td nzLeft="500px">{{secSameModelUploads['materialName']}}</td>
+          <td *ngFor="let item of fstSameFactors,let i = index">
+            <span
+              [ngStyle]="{'color': (materialDetails.factors[i].id !== item? 'rgb(0, 0, 255)': 'rgba(0, 0, 0, 0.65)')}">{{(item | factor | async)?.name}}</span>
+          </td>
+          <td nzWidth="100px" nzRight="0px">{{(secSameModelUploads['yieldRate'] | percent)}}</td>
+        </tr>
+        <tr *ngIf="difCustomer.length>=1">
+          <td nzLeft="0px">{{ 'dfq.rfi-best-all-customer' | translate }}</td>
+          <td nzLeft="100px">
+            {{ fstDifModelUploads['site'] + '-' + fstDifModelUploads['plant'] }}
+          </td>
+          <td nzLeft="200px">{{fstDifModelUploads['customer']}}</td>
+          <td nzLeft="300px">{{fstDifModelUploads['product']}}</td>
+          <td nzLeft="400px">{{fstDifModelUploads['modelId']}}</td>
+          <td nzLeft="500px">{{fstDifModelUploads['materialName']}}</td>
+          <td *ngFor="let item of fstDifFactors,let i = index">
+            <span
+              [ngStyle]="{'color': (materialDetails.factors[i].id !== item? 'rgb(0, 0, 255)': 'rgba(0, 0, 0, 0.65)')}">{{(item | factor | async)?.name}}</span>
+          </td>
+          <td nzWidth="100px" nzRight="0px">{{(fstDifModelUploads['yieldRate'] | percent)}}</td>
+        </tr>
+        <tr *ngIf="difCustomer.length>=2">
+          <td nzLeft="0px">{{ 'dfq.rfi-best-all-customer' | translate }}</td>
+          <td nzLeft="100px">
+            {{ secDifModelUploads['site'] + '-' + secDifModelUploads['plant'] }}
+          </td>
+          <td nzLeft="200px">{{secDifModelUploads['customer']}}</td>
+          <td nzLeft="300px">{{secDifModelUploads['product']}}</td>
+          <td nzLeft="400px">{{secDifModelUploads['modelId']}}</td>
+          <td nzLeft="500px">{{secDifModelUploads['materialName']}}</td>
+          <td *ngFor="let item of secDifFactors,let i = index">
+            <span
+              [ngStyle]="{'color': (materialDetails.factors[i].id !== item? 'rgb(0, 0, 255)': 'rgba(0, 0, 0, 0.65)')}">{{(item | factor | async)?.name}}</span>
+          </td>
+          <td nzWidth="100px" nzRight="0px">{{(secDifModelUploads['yieldRate'] | percent)}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-modal>

@@ -1,0 +1,245 @@
+<div class="box-table">
+  <nz-table
+  #nzData
+  nzBordered
+  nzShowQuickJumper
+  [nzShowPagination] = "false"
+  [nzData]="tableData"
+  [nzPageSize]="5">
+  <thead>
+    <tr style="text-align: center;font-size: 10px;">
+        <th nzShowExpand></th>
+        <th>單號</th>
+        <th>狀態</th>
+        <th>類型</th>
+        <th>詳細</th>
+    </tr>
+  </thead>
+  <tbody>
+      <ng-template ngFor let-data [ngForOf]="nzData.data">
+    <tr>
+        <td nzShowExpand [(nzExpand)]="data['expand']" (click)="showDetail(data)"></td>
+        <td>{{data['number']}}</td>
+        <td>{{data['status']}}</td>
+        <td>{{data['objName'] | formsNoCate}}</td>
+        <td><i class="anticon anticon-search" (click)="showTrdTable(data)"></i></td>
+    </tr>
+    <tr *ngIf="rawData" [nzExpand]="data['expand']">
+        <td></td>
+        <td colspan="4">
+            <div class="box-table">
+                <table>
+                  <tbody>
+                    <tr style="border-top: 1px solid lightslategray;border-left: 1px solid lightslategray;">
+                      <td class="tr-headstyle"  style="color: black;width:15%;border-color: lightslategray;">廠商</td>
+                      <td style="color: black;width:15%;border-color: lightslategray;">{{data['vendor']}}</td>
+                      <td  class="tr-headstyle" style="color: black;width:15%;border-color: lightslategray;">單號</td>
+                      <td style="color: black;width:15%;border-color: lightslategray;">{{data['number']}}</td>
+                      <td  class="tr-headstyle" style="color: black;width:15%;border-color: lightslategray;">狀態</td>
+                      <td style=" color: black;width:15%;border-color: lightslategray;">{{data['status']}}</td>
+                    </tr>
+                    <tr style="border-left: 1px solid lightslategray;">
+                      <td  class="tr-headstyle" style="background-color: white; color: black;width:15%;border-color: lightslategray;">Y/R</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['yieldRate'] | noDataCheck : 'N/A'}}</td>
+                      <td  class="tr-headstyle" style="background-color: white; color: black;width:15%;border-color: lightslategray;">幾種</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['model']}}</td>
+                      <td  class="tr-headstyle" style="background-color: white; color: black;width:15%;border-color: lightslategray;">日期</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['executionTime'] * 1000 | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                  </tr>
+                  <tr style="border-left: 1px solid lightslategray;">
+                      <td class="tr-headstyle" style="border-color: lightslategray;color:black;" >SPC Result</td>
+                      <td style="border-color: lightslategray;">{{data['spcResult'] | noDataCheck : 'N/A'}}</td>
+                      <td class="tr-headstyle" style="color: black;width:15%;border-color: lightslategray;">品名</td>
+                      <td style=" color: black;width:15%;border-color: lightslategray;">{{data['productName']}}</td>
+                      <td class="tr-headstyle" style="color: black;width:15%;border-color: lightslategray;">班別</td>
+                      <td style="color: black;width:15%;border-color: lightslategray;">{{data['shift'] | noDataCheck : 'N/A'}}</td>
+                  </tr>
+                  <tr style="border-left: 1px solid lightslategray;">
+                      <td class="tr-headstyle" style="border-color: lightslategray;background-color: white;color:black;">CPK Result</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['cpkResult'] | noDataCheck : 'N/A'}}</td>
+                      <td class="tr-headstyle" style="background-color: white; color: black;width:15%;border-color: lightslategray;">料號</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['partNumber'] | noDataCheck : 'N/A'}}</td>
+                      <td class="tr-headstyle" style="background-color: white; color: black;width:15%;border-color: lightslategray;">設備編碼</td>
+                      <td style="background-color: white; color: black;width:15%;border-color: lightslategray;">{{data['machineID'] | noDataCheck : 'N/A'}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3"><textarea rows="4" readonly="readonly" nz-input placeholder="原因">
+                      {{data['reason'] | noDataCheck : '原因:'}}
+                    </textarea></td>
+                    <td colspan="3"><textarea rows="4" readonly="readonly" nz-input  placeholder="對策">
+                      {{data['countermeasures'] | noDataCheck : '對策:'}}
+                    </textarea></td>
+                  </tr>
+                  <tr>
+                      <td colspan="6" [hidden]="!isEdit" style="background-color: #f0f0f0; text-align: center;">
+                        <button nz-button nzType="primary" [disabled]="!isActive || data['status'] !== 'ongoing'" style="border-radius:6px"  (click)="close(data['number'], data['objName'])">Close</button>
+                        <button nz-button nzType="primary" [disabled]="!isActive || data['status'] !== 'ongoing'" style="border-radius:6px"  (click)="reject(data['number'], data['objName'])">Reject</button>
+                      </td>
+                  </tr>
+                  </tbody>
+                </table>
+                </div>
+        </td>
+    </tr>
+  </ng-template>
+  </tbody>
+  </nz-table>
+  </div>
+
+
+<div style="margin-top: 50px;">
+<nz-table
+*ngIf="rawData && type === 'abnormal'"
+#groupingTable2
+[nzData]="rawData['size'][0]['detail']"
+nzBordered
+nzSize="middle"
+[nzShowPagination]="false"
+    >
+    <thead>
+      <tr>
+        <th rowspan="2" style="width: 100px">產品條碼</th>
+        <th rowspan="2" style="width: 100px">時間</th>
+        <th rowspan="2" style="width: 100px">檢驗結果</th>
+        <th colspan="2" style="width: 160px" *ngFor="let item of rawData['size']" style="width:120px">
+          {{item['name']}}
+        </th>
+        <th colspan="2" style="width: 160px" *ngFor="let item of rawData['deformation']" style="width:120px">
+          {{item['name']}}
+        </th>
+      </tr>
+      <tr>
+          <th *ngFor="let item of rawDataSizeSpec">{{item}}</th>
+          <th *ngFor="let item of rawDataDefSpec">{{item}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable2.data; let i=index">
+        <td style="width: 100px">{{item['unitSerialNumber']}}</td>
+        <td nzLeft="80px">{{rawData['executiontime'] | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td style="width: 100px">{{item['pass']}}</td>
+        <td colspan="2" style="width: 160px" *ngFor="let maxItem of rawData['size']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+        <td colspan="2" style="width: 160px" *ngFor="let maxItem of rawData['deformation']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+      </tr>
+    </tbody>
+</nz-table>
+<nz-table
+*ngIf="rawData && type === 'traceBack'"
+#groupingTable2
+[nzData]="rawData"
+nzBordered
+nzSize="middle"
+[nzShowPagination]="false"
+    >
+    <thead>
+      <tr>
+        <th [attr.rowspan]="2" nzWidth="80px"  nzLeft="0px" >產品條碼</th>
+        <th [attr.rowspan]="2" nzWidth="120px" nzLeft="80px" style="text-align: center;">時間</th>
+        <th [attr.rowspan]="2" nzWidth="70px" nzLeft="200px">檢驗結果</th>
+        <th [attr.colspan]="2" *ngFor="let item of rawData[0]['size']" style="width:120px">
+            尺寸{{item['sizeSeq']}}
+          </th>
+          <th [attr.colspan]="2" *ngFor="let item of rawData[0]['deformation']" style="width:120px">
+            {{item['name']}}
+          </th>
+      </tr>
+      <tr>
+          <th  *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item}}</th>
+          <th  *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item}}</th>
+       </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable2.data; let i=index">
+        <td nzWidth="80px" nzLeft="0px" >{{item['name']}}....{{ item|json }}</td>
+        <td nzWidth="120px" nzLeft="80px">{{rawData[0]['time'] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+        <td nzWidth="70px" nzLeft="200px">{{rawData[0]['result']}}</td>
+        <td  [attr.colspan]="2" *ngFor="let maxItem of rawData[0]['size']" style="width:120px">{{maxItem['size']}}</td>
+        <td  [attr.colspan]="2" *ngFor="let maxItem of rawData[0]['deformation']" style="width:120px">{{maxItem['testData']}}</td>
+      </tr>
+    </tbody>
+</nz-table>
+<nz-table
+*ngIf="rawData && type === 'earlyWarn'&&tableData[0]['type'] === 'spc'"
+#groupingTable
+[nzData]="rawData['size'][0]['detail']"
+nzBordered
+nzSize="middle"
+[nzShowPagination]="false"
+[nzScroll]="scrollConfig"
+    >
+    <thead>
+      <tr>
+        <th rowspan="2" nzWidth="100px" nzLeft="0px">樣本數量</th>
+        <th colspan="2"  *ngFor="let item of rawData['size']" style="width:120px">
+            {{item['name']}}
+          </th>
+        <th colspan="2"  *ngFor="let item of rawData['deformation']" style="width:120px">
+            {{item['name']}}
+          </th>
+        </tr>
+      <tr>
+          <th *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item}}</th>
+          <th *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item}}</th>
+      </tr>
+      <tr>
+        <th nzLeft="0px" >管製圖</th>
+        <th colspan="2" *ngFor="let item of rawData['size']"   style="text-align: center; width:120px"><i style="color: white;font-size: 16px;" (click)="showChart(item)" class="anticon anticon-line-chart"></i></th>
+        <th colspan="2" *ngFor="let item of rawData['deformation']" style="width:120px">N/A</th>
+      </tr>
+      <tr>
+          <th nzLeft="0px" style="background-color: white; color: black;font-weight: 300;text-align: center;">CPK</th>
+          <th colspan="2" *ngFor="let item of rawData['size']" style="background-color: white;font-weight: 300; width:120px;color: black;">{{item['cpk']}}</th>
+          <th colspan="2" *ngFor="let item of rawData['deformation']" style="background-color: white;font-weight: 300;width:120px; color: black;">{{item['cpk']}}</th>
+        </tr>
+        <tr>
+            <th nzLeft="0px" style="background-color: white; color: black;font-weight: 300;text-align: center;">SPC</th>
+            <th colspan="2" *ngFor="let item of rawData['size']" style="background-color: white; font-weight: 300;width:120px;color: black;">{{item['spcRule']}}</th>
+            <th colspan="2" *ngFor="let item of rawData['deformation']" style="background-color: white; font-weight: 300;width:120px;color: black;">{{item['spcRule']}}</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable.data; let i=index">
+        <td nzLeft="0px" nzWidth="100px">{{item['unitSerialNumber']}}</td>
+        <td colspan="2"  *ngFor="let maxItem of rawData['size']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+        <td colspan="2" *ngFor="let maxItem of rawData['deformation']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+      </tr>
+    </tbody>
+</nz-table>
+<nz-table
+*ngIf="rawData && type === 'earlyWarn'&&tableData[0]['type'] === 'cpk'"
+#groupingTable
+[nzData]="rawData['size'][0]['detail']"
+nzBordered
+nzSize="middle"
+[nzShowPagination]="false"
+[nzScroll]="scrollConfig"
+    >
+    <thead>
+      <tr>
+        <th rowspan="2" nzWidth="100px" nzLeft="0px">樣本數量</th>
+        <th colspan="2" *ngFor="let item of rawData['size']" style="width:120px">
+            {{item['name']}}
+          </th>
+        <th colspan="2" *ngFor="let item of rawData['deformation']" style="width:120px">
+            {{item['name']}}
+          </th>
+      </tr>
+      <tr>
+          <th *ngFor="let item of rawDataSizeSpec" style="text-align: center;">{{item}}</th>
+          <th *ngFor="let item of rawDataDefSpec" style="text-align: center;">{{item}}</th>
+      </tr>
+      <tr>
+        <th nzLeft="0px" style="font-weight: 300;">CPK</th>
+        <th colspan="2" *ngFor="let item of rawData['size']" style="font-weight: 300;">{{item['cpk']}}</th>
+        <th colspan="2" *ngFor="let item of rawData['deformation']" style="font-weight: 300;">{{item['cpk']}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of groupingTable.data; let i=index">
+        <td nzLeft="0px" nzWidth="100px">{{item['unitSerialNumber']}}</td>
+        <td colspan="2" *ngFor="let maxItem of rawData['size']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+        <td colspan="2" *ngFor="let maxItem of rawData['deformation']" style="width:120px">{{maxItem['detail'][i]['testData']}}</td>
+      </tr>
+    </tbody>
+</nz-table>
+</div>

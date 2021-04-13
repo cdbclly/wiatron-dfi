@@ -1,0 +1,25 @@
+<div class="box-table">
+  <nz-table
+  #nzData
+  nzBordered
+  nzShowQuickJumper
+  [nzData]="seriesData"
+  [nzPageSize]="5">
+  <thead>
+    <tr style="text-align: center;">
+        <th>{{"imq-menu-supplier" | translate}}</th>
+        <th>{{"imq-manage-lastsavePeople" | translate}}</th>
+        <th>{{"imq-manage-accsavePeople" | translate}}</th>
+        <th>{{"imq-manage-machineCount" | translate}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of nzData.data;  let i = index;">
+        <td>{{item['vendor']}}</td>
+        <td>{{item['saveValue']}}</td>
+        <td>{{item['grandTotal']}}</td>
+        <td>{{item['equipmentQuantity']}}</td>
+    </tr>
+  </tbody>
+  </nz-table>
+  </div>

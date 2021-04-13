@@ -1,0 +1,140 @@
+<nz-spin nzSimple [nzSpinning]="isLoading" [nzSize]="'large'">
+  <div *ngIf="data && data.C4">
+    <label class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" [nzLoading]="downLoading" nzShape="circle" (click)="downLoad('tableC4')">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </label>
+    <nz-table #headerTable [nzData]="data.C4" id="tableC4" class="table1" [nzPageSize]="10000" [nzScroll]="{ y: '400px' }" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th rowspan="2">{{ 'dfq.dfq-site' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-stage' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-customer' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-projectCode' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-projectName' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-model' | translate }}</th>
+          <th colspan="3">{{ 'dfq.dfq-status' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-judgment' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-sing-status' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-due-date' | translate }}</th>
+        </tr>
+        <tr>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC4"> red </label>
+            <div class="red-circle" *ngIf="!isDownLoadC4" style="display: inline-block;color: black;"> R </div>
+          </th>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC4"> yellow </label>
+            <div class="orange-circle" *ngIf="!isDownLoadC4" style="display: inline-block;color: black;">Y</div>
+          </th>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC4"> green </label>
+            <div class="green-circle" *ngIf="!isDownLoadC4" style="display: inline-block;color: black;">G</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let data of headerTable.data">
+        <tr>
+          <td id="white">{{site}}</td>
+          <td id="gray">C4</td>
+          <td id="gray">{{data.customer}}</td>
+          <td id="gray">{{data.projectCode}}</td>
+          <td id="gray">{{data.projectName}}</td>
+          <td id="gray">{{data.model}}</td>
+          <td id="gray" (click)="showChecklist(data.color.red)" id="gray">
+            {{data.color.red ? data.color.red.length : 0}}
+          </td>
+          <td id="gray" (click)="showChecklist(data.color.yellow)" id="gray">
+            {{data.color.yellow ? data.color.yellow.length : 0}}
+          </td>
+          <td id="gray" (click)="showChecklist(data.color.green)" id="gray">
+            {{data.color.green ? data.color.green.length : 0}}
+          </td>
+          <td id="gray"
+            [ngStyle]="{'background-color': (data.status | judgeBooleanResult:plant) ? 'rgba(1, 169, 157, 1)' : 'rgba(212, 48, 48, 1)'}"
+            style="text-align:center">{{data.status | judgeBooleanResult:plant | judgeResult}} </td>
+          <td id="white" (click)="showSigns(data.sign)">
+            <!-- {{ (data.status | judgeBooleanResult:plant) ? 'Approved' : (data.signStatus===4?'Rejected':'Approved') }} </td> -->
+            {{data.signStatus | signingStatus}}</td>
+          <td id="gray">{{data.exitDueDate | datetime}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <br>
+  <div *ngIf="data && data.C5">
+    <label class="dfc-btn-download">
+      <button nz-button [nzType]="'primary'" title="Download" [nzLoading]="downLoading" nzShape="circle" (click)="downLoad('tableC5')">
+        <i class="anticon anticon-download"></i>
+      </button>
+    </label>
+    <nz-table #headerTable2 [nzData]="data.C5" id="tableC5" class="table1" [nzPageSize]="10000" [nzScroll]="{ y: '400px' }" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th rowspan="2">{{ 'dfq.dfq-site' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-stage' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-customer' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-projectCode' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-projectName' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-model' | translate }}</th>
+          <th colspan="3">{{ 'dfq.dfq-status' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-judgment' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-sing-status' | translate }}</th>
+          <th rowspan="2">{{ 'dfq.dfq-due-date' | translate }}</th>
+        </tr>
+        <tr>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC5"> red </label>
+            <div class="red-circle" *ngIf="!isDownLoadC5" style="display: inline-block; color: black;"> R</div>
+          </th>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC5"> yellow </label>
+            <div class="orange-circle" *ngIf="!isDownLoadC5" style="display: inline-block; color: black;">Y</div>
+          </th>
+          <th rowspan="1">
+            <label *ngIf="isDownLoadC5"> green </label>
+            <div class="green-circle" *ngIf="!isDownLoadC5" style="display: inline-block; color: black;">G</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let data of headerTable2.data">
+        <tr>
+          <td id="white">{{site}}</td>
+          <td id="gray">C5</td>
+          <td id="gray">{{data.customer}}</td>
+          <td id="gray">{{data.projectCode}}</td>
+          <td id="gray">{{data.projectName}}</td>
+          <td id="gray">{{data.model}}</td>
+          <td id="gray" (click)="showChecklist(data.color.red)" id="gray">
+            {{data.color.red ? data.color.red.length : 0}}
+          </td>
+          <td id="gray" (click)="showChecklist(data.color.yellow)" id="gray">
+            {{data.color.yellow ? data.color.yellow.length : 0}}
+          </td>
+          <td id="gray" (click)="showChecklist(data.color.green)" id="gray">
+            {{data.color.green ? data.color.green.length : 0}}
+          </td>
+          <td id="gray"
+            [ngStyle]="{'background-color': (data.status | judgeBooleanResult:plant) ? 'rgba(1, 169, 157, 1)' : 'rgba(212, 48, 48, 1)'}"
+            style="text-align:center">{{data.status | judgeBooleanResult:plant | judgeResult}} </td>
+          <td id="white" (click)="showSigns(data.sign)">
+            <!-- {{ (data.status | judgeBooleanResult:plant) ? 'Approved' : (data.signStatus===4?'Rejected':'Approved') }} </td> -->
+            {{data.signStatus | signingStatus}}
+          </td>
+          <td id="gray">{{data.exitDueDate | datetime}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <app-checklistmodal [checkListsData]="checkListsData" [isEditSaveVisible3]="isEditSaveVisible3"
+    (isVisible)="isVisible($event)"></app-checklistmodal>
+
+  <app-signer-history [isEditSaveVisible]="isEditSaveVisible" [title]="'Signer History'" [modalFooter]="modalFooter"
+    (handleCancel)="handleCancel()" [signings]="signerHistoryData"></app-signer-history>
+
+  <ng-template #modalFooter>
+    <button nz-button nzType="primary" (click)="handleOk()">Back</button>
+  </ng-template>
+</nz-spin>

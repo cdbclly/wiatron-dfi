@@ -1,0 +1,19 @@
+<div class="dfc-all" #DFCMohParam>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>DFC System</nz-breadcrumb-item>
+    <nz-breadcrumb-item>MOH {{'dfc.dfc-parameter-data-maintenance' | translate }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <div style="margin-top: 12px;">
+    <span style="font-size:20px;">MOH {{'dfc.dfc-parameter-data-maintenance' | translate }}</span>
+  </div>
+  <div class="dfc-tabset">
+    <nz-tabset [nzSelectedIndex]="selectedIndex">
+      <nz-tab nzTitle="{{title1}}">
+        <app-moh-parameter-plant [nzScrollY]="dfcMohParamHeight"></app-moh-parameter-plant>
+      </nz-tab>
+      <nz-tab nzTitle="{{title2}}">
+        <app-moh-parameter-model [nzScrollY]="dfcMohParamHeight"></app-moh-parameter-model>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</div>

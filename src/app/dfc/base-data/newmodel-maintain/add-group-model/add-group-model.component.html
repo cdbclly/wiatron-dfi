@@ -1,0 +1,25 @@
+<nz-modal [(nzVisible)]="addGroupModelVisible" nzOkText="Ok" nzCancelText="Cancel"
+  nzTitle="{{modifyType}}Group Model Member" (nzOnCancel)="cancel()" [nzFooter]="modalFooter">
+  <div class="dfc-newmodel-addGroupModel">
+    <span>Model Name:</span>
+    <nz-select *ngIf="modifyType === ('base-data.new' | translate)" style="width: 120px;" [(ngModel)]="selectedValue"
+      (ngModelChange)="checkRate()" nzAllowClear nzPlaceHolder="Please choose" nzShowSearch [nzServerSearch]="true"
+      [nzDropdownMatchSelectWidth]="false">
+      <ng-container *ngFor="let item of groupModelMappingSelect">
+        <nz-option style="width: 300px" [nzValue]="item" [nzLabel]="item.modelName"></nz-option>
+      </ng-container>
+    </nz-select>
+    <span *ngIf="modifyType === ('base-data.update' | translate)">{{editGroupModel.modelName}}</span>
+    <span>Quantity:</span>
+    <input nz-input placeholder="Quantity" style="width:60px" [(ngModel)]="value" (ngModelChange)="checkRate()" />
+  </div>
+  <div class="flex">
+  </div>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button nz-button nzType="primary" (click)="addOrUpdateModel()" *ngIf="modifyType === ('base-data.new' | translate)"
+      [disabled]="!number">Add</button>
+    <button nz-button nzType="primary" (click)="editOrUpdateModel()"
+      *ngIf="modifyType === ('base-data.update' | translate)" [disabled]="!number">Modify</button>
+  </ng-template>
+</nz-modal>

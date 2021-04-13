@@ -1,0 +1,71 @@
+.instruction{
+  display: flex;
+  height: 25px;
+  justify-content: flex-end;
+  .every{
+    display: flex;
+    margin-right: 10px;
+    .div1 {
+      width: 30px;
+      height: 25px;
+    }
+  }
+}
+
+
+.tableStyle{
+  tbody {
+    td {
+      border: 1px solid orange;
+      background: black;
+      color: white;
+    }
+  }
+}
+
+.colorRed {
+  background: red !important;
+  color: black !important;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.colorYellow {
+  color: black !important;
+  background: yellow !important;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.colorWhite {
+  color: black !important;
+  background: white !important;
+}
+
+.colorGreen{
+  color: black !important;
+  background: green !important;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.redColor {
+  color: red !important;
+}
+
+.yellowColor {
+  color: yellow !important;
+}
+
+.bgView {
+  display: flex;
+  justify-content: space-between;
+  .lef {
+    width: 80%;
+  }
+}
+
+.column-chart{
+  height: 25 vw;
+  width: 100%;
+}

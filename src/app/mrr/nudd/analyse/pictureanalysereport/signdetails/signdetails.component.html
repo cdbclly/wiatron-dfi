@@ -1,0 +1,23 @@
+<nz-modal [(nzVisible)]="isVisibleSignItems" [nzWidth]="998" [nzClosable]="false" (nzOnCancel)="handleCancel()"
+  [nzFooter]="null" nzTitle="">
+  <nz-table #nzTable id="report" [nzData]="signItems" nzShowPagination="false" [nzPageSize]="500">
+    <thead>
+      <tr>
+        <th rowspan="2">Role</th>
+        <th rowspan="2">User</th>
+        <th rowspan="2">Judge</th>
+        <th rowspan="2">Comment</th>
+        <th rowspan="2">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of nzTable.data, let i=index">
+        <td>{{data.role}}</td>
+        <td>{{data.userId | userEnname | async}}</td>
+        <td>{{data.isAgree===0 ? 'Not Agree': 'Agree'}}</td>
+        <td>{{data.comment}}</td>
+        <td>{{data.updateOn | datetime}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-modal>

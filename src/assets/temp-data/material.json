@@ -1,0 +1,582 @@
+{
+  "material_productYR":
+  [
+    {
+    "factoryName": "廠商1",
+    "id": 1,
+    "data": 0.87,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商2",
+    "id": 2,
+    "data": 0.88,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商3",
+    "id": 3,
+    "data": 0.89,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商4",
+    "id": 4,
+    "data": 0.92,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商5",
+    "id": 5,
+    "data": 0.93,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商6",
+    "id": 6,
+    "data": 0.93,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商7",
+    "id": 7,
+    "data": 0.94,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商8",
+    "id": 8,
+    "data": 0.94,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商9",
+    "id": 9,
+    "data": 0.95,
+    "target": 0.95
+  },
+  {
+    "factoryName": "廠商10",
+    "id": 10,
+    "data": 0.95,
+    "target": 0.95
+  }
+  ],
+  "material_productDR_sub": [
+    {
+      "factoryId": 1,
+      "material": "料號1",
+      "data": 0.36
+    },
+    {
+      "factoryId": 1,
+      "material": "料號2",
+      "data": 0.35
+    },
+    {
+      "factoryId": 1,
+      "material": "料號3",
+      "data": 0.30
+    },
+    {
+      "factoryId": 1,
+      "material": "料號4",
+      "data": 0.28
+    },
+    {
+      "factoryId": 1,
+      "material": "料號5",
+      "data": 0.27
+    },
+    {
+      "factoryId": 1,
+      "material": "料號6",
+      "data": 0.10
+    },
+    {
+      "factoryId": 1,
+      "material": "料號7",
+      "data": 0.10
+    },
+    {
+      "factoryId": 1,
+      "material": "料號8",
+      "data": 0.10
+    },
+    {
+      "factoryId": 1,
+      "material": "料號9",
+      "data": 0.30
+    },
+    {
+      "factoryId": 1,
+      "material": "料號10",
+      "data": 0.10
+    }
+  ],
+  "material_productYR_sub": [
+    {
+      "factoryId": 1,
+      "material": "料號1",
+      "data": 0.87
+    },
+    {
+      "factoryId": 1,
+      "material": "料號2",
+      "data": 0.88
+    },
+    {
+      "factoryId": 1,
+      "material": "料號3",
+      "data": 0.90
+    },
+    {
+      "factoryId": 1,
+      "material": "料號4",
+      "data": 0.98
+    },
+    {
+      "factoryId": 1,
+      "material": "料號5",
+      "data": 0.82
+    },
+    {
+      "factoryId": 1,
+      "material": "料號6",
+      "data": 0.89
+    },
+    {
+      "factoryId": 1,
+      "material": "料號7",
+      "data": 0.90
+    },
+    {
+      "factoryId": 1,
+      "material": "料號8",
+      "data": 0.95
+    },
+    {
+      "factoryId": 1,
+      "material": "料號9",
+      "data": 0.95
+    },
+    {
+      "factoryId": 1,
+      "material": "料號10",
+      "data": 0.89
+    }
+  ],
+  "defectAnanlyze":
+    {
+      "outLook": 28,
+      "size": 15,
+      "deformation": 20
+  },
+  "material_PD_YR":
+  [
+    {
+    "factoryName": "廠商1",
+    "data": 0.0036,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商2",
+    "data": 0.0035,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商3",
+    "data": 0.0030,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商4",
+    "data": 0.0030,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商5",
+    "data": 0.0028,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商6",
+    "data": 0.0027,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商7",
+    "data": 0.001,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商8",
+    "data": 0.001,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商9",
+    "data": 0.001,
+    "target": 0.001
+  },
+  {
+    "factoryName": "廠商10",
+    "data": 0.001,
+    "target": 0.001
+  }
+  ],
+  "materialAlert": [
+    {
+      "factoryName": "廠商1",
+      "abnormal": 5,
+      "alert": 4
+    },
+    {
+      "factoryName": "廠商2",
+      "abnormal": 4,
+      "alert": 3
+    },
+    {
+      "factoryName": "廠商3",
+      "abnormal": 0,
+      "alert": 5
+    },
+    {
+      "factoryName": "廠商4",
+      "abnormal": 4,
+      "alert": 0
+    },
+    {
+      "factoryName": "廠商5",
+      "abnormal": 0,
+      "alert": 2
+    },
+    {
+      "factoryName": "廠商6",
+      "abnormal": 4,
+      "alert": 1
+    },
+    {
+      "factoryName": "廠商7",
+      "abnormal": 0,
+      "alert": 2
+    },
+    {
+      "factoryName": "廠商8",
+      "abnormal": 0,
+      "alert": 2
+    },
+    {
+      "factoryName": "廠商9",
+      "abnormal": 0,
+      "alert": 2
+    },
+    {
+      "factoryName": "廠商10",
+      "abnormal": 1,
+      "alert": 1
+    }
+  ],
+
+  "alertSubDetail": [
+    {
+      "factoryName": "廠商1",
+      "formId": "TCP111111",
+      "status": "onGoing"
+    },
+    {
+      "factoryName": "廠商1",
+      "formId": "TCP222222",
+      "status": "onGoing"
+    },
+    {
+      "factoryName": "廠商1",
+      "formId": "TCP333333",
+      "status": "onGoing"
+    },
+    {
+      "factoryName": "廠商1",
+      "formId": "TCP444444",
+      "status": "onGoing"
+    },
+    {
+      "factoryName": "廠商1",
+      "formId": "TCP55555",
+      "status": "onGoing"
+    }
+  ],
+  "alertTrdDetail": [
+    {
+      "barCode": "條碼1",
+      "sysdate": "2019-06-05",
+      "result": "NG",
+      "maxSizeLen": 6,
+      "maxOutlookLen": 6,
+      "maxDeformate": 8,
+      "sizeDetails": [
+        {
+          "name": "尺寸1",
+          "value": 100
+        },
+        {
+          "name": "尺寸2",
+          "value": 98
+        },
+        {
+          "name": "尺寸3",
+          "value": 99
+        },
+        {
+          "name": "尺寸4",
+          "value": 100
+        },
+        {
+          "name": "尺寸5",
+          "value": 98
+        },
+        {
+          "name": "尺寸6",
+          "value": 98
+        }
+      ],
+      "deformationDetail": [
+        {
+          "name": "變形度1",
+          "value": 0.0
+        },
+        {
+          "name": "變形度2",
+          "value": 0.0
+        },
+        {
+          "name": "變形度3",
+          "value": 0.0
+        },
+        {
+          "name": "變形度4",
+          "value": 0.0
+        },
+        {
+          "name": "變形度5",
+          "value": 0.0
+        },
+        {
+          "name": "變形度6",
+          "value": 0.0
+        }
+      ],
+      "outLookDetail": [
+        {
+          "name": "外觀1",
+          "value": "nice"
+        },
+        {
+          "name": "外觀2",
+          "value": "nice"
+        },
+        {
+          "name": "外觀3",
+          "value": "nice"
+        },
+        {
+          "name": "外觀4",
+          "value": "nice"
+        },
+        {
+          "name": "外觀5",
+          "value": "nice"
+        },
+        {
+          "name": "外觀6",
+          "value": "nice"
+        },
+        {
+          "name": "外觀7",
+          "value": "nice"
+        },
+        {
+          "name": "外觀8",
+          "value": "nice"
+        }
+      ]
+    },
+    {
+      "barCode": "條碼2",
+      "sysdate": "2019-06-05",
+      "result": "NG",
+      "maxSizeLen": 6,
+      "maxOutlookLen": 6,
+      "maxDeformate": 8,
+      "sizeDetails": [
+        {
+          "name": "尺寸1",
+          "value": 99
+        },
+        {
+          "name": "尺寸2",
+          "value": 98
+        },
+        {
+          "name": "尺寸3",
+          "value": 100
+        },
+        {
+          "name": "尺寸4",
+          "value": 100
+        },
+        {
+          "name": "尺寸5",
+          "value": 98
+        }
+      ],
+      "deformationDetail": [
+        {
+          "name": "變形度1",
+          "value": 0.1
+        },
+        {
+          "name": "變形度2",
+          "value": 0.1
+        },
+        {
+          "name": "變形度3",
+          "value": 0.1
+        },
+        {
+          "name": "變形度4",
+          "value": 0.1
+        },
+        {
+          "name": "變形度5",
+          "value": 0.1
+        }
+      ],
+      "outLookDetail": [
+        {
+          "name": "外觀1",
+          "value": "nice"
+        },
+        {
+          "name": "外觀2",
+          "value": "nice"
+        },
+        {
+          "name": "外觀3",
+          "value": "nice"
+        },
+        {
+          "name": "外觀4",
+          "value": "nice"
+        },
+        {
+          "name": "外觀5",
+          "value": "nice"
+        },
+        {
+          "name": "外觀6",
+          "value": "nice"
+        },
+        {
+          "name": "外觀7",
+          "value": "nice"
+        },
+        {
+          "name": "外觀8",
+          "value": "nice"
+        }
+      ]
+    }
+  ],
+  "materialNGData": [
+    {
+      "name": "廠商1",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商2",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 2,
+        "open": 2
+      }
+    },
+    {
+      "name": "廠商3",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商4",
+      "detail":
+      {
+        "close": 0,
+        "onGoing": 2,
+        "open": 2
+      }
+    },
+    {
+      "name": "廠商5",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商6",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 0,
+        "open": 1
+      }
+    },
+    {
+      "name": "廠商7",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商8",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 0,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商9",
+      "detail":
+      {
+        "close": 2,
+        "onGoing": 2,
+        "open": 3
+      }
+    },
+    {
+      "name": "廠商10",
+      "detail":
+      {
+        "close": 1,
+        "onGoing": 1,
+        "open": 1
+      }
+    }
+  ]
+}

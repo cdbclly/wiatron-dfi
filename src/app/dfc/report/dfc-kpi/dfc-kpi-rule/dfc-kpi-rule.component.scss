@@ -1,0 +1,25 @@
+.green {
+  color: green;
+}
+
+td {
+  border: 1px solid black;
+}
+
+.dfc-report-content {
+  max-height: calc(100vh - 240px);
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+  overflow-x: auto;
+  font-size: 14px;
+
+  table {
+    width: 100%;
+    margin: auto;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}

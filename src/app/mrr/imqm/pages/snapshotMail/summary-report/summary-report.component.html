@@ -1,0 +1,13 @@
+<p>{{subject}}</p>
+<div style="width: 49%; height:14vw;display: inline-block;" *ngIf="materialProductYRBarData">
+  <app-material-end-product [barOptions]="materialProductYRBarData"></app-material-end-product>
+</div>
+<div style="display: inline-block; width: 49%; height:14vw;" *ngIf="materialProductYRBarData">
+  <app-material-end-product [barOptions] = "materialPDDRBarData"></app-material-end-product>
+</div>
+<div style="width:100%; height: 14vw;margin-top: 1vw;" *ngIf="materialProductYRBarData">
+  <app-material-alert-product [options] = "materialAlertBarData"></app-material-alert-product>
+</div>
+<div style="width:100%; height: 14vw;" *ngIf="materialProductYRBarData">
+  <app-material-ng [options]="materialNGBarData"></app-material-ng>
+</div>

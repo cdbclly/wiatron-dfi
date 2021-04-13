@@ -1,0 +1,22 @@
+// table的td居中顯示
+.ant-table-tbody > tr > td {
+  text-align: center;
+}
+
+.dfq-btn-add {
+  margin-top: 5px;
+}
+::ng-deep .nz-table .ant-spin-container {
+  margin-top: 4px;
+}
+
+// radio禁用時顏色
+::ng-deep .radioGroups .ant-radio-disabled + span{
+  color: rgb(126, 125, 125);
+}
+
+::ng-deep .radioGroups .ant-radio-disabled .ant-radio-inner {
+  color: rgb(126, 125, 125);
+}
+
+
